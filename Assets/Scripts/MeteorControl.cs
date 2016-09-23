@@ -4,15 +4,22 @@ using System.Collections;
 public class MeteorControl : MonoBehaviour {
 
 	private GameManager gm;
-	private Rigidbody rb;
+	//private Rigidbody rb;
 	private float moveSpeed;
 	private float rotTime = 1f / 3f;  // denom = num of secs
 	private float x,y,v,h,w;
 	private float zDepth = 0f;
+	private int iSize = 3;  //default 3=big 2=medium 1=small
 
 	void Start () {
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-		rb = GetComponentInChildren<Rigidbody>();
+		//rb = GetComponentInChildren<Rigidbody>();
+
+		string s = gameObject.name.ToUpper();
+		if (s.Contains(".M."))
+			{ iSize = 2; }
+		else if (s.Contains(".S."))
+			{ iSize = 1; }
 
 		x = Random.Range(1f, gm.level_width) - (gm.level_width/2);
 		y = Random.Range(1f, gm.level_height) - (gm.level_height/2);
@@ -22,8 +29,12 @@ public class MeteorControl : MonoBehaviour {
 		h = Random.Range(-1f, 1f);
 		v = Random.Range(-1f, 1f);
 		w = Random.Range(-1f, 1f);
-		moveSpeed = Random.Range(0.1f, 10f);
+		moveSpeed = Random.Range(0.1f, 5f) + (3-iSize);
 
+	}
+
+	public int GetSize() {
+		return iSize;
 	}
 
 	void Update () {
