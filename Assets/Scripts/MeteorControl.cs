@@ -15,11 +15,7 @@ public class MeteorControl : MonoBehaviour {
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 		//rb = GetComponentInChildren<Rigidbody>();
 
-		string s = gameObject.name.ToUpper();
-		if (s.Contains(".M."))
-			{ iSize = 2; }
-		else if (s.Contains(".S."))
-			{ iSize = 1; }
+		SetSize ();
 
 		x = Random.Range(1f, gm.level_width) - (gm.level_width/2);
 		y = Random.Range(1f, gm.level_height) - (gm.level_height/2);
@@ -31,6 +27,14 @@ public class MeteorControl : MonoBehaviour {
 		w = Random.Range(-1f, 1f);
 		moveSpeed = Random.Range(0.1f, 5f) + (3-iSize);
 
+	}
+
+	void SetSize ()	{
+		string s = gameObject.name.ToUpper ();
+		if (s.Contains (".M."))
+			{ iSize = 2; }
+		else if (s.Contains (".S.")) 
+			{ iSize = 1; }
 	}
 
 	public int GetSize() {
