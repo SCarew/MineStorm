@@ -5,7 +5,7 @@ public class GameManager : MonoBehaviour {
 
 	public int currentLevel = 0;
 	public float level_width, level_height;
-	public GameObject objMeteor;
+	public GameObject pf_Meteor;
 		// add additional mines prefabs
 	private Transform parMeteor;
 
@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour {
 
 		if (numMeteors > 0) {
 			for (i = 0; i < numMeteors; i++) {
-				Instantiate(objMeteor, parMeteor);
+				Instantiate(pf_Meteor, parMeteor);
 			}
 		}
 
