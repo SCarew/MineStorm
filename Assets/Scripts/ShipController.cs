@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class ShipController : MonoBehaviour {
 
@@ -7,22 +8,24 @@ public class ShipController : MonoBehaviour {
 	private int conLayout;   //controller layout set somewhere else
 	private int primaryWeapon, secondaryWeapon;   //set somewhere else
 	private Rigidbody rb;
-	private float thrustVelocity = 0.5f;
+	private float thrustVelocity = 12f;
 	private float currentThrust = 0f;
-	private float maxThrust = 10f;
-	private float inertia = 0.1f;
+	private float maxThrust = 15f;
+	//private float inertia = 0.05f;
 	private Vector3 thrustDirection;
-	private float rotationSpeed = 2.0f;
+	private float rotationSpeed = 3.0f;
 	private float deadZone = 0.25f;
 	private Vector3 velVector = new Vector3(0, 0, 0);
+	private Text txtVelocity;  //for testing
 
-	public GameObject pr_torpedo;
+	public GameObject pre_torpedo;
 	private Transform launcher;
 
 	void Start () {
 		pc = GameObject.Find("GameManager").GetComponent<PrefsControl>();
 		launcher = GameObject.Find("Launcher").transform;
-		rb = GetComponentInChildren<Rigidbody>();
+		rb = GetComponent<Rigidbody>();
+		txtVelocity = GameObject.Find("txtVelocity").GetComponent<Text>();
 
 		conLayout = 0;       //for testing
 		primaryWeapon = 0;   //for testing
@@ -97,17 +100,56 @@ public class ShipController : MonoBehaviour {
 //		Vector3 vecTarget = transform.position + (transform.up * 100f);
 //		transform.position = Vector3.MoveTowards(transform.position, vecTarget, thrustVelocity * power * Time.deltaTime);
 
-		currentThrust = Mathf.Clamp(currentThrust + (thrustVelocity * power), 0f, maxThrust);
-		Debug.Log(currentThrust);
-		thrustDirection = transform.up * 100f;
+		//****Testing****
+		//velVector += thrustVelocity * power * transform.up;
+		//return;
+		//****End Testing****
+		rb.AddForce(transform.up * power * thrustVelocity, ForceMode.Force);
+		if (rb.velocity.sqrMagnitude > (maxThrust*maxThrust)) {
+			rb.AddForce(transform.up * power * -thrustVelocity, ForceMode.Force);
+		}
+		return;
+		//****End Testing****
+
+//		currentThrust = Mathf.Clamp(currentThrust + (thrustVelocity * power), 0f, maxThrust);
+//		thrustDirection = transform.up * 100f;
 	}
 
 	void FixedUpdate() {
 		if (conLayout == 0 || conLayout == 2) {
-			Vector3 vecTarget = transform.position + (thrustDirection);
-			transform.position = Vector3.MoveTowards(transform.position, vecTarget, currentThrust * Time.deltaTime);
-			currentThrust = Mathf.Clamp(currentThrust - inertia, 0f, currentThrust);
+			float mag = rb.velocity.magnitude;   //TODO: change to sqrMag or remove
+			txtVelocity.text = mag.ToString();
+			if (mag < 0.4f && mag != 0f) 
+				{ rb.drag = 4f; }
+			else 
+				{ rb.drag = 0.3f; }
 		}
+		return;
+
+//		if (conLayout == 0 || conLayout == 2) {
+//			Vector3 dragVector = -0.1f * velVector;
+//			velVector += dragVector;
+//			if (velVector.sqrMagnitude < 0.01f) { velVector = Vector3.zero; }
+//			txtVelocity.text = velVector.ToString();
+//			transform.position = Vector3.MoveTowards(transform.position, transform.position + velVector, maxThrust * Time.fixedDeltaTime);
+//		}
+//		return;
+
+//		if (conLayout == 0 || conLayout == 2) {
+//			Vector3 vecTarget = transform.position + (thrustDirection);
+//			transform.position = Vector3.MoveTowards(transform.position, vecTarget, currentThrust * Time.deltaTime);
+//			currentThrust = Mathf.Clamp(currentThrust - inertia, 0f, currentThrust);
+//			txtVelocity.text = currentThrust.ToString();
+//		}
+//		return;
+
+//		if (conLayout == 0 || conLayout == 2) {
+//			Vector3 dragVector = (0.1f * Mathf.Pow(velVector.magnitude, 1f)) * -velVector.normalized;
+//			velVector += dragVector;
+//			if (velVector.magnitude < 0.01) {velVector = Vector3.zero;}
+//			txtVelocity.text = velVector.ToString();
+//			transform.position = Vector3.MoveTowards(transform.position, transform.position + velVector, maxThrust * Time.deltaTime);
+//		}
 
 		//transform.position += velVector * Time.fixedDeltaTime;
 	}
@@ -151,7 +193,7 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void FireTorpedo() {
-		GameObject go = Instantiate(pr_torpedo, launcher.position, Quaternion.identity) as GameObject;
+		GameObject go = Instantiate(pre_torpedo, launcher.position, Quaternion.identity) as GameObject;
 		go.transform.rotation = transform.rotation;
 	}
 }

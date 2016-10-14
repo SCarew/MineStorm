@@ -17,17 +17,15 @@ public class Wrapper : MonoBehaviour {
 	}
 
 	IEnumerator FindDistance() {
-		float x0, y0, x1, y1, xd, yd;
+		float x0, y0, xd, yd;
 		bool bChange;
 
 		while (1 > 0) {
 			bChange = false;
 			x0 = transform.position.x;
 			y0 = transform.position.y;
-			x1 = playerShip.position.x;
-			y1 = playerShip.position.y;
-			xd = x0 - x1;
-			yd = y0 - y1;
+			xd = x0 - playerShip.position.x;
+			yd = y0 - playerShip.position.y;
 
 			if (xd > xDistance) {
 				x0 -= (2 * xDistance);
