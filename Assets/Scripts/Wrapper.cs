@@ -11,7 +11,7 @@ public class Wrapper : MonoBehaviour {
 		GameManager go = GameObject.Find("GameManager").GetComponent<GameManager>();
 		xDistance = go.level_width / 2;
 		yDistance = go.level_height / 2;
-		playerShip = GameObject.FindGameObjectWithTag("Player").transform;
+		playerShip = GameObject.Find("PlayerShip").transform;
 
 		StartCoroutine(FindDistance());
 	}

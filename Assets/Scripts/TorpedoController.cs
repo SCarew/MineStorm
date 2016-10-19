@@ -9,11 +9,15 @@ public class TorpedoController : MonoBehaviour {
 
 	void Start () {
 		Destroy(gameObject, 2.0f);
-		shipVel = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody>().velocity;
+		shipVel = GameObject.Find("PlayerShip").GetComponent<Rigidbody>().velocity;
 	}
 	
 	void Update () {
 		transform.position += (shipVel * Time.deltaTime) + (transform.up * Time.deltaTime * fireSpeed);
+	}
+
+	public int GetDamage() {
+		return damage;
 	}
 
 //	void OnCollisionEnter(Collision coll) {

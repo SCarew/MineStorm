@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MeteorControl : MonoBehaviour {
+public class MeteorControl2 : MonoBehaviour {
 
 	private GameManager gm;
-	//private Rigidbody rb;
+	private Rigidbody rb;
+	private EnemyHealth eh;
 	private float moveSpeed;
 	private float rotTime = 1f / 3f;  // denom = num of secs
 	private float x,y,v,h,w;
@@ -12,12 +13,10 @@ public class MeteorControl : MonoBehaviour {
 	private int iSize = 3;  //default 3=big 2=medium 1=small
 
 	private Transform parObj;
-	private EnemyHealth eh;
-	private Vector3 location = new Vector3(0f, 0f, 1f);
 
 	void Start () {
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-		//rb = GetComponentInChildren<Rigidbody>();
+		rb = transform.GetComponentInParent<Rigidbody>();
 		eh = gameObject.GetComponentInParent<EnemyHealth>();
 		parObj = transform.parent.transform;
 
@@ -26,22 +25,20 @@ public class MeteorControl : MonoBehaviour {
 		x = Random.Range(1f, gm.level_width) - (gm.level_width/2);
 		y = Random.Range(1f, gm.level_height) - (gm.level_height/2);
 
-		if (location.z == 1) {
-			parObj.position = new Vector3(x, y, zDepth);
-		} else {
-			Debug.Log(gameObject.name + " spawned at " + location);
-			parObj.position = location;
-		}
+		parObj.position = new Vector3(x, y, zDepth);
 
 		h = Random.Range(-1f, 1f);
 		v = Random.Range(-1f, 1f);
 		w = Random.Range(-1f, 1f);
-		moveSpeed = Random.Range(0.1f, 4 + gm.currentLevel) + (3-iSize);
+		moveSpeed = Random.Range(0.4f, 4 + gm.currentLevel) + (3-iSize);
 
+
+		rb.AddForce(new Vector3(h*moveSpeed, v*moveSpeed, 0f), ForceMode.VelocityChange);
+		rb.AddTorque(new Vector3(h * 180 * rotTime, v * 180 * rotTime, w * 180 * rotTime), ForceMode.Force);
 	}
 
 	public void SetLocation(Vector3 loc) {
-		location = loc;
+		parObj.position = loc;
 	}
 
 	void SetSize ()	{
@@ -59,6 +56,7 @@ public class MeteorControl : MonoBehaviour {
 	}
 
 	void Update () {
+		/*
 		float h0 = h * 360f * Time.deltaTime * rotTime;
 		float v0 = v * 360f * Time.deltaTime * rotTime;
 		float w0 = w * 360f * Time.deltaTime * rotTime;
@@ -67,6 +65,7 @@ public class MeteorControl : MonoBehaviour {
 
 		parObj.Rotate(h0, v0, w0, Space.Self);
 		parObj.Translate(v1, h1, 0f, Space.World);
+		*/
 	}
 
 	void OnCollisionEnter(Collision coll) {

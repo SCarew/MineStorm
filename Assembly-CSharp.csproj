@@ -50,8 +50,10 @@
      <Compile Include="Assets\Scripts\EnemyHealth.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\MeteorControl.cs" />
+     <Compile Include="Assets\Scripts\MeteorControl2.cs" />
      <Compile Include="Assets\Scripts\PrefsControl.cs" />
      <Compile Include="Assets\Scripts\ShipController.cs" />
+     <Compile Include="Assets\Scripts\ShipHealth.cs" />
      <Compile Include="Assets\Scripts\TorpedoController.cs" />
      <Compile Include="Assets\Scripts\Wrapper.cs" />
  <Reference Include="UnityEngine.UI">

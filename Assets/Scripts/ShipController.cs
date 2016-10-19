@@ -13,19 +13,21 @@ public class ShipController : MonoBehaviour {
 	private float maxThrust = 15f;
 	//private float inertia = 0.05f;
 	private Vector3 thrustDirection;
-	private float rotationSpeed = 3.0f;
+	private float rotationSpeed = 4.0f;
 	private float deadZone = 0.25f;
 	private Vector3 velVector = new Vector3(0, 0, 0);
 	private Text txtVelocity;  //for testing
 
 	public GameObject pre_torpedo;
 	private Transform launcher;
+	private ParticleSystem[] ps;
 
 	void Start () {
 		pc = GameObject.Find("GameManager").GetComponent<PrefsControl>();
 		launcher = GameObject.Find("Launcher").transform;
 		rb = GetComponent<Rigidbody>();
 		txtVelocity = GameObject.Find("txtVelocity").GetComponent<Text>();
+		ps = GetComponentsInChildren<ParticleSystem>();
 
 		conLayout = 0;       //for testing
 		primaryWeapon = 0;   //for testing
@@ -108,6 +110,9 @@ public class ShipController : MonoBehaviour {
 		if (rb.velocity.sqrMagnitude > (maxThrust*maxThrust)) {
 			rb.AddForce(transform.up * power * -thrustVelocity, ForceMode.Force);
 		}
+		foreach (ParticleSystem ps1 in ps) {
+			ps1.Play();
+		}
 		return;
 		//****End Testing****
 
@@ -123,6 +128,22 @@ public class ShipController : MonoBehaviour {
 				{ rb.drag = 4f; }
 			else 
 				{ rb.drag = 0.3f; }
+
+		if (mag < 0.4f) {
+			foreach (ParticleSystem ps1 in ps) {
+				ps1.Stop();
+			}
+		}
+//			if (mag > 0f) {
+//				foreach (ParticleSystem ps1 in ps) {
+//					ps1.emission.rate = 10 + mag;
+//					ps1.Play();
+//				}
+//			} else {
+//				foreach (ParticleSystem ps1 in ps) {
+//					ps1.Stop();
+//				}
+//			}
 		}
 		return;
 
