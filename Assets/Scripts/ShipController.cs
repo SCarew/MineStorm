@@ -16,6 +16,7 @@ public class ShipController : MonoBehaviour {
 	private float rotationSpeed = 4.0f;
 	private float deadZone = 0.25f;
 	private Vector3 velVector = new Vector3(0, 0, 0);
+	private bool bUseThrust = false;
 	private Text txtVelocity;  //for testing
 
 	public GameObject pre_torpedo;
@@ -51,8 +52,10 @@ public class ShipController : MonoBehaviour {
 		if (conLayout == 0) {
 			if (v > deadZone ) {
 				Thrust(v);
+				bUseThrust = true;
 			} else {
 				//Thrust(0);
+				bUseThrust = false;
 			}
 
 			if (h > deadZone) {
@@ -85,6 +88,9 @@ public class ShipController : MonoBehaviour {
 
 			if (bT) {
 				Thrust(0.75f);
+				bUseThrust = true;
+			} else {
+				bUseThrust = false;
 			}
 		}
 
@@ -110,9 +116,9 @@ public class ShipController : MonoBehaviour {
 		if (rb.velocity.sqrMagnitude > (maxThrust*maxThrust)) {
 			rb.AddForce(transform.up * power * -thrustVelocity, ForceMode.Force);
 		}
-		foreach (ParticleSystem ps1 in ps) {
-			ps1.Play();
-		}
+//		foreach (ParticleSystem ps1 in ps) {
+//			ps1.Play();
+//		}
 		return;
 		//****End Testing****
 
@@ -129,11 +135,18 @@ public class ShipController : MonoBehaviour {
 			else 
 				{ rb.drag = 0.3f; }
 
-		if (mag < 0.4f) {
-			foreach (ParticleSystem ps1 in ps) {
-				ps1.Stop();
+			//Debug.Log ("Thrust=" + bUseThrust + "  Playing=" + gameObject.GetComponentInChildren<ParticleSystem>().isPlaying);
+			if (!bUseThrust) {
+				foreach (ParticleSystem ps1 in ps) {
+					ps1.Stop();
+				}
+			} else {
+				foreach (ParticleSystem ps1 in ps) {
+					if (ps1.isStopped)
+						{ ps1.Play(); }
+				}
 			}
-		}
+
 //			if (mag > 0f) {
 //				foreach (ParticleSystem ps1 in ps) {
 //					ps1.emission.rate = 10 + mag;

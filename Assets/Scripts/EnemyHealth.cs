@@ -6,6 +6,7 @@ public class EnemyHealth : MonoBehaviour {
 	private int health;
 	private GameManager gm;
 	private int myType = 1;
+	public GameObject ps_Pieces;
 
 	void Start () {
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();	
@@ -41,7 +42,17 @@ public class EnemyHealth : MonoBehaviour {
 		} else if (size == 2) {
 			gm.SpawnMeteor(myType, 1, 2, gameObject.transform.position);
 		}
+		ExplodeIntoPieces();
 		Destroy(gameObject, 0.1f);
+	}
+
+	private void ExplodeIntoPieces() {
+		ParticleSystem ps;
+		GameObject go;
+		go = Instantiate(ps_Pieces, gameObject.transform.position, Quaternion.identity) as GameObject;
+		ps = go.GetComponent<ParticleSystem>();
+		ps.Play();
+		Destroy(go, ps.duration);
 	}
 
 }
