@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -11,6 +12,9 @@ public class GameManager : MonoBehaviour {
 	public GameObject pre_S_Meteor;
 		// add additional mines prefabs (array?)
 	private Transform parMeteor;
+	private int score = 0;
+	private Text txtScore;
+	private string scoreFormat; //sets leading zeroes, set in Start()
 
 	void Awake () {
 		level_width = 100f;
@@ -19,6 +23,8 @@ public class GameManager : MonoBehaviour {
 
 	void Start() {
 		parMeteor = GameObject.Find("Meteors").gameObject.transform;
+		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
+		scoreFormat = txtScore.text;
 		NextLevel();
 	}
 
@@ -76,4 +82,24 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 	}
+
+	public void AddScore (int type, int size) {
+		int points = 0;
+
+		//Calculate points +++
+		if (type == 1) {  //Rock meteor
+			points = size * 50;
+		} else if (type == 2) {  //Shooting mine
+			points = size * 75;
+		}  //TODO add more scoring to this section
+		score += points;
+
+		ShowPoints(points);
+		txtScore.text = score.ToString(scoreFormat);
+	}
+
+	private void ShowPoints(int pts) {
+		//TODO instantiate a text component showing points
+	}
+
 }

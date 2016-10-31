@@ -29,7 +29,7 @@ public class MeteorControl : MonoBehaviour {
 		if (location.z == 1) {
 			parObj.position = new Vector3(x, y, zDepth);
 		} else {
-			Debug.Log(gameObject.name + " spawned at " + location);
+			//Debug.Log(gameObject.name + " spawned at " + location);
 			parObj.position = location;
 		}
 

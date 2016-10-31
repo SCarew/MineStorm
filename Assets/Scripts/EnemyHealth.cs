@@ -37,6 +37,7 @@ public class EnemyHealth : MonoBehaviour {
 			size = GetComponentInChildren<MeteorControl2>().GetSize();
 		}
 
+		gm.AddScore(myType, size);
 		if (size == 3) {
 			gm.SpawnMeteor(myType, 2, 2, gameObject.transform.position);
 		} else if (size == 2) {
