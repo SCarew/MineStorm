@@ -1,24 +1,24 @@
 fileFormatVersion: 2
-guid: a95f3d566e091394f8363e80e00277f5
-timeCreated: 1477914605
+guid: b1e145e7e9dcf2b4d995e4690423b97d
+timeCreated: 1477916017
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: A.Electric.Big.01
-    100002: B.Electric.Big.01
+    100000: A.Magnet.Sma.01
+    100002: B.Magnet.Sma.01
     100004: //RootNode
-    400000: A.Electric.Big.01
-    400002: B.Electric.Big.01
+    400000: A.Magnet.Sma.01
+    400002: B.Magnet.Sma.01
     400004: //RootNode
-    2300000: A.Electric.Big.01
-    2300002: B.Electric.Big.01
-    3300000: A.Electric.Big.01
-    3300002: B.Electric.Big.01
-    4300000: B.Electric.Big.01
-    4300002: A.Electric.Big.01
-    6400000: A.Electric.Big.01
-    6400002: B.Electric.Big.01
+    2300000: A.Magnet.Sma.01
+    2300002: B.Magnet.Sma.01
+    3300000: A.Magnet.Sma.01
+    3300002: B.Magnet.Sma.01
+    4300000: B.Magnet.Sma.01
+    4300002: A.Magnet.Sma.01
+    6400000: A.Magnet.Sma.01
+    6400002: B.Magnet.Sma.01
   materials:
     importMaterials: 1
     materialName: 0
