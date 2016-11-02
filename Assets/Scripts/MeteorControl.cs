@@ -26,9 +26,9 @@ public class MeteorControl : MonoBehaviour {
 		x = Random.Range(1f, gm.level_width) - (gm.level_width/2);
 		y = Random.Range(1f, gm.level_height) - (gm.level_height/2);
 
-		if (location.z == 1) {
+		if (location.z == 1) {  //spawn new meteor
 			parObj.position = new Vector3(x, y, zDepth);
-		} else {
+		} else {  				//spawning meteor from meteor
 			//Debug.Log(gameObject.name + " spawned at " + location);
 			parObj.position = location;
 		}

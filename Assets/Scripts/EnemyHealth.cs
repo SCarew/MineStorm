@@ -5,7 +5,7 @@ public class EnemyHealth : MonoBehaviour {
 
 	private int health;
 	private GameManager gm;
-	private int myType = 1;
+	public int myType = 1;
 	public GameObject ps_Pieces;
 
 	void Start () {

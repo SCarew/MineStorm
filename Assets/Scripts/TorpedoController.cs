@@ -9,11 +9,24 @@ public class TorpedoController : MonoBehaviour {
 
 	void Start () {
 		Destroy(gameObject, 2.0f);
-		shipVel = GameObject.Find("PlayerShip").GetComponent<Rigidbody>().velocity;
+		Rigidbody shipRb = GameObject.Find("PlayerShip").GetComponent<Rigidbody>();
+		shipVel = shipRb.velocity;
+
+		//Testing   //TODO decide on Torpedo1 or Torpedo2
+		if (gameObject.name == "Torpedo1(Clone)") {   //torpedo1 has rigidbody for movement
+			Rigidbody rb = GetComponent<Rigidbody>();
+			rb.MoveRotation(shipRb.rotation);
+			Vector3 f = fireSpeed * transform.up;
+			rb.AddForce(f + shipVel, ForceMode.VelocityChange);
+			//Debug.Log(shipVel + "+" + f);
+		}
+		//End Testing
 	}
 	
 	void Update () {
-		transform.position += (shipVel * Time.deltaTime) + (transform.up * Time.deltaTime * fireSpeed);
+		if (gameObject.name == "Torpedo2(Clone)") {
+			transform.position += (shipVel * Time.deltaTime) + (transform.up * Time.deltaTime * fireSpeed);
+		}
 	}
 
 	public int GetDamage() {
