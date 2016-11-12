@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour {
 	private Text txtScore, txtScorePlus;
 	private string scoreFormat; //sets leading zeroes, set in Start()
 
+	public enum mine {Test, Meteor, Magnet, Electric, ElectroMagnet, Dense, BlackHole};
+
 	void Awake () {
 		level_width = 100f;
 		level_height = 100f;
@@ -35,50 +37,51 @@ public class GameManager : MonoBehaviour {
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
 		txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
 		scoreFormat = txtScore.text;
+		mine mineType;   //TODO: used anywhere?
 		NextLevel();
 	}
 
 	void NextLevel() {
-		int numMeteors = 0, numLaserMines = 0, numMagMines = 0, numLaserMagMines = 0;
+		int numMeteors = 0, numElecMines = 0, numMagMines = 0, numElecMagMines = 0;
 		int i;
 
 		currentLevel++;
 		if (currentLevel==1) {
 			numMeteors = 8;
 			numMagMines = 0;
-			numLaserMines = 0;
-			numLaserMagMines = 0;
+			numElecMines = 0;
+			numElecMagMines = 0;
 		}
 
 		//add other levels
 
 		if (numMeteors > 0) {
-			SpawnMeteor(1, 3, numMeteors);
+			SpawnMeteor(mine.Meteor, 3, numMeteors);
 		}
 		if (numMagMines > 0) {
-			SpawnMeteor(2, 3, numMagMines);
+			SpawnMeteor(mine.Magnet, 3, numMagMines);
 		}
-		if (numLaserMines > 0) {
-			SpawnMeteor(3, 3, numLaserMines);
+		if (numElecMines > 0) {
+			SpawnMeteor(mine.Electric, 3, numElecMines);
 		}
-		if (numLaserMagMines > 0) {
-			SpawnMeteor(4, 3, numLaserMagMines);
+		if (numElecMagMines > 0) {
+			SpawnMeteor(mine.ElectroMagnet, 3, numElecMagMines);
 		}
 
 		//add other Mines instantiation
 	}
 
-	public void SpawnMeteor (int type, int size, int num) {
+	public void SpawnMeteor (mine type, int size, int num) {
 		SpawnMeteor(type, size, num, new Vector3 (0f, 0f, 1f));
 	}
 
-	public void SpawnMeteor (int type, int size, int num, Vector3 loc) {
+	public void SpawnMeteor (mine type, int size, int num, Vector3 loc) {
 		GameObject s_Meteor = pre_B_Meteor; //set to default
 		GameObject go;
 		int i;
 		bool child = (loc.z != 1f);
 
-		if (type == 1) {   //Meteor
+		if (type == mine.Meteor) {   //Meteor
 			if (size == 3) 
 				{ s_Meteor = pre_B_Meteor; }
 			else if (size == 2)
@@ -88,7 +91,7 @@ public class GameManager : MonoBehaviour {
 			else 
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
-		if (type == 0) {   //Test blocks
+		if (type == mine.Test) {   //Test blocks
 			if (size == 3) 
 				{ s_Meteor = pre_B_Test; }
 			else if (size == 2)
@@ -98,7 +101,7 @@ public class GameManager : MonoBehaviour {
 			else 
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
-		if (type == 2) {   //Magnet
+		if (type == mine.Magnet) {   //Magnet
 			if (size == 3) 
 				{ s_Meteor = pre_B_Magnet; }
 			else if (size == 2)
@@ -108,7 +111,7 @@ public class GameManager : MonoBehaviour {
 			else 
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
-		if (type == 3) {   //Electric
+		if (type == mine.Electric) {   //Electric
 			if (size == 3) 
 				{ s_Meteor = pre_B_Electric; }
 			else if (size == 2)
@@ -132,15 +135,17 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-	public void AddScore (int type, int size) {
+	public void AddScore (mine type, int size) {
 		int points = 0;
 
 		//Calculate points +++
-		if (type == 1) {  //Rock meteor
+		if (type == mine.Meteor) {  //Rock meteor
 			points = size * 50;
-		} else if (type == 2) {  //Magnetic mine
+		} else if (type == mine.Test) {  //Test mine
+			points = size * 5;
+		} else if (type == mine.Magnet) {  //Magnetic mine
 			points = size * 60;
-		} else if (type == 3) {  //Electric mine
+		} else if (type == mine.Electric) {  //Electric mine
 			points = size * 75;
 		}  //TODO add more scoring to this section
 		score += points;

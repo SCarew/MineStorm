@@ -7,6 +7,7 @@ public class MeteorControl2 : MonoBehaviour {
 	private Rigidbody rb;
 	private EnemyHealth eh;
 	private Transform parObj;
+	private Transform pShip;
 
 	private float moveSpeed;
 	private float rotTime = 1f / 6f;  // denom = num of secs
@@ -15,29 +16,19 @@ public class MeteorControl2 : MonoBehaviour {
 	private int iSize = 3;  //default 3=big 2=medium 1=small
 	private Vector3 location = new Vector3(0f, 0f, 1f);
 	private float spawnDist = 5f;  //distance from ship meteors can spawn
+	private float magDistance = 12f;  //distance from ship Magnets are attracted
 
 	void Start () {
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 		rb = transform.GetComponentInParent<Rigidbody>();
 		eh = gameObject.GetComponentInParent<EnemyHealth>();
+		pShip = GameObject.Find ("PlayerShip").transform;
 		parObj = transform; //transform.parent.transform;
 
 		SetSize ();
 
-		//check that random location for spawn isn't too near ship
-		bool bTooClose = true;
-		Transform pShip = GameObject.Find("PlayerShip").transform;
-		while (bTooClose == true) {
-			x = Random.Range(1f, gm.level_width) - (gm.level_width/2);
-			y = Random.Range(1f, gm.level_height) - (gm.level_height/2);
-			if (Vector3.Distance(pShip.position, new Vector3(x, y, zDepth)) > (spawnDist)) {
-				bTooClose = false;
-			} else {
-				Debug.Log(gameObject.name + ":" + x + ", " + y + ", " + zDepth + " = " + Vector3.Distance(pShip.position, new Vector3(x, y, zDepth)));
-			}
-		}
-
 		if (location.z == 1) {  //spawn new meteor
+			SetXY ();
 			parObj.position = new Vector3(x, y, zDepth);
 		} else {  				//spawning meteor from meteor
 			parObj.position = location;
@@ -72,6 +63,22 @@ public class MeteorControl2 : MonoBehaviour {
 		return iSize;
 	}
 
+	void SetXY ()
+	{
+		//check that random location for spawn isn't too near ship
+		bool bTooClose = true;
+		while (bTooClose == true) {
+			x = Random.Range (1f, gm.level_width) - (gm.level_width / 2);
+			y = Random.Range (1f, gm.level_height) - (gm.level_height / 2);
+			if (Vector3.Distance (pShip.position, new Vector3 (x, y, zDepth)) > (spawnDist)) {
+				bTooClose = false;
+			}
+			else {
+				Debug.Log (gameObject.name + ":" + x + ", " + y + ", " + zDepth + " = " + Vector3.Distance (pShip.position, new Vector3 (x, y, zDepth)));
+			}
+		}
+	}
+
 	//void Update () {
 		/*
 		float h0 = h * 360f * Time.deltaTime * rotTime;
@@ -84,6 +91,22 @@ public class MeteorControl2 : MonoBehaviour {
 		parObj.Translate(v1, h1, 0f, Space.World);
 		*/
 	//}
+
+	void FixedUpdate() {
+		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.Test) {
+			if (Vector3.Distance(gameObject.transform.position, pShip.position) < magDistance) {
+				//finish this
+				Vector3 attract = Vector3.Normalize(pShip.position - gameObject.transform.position);
+				Debug.Log(gameObject.name + ":" + attract + " Vel=" + rb.velocity);
+				rb.AddForce(attract * moveSpeed * Time.deltaTime, ForceMode.VelocityChange);
+				rb.AddTorque(attract * Time.deltaTime, ForceMode.Force);
+				if (rb.velocity.sqrMagnitude > (moveSpeed * moveSpeed)) {
+					//rb.AddForce(-attract * Time.deltaTime, ForceMode.VelocityChange);
+					rb.velocity = rb.velocity.normalized * moveSpeed;
+				}
+			}
+		}
+	}
 
 	void OnCollisionEnter(Collision coll) {
 		int damage = 100;  //temp test

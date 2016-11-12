@@ -5,14 +5,14 @@ public class EnemyHealth : MonoBehaviour {
 
 	private int health;
 	private GameManager gm;
-	public int myType = 1;
+	public GameManager.mine myType = GameManager.mine.Meteor;
 	public GameObject ps_Pieces;
 
 	void Start () {
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();	
 	}
 
-	public void SetType(int type) {
+	public void SetType(GameManager.mine type) {
 		myType = type;
 	}
 
