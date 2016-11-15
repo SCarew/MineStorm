@@ -12,7 +12,7 @@ public class TorpedoController : MonoBehaviour {
 		Rigidbody shipRb = GameObject.Find("PlayerShip").GetComponent<Rigidbody>();
 		shipVel = shipRb.velocity;
 
-		//Testing   //TODO decide on Torpedo1 or Torpedo2
+		//Testing   //TODO decide on Torpedo1 or Torpedo2 (in Update)
 		if (gameObject.name == "Torpedo1(Clone)") {   //torpedo1 has rigidbody for movement
 			Rigidbody rb = GetComponent<Rigidbody>();
 			rb.MoveRotation(shipRb.rotation);

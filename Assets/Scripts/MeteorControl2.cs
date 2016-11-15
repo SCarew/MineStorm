@@ -16,6 +16,7 @@ public class MeteorControl2 : MonoBehaviour {
 	private int iSize = 3;  //default 3=big 2=medium 1=small
 	private Vector3 location = new Vector3(0f, 0f, 1f);
 	private float spawnDist = 5f;  //distance from ship meteors can spawn
+	private float spawnChildDist = 1f;  //distance from ship child meteors can spawn
 	private float magDistance = 12f;  //distance from ship Magnets are attracted
 
 	void Start () {
@@ -30,7 +31,8 @@ public class MeteorControl2 : MonoBehaviour {
 		if (location.z == 1) {  //spawn new meteor
 			SetXY ();
 			parObj.position = new Vector3(x, y, zDepth);
-		} else {  				//spawning meteor from meteor
+		} else {  				//spawning child meteor from meteor
+			CheckChildXY();
 			parObj.position = location;
 		}
 
@@ -79,6 +81,21 @@ public class MeteorControl2 : MonoBehaviour {
 		}
 	}
 
+	void CheckChildXY() {
+		Vector3 v3_dist = location - pShip.position;
+		if (Vector3.Distance (pShip.position, location) < spawnChildDist) {
+			Debug.Log("Original loc=" + location + " ship=" + pShip.position);
+			Vector3 v3_add = new Vector3(0, 0, 0);
+			if (v3_dist.x < 0) {v3_add += new Vector3(-1, 0, 0);}
+			if (v3_dist.x > 0) {v3_add += new Vector3( 1, 0, 0);}
+			if (v3_dist.y < 0) {v3_add += new Vector3( 0, -1, 0);}
+			if (v3_dist.y > 0) {v3_add += new Vector3( 0, 1, 0);}
+			v3_add = v3_add * spawnChildDist;
+			location += v3_add;
+			Debug.Log("  New loc=   " + location + " ship=" + pShip.position);
+		}
+	}
+
 	//void Update () {
 		/*
 		float h0 = h * 360f * Time.deltaTime * rotTime;
@@ -97,7 +114,7 @@ public class MeteorControl2 : MonoBehaviour {
 			if (Vector3.Distance(gameObject.transform.position, pShip.position) < magDistance) {
 				//finish this
 				Vector3 attract = Vector3.Normalize(pShip.position - gameObject.transform.position);
-				Debug.Log(gameObject.name + ":" + attract + " Vel=" + rb.velocity);
+				//Debug.Log(gameObject.name + ":" + attract + " Vel=" + rb.velocity);
 				rb.AddForce(attract * moveSpeed * Time.deltaTime, ForceMode.VelocityChange);
 				rb.AddTorque(attract * Time.deltaTime, ForceMode.Force);
 				if (rb.velocity.sqrMagnitude > (moveSpeed * moveSpeed)) {
@@ -110,7 +127,7 @@ public class MeteorControl2 : MonoBehaviour {
 
 	void OnCollisionEnter(Collision coll) {
 		int damage = 100;  //temp test
-		Debug.Log(coll.gameObject.name + " hit for " + damage);
+		//Debug.Log(coll.gameObject.name + " hit for " + damage);
 	
 		if (coll.gameObject.tag == "Laser") {
 			damage = coll.gameObject.GetComponent<TorpedoController>().GetDamage();
@@ -119,8 +136,8 @@ public class MeteorControl2 : MonoBehaviour {
 			Destroy(coll.gameObject);
 		}
 		if (coll.gameObject.tag == "Player") {
-			eh.DamageHealth(damage);
-			coll.gameObject.GetComponentInParent<ShipHealth>().DamageHealth(100);
+			eh.DamageHealth(400);
+			coll.gameObject.GetComponentInParent<ShipHealth>().DamageHealth(gm.mineHit);
 		}
 	}
 

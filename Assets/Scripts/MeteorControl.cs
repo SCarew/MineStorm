@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿/* currently not used in anything */
+
+using UnityEngine;
 using System.Collections;
 
 public class MeteorControl : MonoBehaviour {

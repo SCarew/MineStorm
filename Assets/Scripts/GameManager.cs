@@ -4,7 +4,11 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
-	private float spawnRange = 1.5f;
+	private float spawnRange = 1.5f;  //of child mines
+	public int enemyFire = 100;  //from enemy UFOs
+	public int mineFire = 100;  //from electro mines
+	public int mineHit = 100;  //from hitting a mine/meteor
+
 	public int currentLevel = 0;
 	public float level_width, level_height;
 	public GameObject pre_B_Meteor;

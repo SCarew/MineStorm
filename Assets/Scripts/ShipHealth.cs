@@ -20,4 +20,5 @@ public class ShipHealth : MonoBehaviour {
 		Debug.Log("Ship destroyed");
 
 	}
+
 }
