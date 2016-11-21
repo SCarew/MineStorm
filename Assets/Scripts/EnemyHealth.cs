@@ -45,10 +45,10 @@ public class EnemyHealth : MonoBehaviour {
 		gm.AddScore(myType, size);
 		if (size == 3) {
 			gm.SpawnMeteor(myType, 2, 2, gameObject.transform.position);
-			Debug.Log(gameObject.name + " spawning med " + myType);
+			//Debug.Log(gameObject.name + " spawning med " + myType);
 		} else if (size == 2) {
 			gm.SpawnMeteor(myType, 1, 2, gameObject.transform.position);
-			Debug.Log(gameObject.name + " spawning sma " + myType);
+			//Debug.Log(gameObject.name + " spawning sma " + myType);
 		}
 		ExplodeIntoPieces();
 		if (myType == GameManager.mine.Electric)

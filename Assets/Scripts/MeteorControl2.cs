@@ -44,6 +44,7 @@ public class MeteorControl2 : MonoBehaviour {
 
 		rb.AddForce(new Vector3(h * moveSpeed, v * moveSpeed, 0f), ForceMode.VelocityChange);
 		rb.AddTorque(new Vector3(h * 360 * rotTime, v * 360 * rotTime, w * 360 * rotTime), ForceMode.Force);
+		StartCoroutine(CheckVelocity());
 	}
 
 	public void SetLocation(Vector3 loc) {
@@ -63,6 +64,17 @@ public class MeteorControl2 : MonoBehaviour {
 
 	public int GetSize() {
 		return iSize;
+	}
+
+	IEnumerator CheckVelocity() {  //to prevent fast overlapping meteor bug
+		yield return new WaitForSeconds(0.05f);
+		float vel = rb.velocity.sqrMagnitude;
+		if (vel > (moveSpeed * moveSpeed)) {
+			rb.velocity = rb.velocity.normalized * moveSpeed; 
+			Debug.Log(gameObject.name + " vel reduced from " + Mathf.Sqrt(vel) + " to " + rb.velocity.magnitude + " with max of " + moveSpeed);
+		}
+		//yield return new WaitForSeconds(1.6f);
+		//Debug.Log(gameObject.name + "+2 secs vel = " + rb.velocity.magnitude);
 	}
 
 	void SetXY ()

@@ -126,15 +126,21 @@ public class GameManager : MonoBehaviour {
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
 
+		Vector3 loc1 = new Vector3(0, 0, 0);
 		for (i = 0; i < num; i++) {
 			go = Instantiate (s_Meteor, new Vector3(level_width/2, level_height/2, 5f), Quaternion.identity, parMeteor) as GameObject;
 			go.GetComponent<EnemyHealth>().SetType(type);
 			if (child) {
 				loc += new Vector3 (Random.Range(0f, spawnRange*2) - spawnRange, Random.Range(0f, spawnRange*2) - spawnRange, 0);
+				if (Vector3.Distance(loc, loc1) < (size / 2)) {
+					Debug.Log("Altering child spawn loc " + loc + " of " + go.name + " bec of " + loc1);
+					loc -= new Vector3(1f, 1f, 0f);
+				}
 				if (go.GetComponentInChildren<MeteorControl>() == null) //TODO simplify this
 					{ go.GetComponentInChildren<MeteorControl2>().SetLocation(loc); }
 				else
 					{ go.GetComponentInChildren<MeteorControl>().SetLocation(loc); }
+				loc1 = loc;
 			}
 		}
 	}
