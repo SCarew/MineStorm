@@ -122,7 +122,7 @@ public class MeteorControl2 : MonoBehaviour {
 	//}
 
 	void FixedUpdate() {
-		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.Test) {
+		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.ElectroMagnet || eh.myType == GameManager.mine.Test) {
 			if (Vector3.Distance(gameObject.transform.position, pShip.position) < magDistance) {
 				//finish this
 				Vector3 attract = Vector3.Normalize(pShip.position - gameObject.transform.position);
