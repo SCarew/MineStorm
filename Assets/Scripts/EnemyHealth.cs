@@ -21,7 +21,10 @@ public class EnemyHealth : MonoBehaviour {
 	}
 
 	public void SetHealth(int hp) {
-		health = hp;
+		if (myType == GameManager.mine.Dense)
+			{ health = hp * 3; }
+		else
+			{ health = hp; }
 	}
 
 	public void DamageHealth(int dmg) {
@@ -51,7 +54,7 @@ public class EnemyHealth : MonoBehaviour {
 			//Debug.Log(gameObject.name + " spawning sma " + myType);
 		}
 		ExplodeIntoPieces();
-		if (myType == GameManager.mine.Electric)
+		if (myType == GameManager.mine.Electric || myType == GameManager.mine.ElectroMagnet)
 			{ FireElecTorpedo(); }
 		Destroy(gameObject, 0.1f);
 	}

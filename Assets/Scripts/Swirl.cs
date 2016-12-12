@@ -5,17 +5,15 @@ public class Swirl : MonoBehaviour {
 
 	public Vector3 euler = new Vector3(0f, 0f, 1f);
 	private ParticleSystem[] ps;
-	private bool bVanish = false;
 
-	[SerializeField] private float countdown = 2f;  //time until part systems begin cooldown
+	public float countdown = 2f;  //time until part systems begin cooldown
 
 	void Start () {
 		ps = gameObject.GetComponentsInChildren<ParticleSystem>();
-		Invoke("startVanish", countdown);
+		Invoke("StartVanish", countdown);
 	}
 
-	public void startVanish() {
-		bVanish = true;
+	public void StartVanish() {
 		if (ps != null) {
 			foreach (ParticleSystem ps1 in ps) 
 				{ ps1.Stop(); }

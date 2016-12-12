@@ -11,23 +11,19 @@ public class GameManager : MonoBehaviour {
 
 	public int currentLevel = 0;
 	public float level_width, level_height;
-	public GameObject pre_B_Meteor;
-	public GameObject pre_M_Meteor;
-	public GameObject pre_S_Meteor;
-	public GameObject pre_B_Test;
-	public GameObject pre_M_Test;
-	public GameObject pre_S_Test;
-	public GameObject pre_B_Magnet;
-	public GameObject pre_M_Magnet;
-	public GameObject pre_S_Magnet;
-	public GameObject pre_B_Electric;
-	public GameObject pre_M_Electric;
-	public GameObject pre_S_Electric;
+	public GameObject[] pre_Meteor;   // 0=big  1=med  2=sma
+	public GameObject[] pre_Test;
+	public GameObject[] pre_Magnet;
+	public GameObject[] pre_Electric;
+	public GameObject[] pre_ElectroMagnet;
+	public GameObject[] pre_Dense;
+	public GameObject[] pre_BlackHole;
 		// add additional mines prefabs (array?)
-	private Transform parMeteor;
+	private Transform parMeteor, parTextScores;
 	private int score = 0;
 	private Text txtScore, txtScorePlus;
 	private string scoreFormat; //sets leading zeroes, set in Start()
+	public GameObject pre_ScorePlus;
 
 	public enum mine {Test, Meteor, Magnet, Electric, ElectroMagnet, Dense, BlackHole};
 
@@ -38,6 +34,7 @@ public class GameManager : MonoBehaviour {
 
 	void Start() {
 		parMeteor = GameObject.Find("Meteors").gameObject.transform;
+		parTextScores = GameObject.Find("TextScores").gameObject.transform;
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
 		txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
 		scoreFormat = txtScore.text;
@@ -80,48 +77,78 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void SpawnMeteor (mine type, int size, int num, Vector3 loc) {
-		GameObject s_Meteor = pre_B_Meteor; //set to default
+		GameObject s_Meteor = pre_Meteor[0]; //set to default
 		GameObject go;
 		int i;
 		bool child = (loc.z != 1f);
 
 		if (type == mine.Meteor) {   //Meteor
 			if (size == 3) 
-				{ s_Meteor = pre_B_Meteor; }
+				{ s_Meteor = pre_Meteor[0]; }
 			else if (size == 2)
-				{ s_Meteor = pre_M_Meteor; }
+				{ s_Meteor = pre_Meteor[1]; }
 			else if (size == 1)
-				{ s_Meteor = pre_S_Meteor; } 
+				{ s_Meteor = pre_Meteor[2]; } 
 			else 
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
 		if (type == mine.Test) {   //Test blocks
 			if (size == 3) 
-				{ s_Meteor = pre_B_Test; }
+				{ s_Meteor = pre_Test[0]; }
 			else if (size == 2)
-				{ s_Meteor = pre_M_Test; }
+				{ s_Meteor = pre_Test[1]; }
 			else if (size == 1)
-				{ s_Meteor = pre_S_Test; } 
+				{ s_Meteor = pre_Test[2]; } 
 			else 
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
 		if (type == mine.Magnet) {   //Magnet
 			if (size == 3) 
-				{ s_Meteor = pre_B_Magnet; }
+				{ s_Meteor = pre_Magnet[0]; }
 			else if (size == 2)
-				{ s_Meteor = pre_M_Magnet; }
+				{ s_Meteor = pre_Magnet[1]; }
 			else if (size == 1)
-				{ s_Meteor = pre_S_Magnet; } 
+				{ s_Meteor = pre_Magnet[2]; } 
 			else 
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
 		if (type == mine.Electric) {   //Electric
 			if (size == 3) 
-				{ s_Meteor = pre_B_Electric; }
+				{ s_Meteor = pre_Electric[0]; }
 			else if (size == 2)
-				{ s_Meteor = pre_M_Electric; }
+				{ s_Meteor = pre_Electric[1]; }
 			else if (size == 1)
-				{ s_Meteor = pre_S_Electric; } 
+				{ s_Meteor = pre_Electric[2]; } 
+			else 
+				{ Debug.LogError("Spawn Unknown Meteor"); }
+		}
+		if (type == mine.ElectroMagnet) {  
+			if (size == 3) 
+				{ s_Meteor = pre_ElectroMagnet[0]; }
+			else if (size == 2)
+				{ s_Meteor = pre_ElectroMagnet[1]; }
+			else if (size == 1)
+				{ s_Meteor = pre_ElectroMagnet[2]; } 
+			else 
+				{ Debug.LogError("Spawn Unknown Meteor"); }
+		}
+		if (type == mine.Dense) { 
+			if (size == 3) 
+				{ s_Meteor = pre_Dense[0]; }
+			else if (size == 2)
+				{ s_Meteor = pre_Dense[1]; }
+			else if (size == 1)
+				{ s_Meteor = pre_Dense[2]; } 
+			else 
+				{ Debug.LogError("Spawn Unknown Meteor"); }
+		}
+		if (type == mine.BlackHole) { 
+			if (size == 3) 
+				{ s_Meteor = pre_BlackHole[0]; }
+			else if (size == 2)
+				{ s_Meteor = pre_BlackHole[1]; }
+			else if (size == 1)
+				{ s_Meteor = pre_BlackHole[2]; } 
 			else 
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
@@ -131,7 +158,11 @@ public class GameManager : MonoBehaviour {
 			go = Instantiate (s_Meteor, new Vector3(level_width/2, level_height/2, 5f), Quaternion.identity, parMeteor) as GameObject;
 			go.GetComponent<EnemyHealth>().SetType(type);
 			if (child) {
-				loc += new Vector3 (Random.Range(0f, spawnRange*2) - spawnRange, Random.Range(0f, spawnRange*2) - spawnRange, 0);
+				if (type == mine.Meteor || type == mine.Dense || type == mine.Test) {
+					loc += new Vector3 (Random.Range(0f, spawnRange*2) - spawnRange, Random.Range(0f, spawnRange*2) - spawnRange, 0);
+				} else {   //mine spawned from whirlpool
+					loc += new Vector3 (Random.Range(0f, spawnRange*6) - spawnRange * 3, Random.Range(0f, spawnRange*6) - spawnRange * 3, 0);
+				}
 				if (Vector3.Distance(loc, loc1) < (size / 2)) {
 					Debug.Log("Altering child spawn loc " + loc + " of " + go.name + " bec of " + loc1);
 					loc -= new Vector3(1f, 1f, 0f);
@@ -157,6 +188,10 @@ public class GameManager : MonoBehaviour {
 			points = size * 60;
 		} else if (type == mine.Electric) {  //Electric mine
 			points = size * 75;
+		} else if (type == mine.ElectroMagnet) {  //ElectroMag mine
+			points = size * 90;
+		} else if (type == mine.Dense) {  //Dense mine
+			points = size * 120;
 		}  //TODO add more scoring to this section
 		score += points;
 
@@ -164,16 +199,38 @@ public class GameManager : MonoBehaviour {
 		txtScore.text = score.ToString(scoreFormat);
 	}
 
+//	private void ShowPoints(int pts) {
+//		string t = txtScorePlus.text;
+//		if (t != "")  { t = " " + t; }
+//		txtScorePlus.text = "+" + pts.ToString() + t;
+//		CancelInvoke();
+//		Invoke (ClearScore(), 2f);
+//	}
+
 	private void ShowPoints(int pts) {
-		//TODO instantiate a text component showing points
-		string t = txtScorePlus.text;
-		if (t != "")  { t = " " + t; }
-		txtScorePlus.text = "+" + pts.ToString() + t;
-		StartCoroutine(ClearScore());
+		int num = 2 * parTextScores.childCount + 1;
+		float base_x = txtScore.rectTransform.position.x;
+		float base_y = txtScore.rectTransform.position.y;
+		float base_z = txtScore.rectTransform.position.z;
+
+		GameObject go;
+		go = Instantiate (pre_ScorePlus, new Vector3(0f, 0f, 0f), Quaternion.identity, parTextScores) as GameObject;
+		go.GetComponent<RectTransform>().position = new Vector3(base_x + 75f - (35f * num), base_y - 30f, base_z);
+		go.GetComponent<Text>().text = "+" + pts.ToString();
+		StartCoroutine (DestroyText(go));
 	}
 
-	IEnumerator ClearScore() {
-		yield return new WaitForSeconds(2f);
-		txtScorePlus.text = "";
+	private IEnumerator DestroyText(GameObject obj) {
+		yield return new WaitForSeconds(2.5f);
+		Destroy(obj);
+		if (parTextScores.childCount > 0) {
+			foreach (Transform t in parTextScores) {
+				t.transform.position = new Vector3(t.transform.position.x + 70f, t.transform.position.y, t.transform.position.z);
+			}
+		}
 	}
+
+//	void ClearScore() {
+//		txtScorePlus.text = "";
+//	}
 }

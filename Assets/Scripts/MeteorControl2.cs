@@ -8,6 +8,12 @@ public class MeteorControl2 : MonoBehaviour {
 	private EnemyHealth eh;
 	private Transform parObj;
 	private Transform pShip;
+	private Transform parWarp;
+
+	[SerializeField] private GameObject pre_Warp;   //whirlpool effect
+	private float timeScale = 0.4f;  //time for child meteor to warp in 
+	private float timeSpent = 0f;    //counter to timeScale
+	private bool adjustScale = false;
 
 	private float moveSpeed;
 	private float rotTime = 1f / 6f;  // denom = num of secs
@@ -25,6 +31,7 @@ public class MeteorControl2 : MonoBehaviour {
 		eh = gameObject.GetComponentInParent<EnemyHealth>();
 		pShip = GameObject.Find ("PlayerShip").transform;
 		parObj = transform; //transform.parent.transform;
+		parWarp = GameObject.Find("Whirlpools").transform;
 
 		SetSize ();
 
@@ -34,6 +41,11 @@ public class MeteorControl2 : MonoBehaviour {
 		} else {  				//spawning child meteor from meteor
 			CheckChildXY();
 			parObj.position = location;
+		}
+
+		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.Electric || eh.myType == GameManager.mine.ElectroMagnet || eh.myType == GameManager.mine.BlackHole) {
+		 	if (iSize == 2 || iSize == 1)
+				{ SpawnSwirl(); }
 		}
 
 		h = Random.Range(-1f, 1f);
@@ -120,6 +132,32 @@ public class MeteorControl2 : MonoBehaviour {
 		parObj.Translate(v1, h1, 0f, Space.World);
 		*/
 	//}
+	void Update() {
+		if (adjustScale) {  //for warping in
+			timeSpent += Time.deltaTime;
+			if (timeSpent > timeScale) {
+				adjustScale = false;
+				parObj.localScale = new Vector3(1f, 1f, 1f);
+			} else {
+				parObj.localScale = new Vector3(1f, 1f, 1f) * (timeSpent / timeScale);
+			}
+		}
+	}
+
+	void SpawnSwirl() {
+		if (pre_Warp == null) { return; }
+
+		float mult = 1f;
+		GameObject go = Instantiate(pre_Warp, parObj.position, Quaternion.identity, parWarp) as GameObject;
+		if (iSize == 2) 
+			{ mult = 0.4f; }
+		else if (iSize == 1) 
+			{ mult = 0.2f; }
+		foreach (Transform t in go.transform) {
+			t.localScale = t.localScale * mult;
+		}
+		adjustScale = true;
+	}
 
 	void FixedUpdate() {
 		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.ElectroMagnet || eh.myType == GameManager.mine.Test) {

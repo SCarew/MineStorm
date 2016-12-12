@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class ShipController : MonoBehaviour {
 
 	private PrefsControl pc;
+	private GameManager gm;
+	private MeshCollider mc;
 	private int conLayout;   //controller layout set somewhere else
 	private int primaryWeapon, secondaryWeapon;   //set somewhere else
 	private Rigidbody rb;
@@ -19,19 +21,29 @@ public class ShipController : MonoBehaviour {
 	private bool bUseThrust = false;
 	private Text txtVelocity;  //for testing
 
+	private float timeScaleIn = 1f;   //time for ship to warp in
+	private float timeScaleOut = 1f;  //time for ship to warp out 
+	private float timeSpent = 0f;    //counter to timeScale
+	private bool adjustScaleIn = false;
+	private bool adjustScaleOut = false;
+	[SerializeField] private GameObject pre_WarpEnter, pre_WarpExit;  //warp effects
+
 	public GameObject pre_torpedo;
 	private Transform launcher;
 	private ParticleSystem[] ps;
 
 	void Start () {
 		pc = GameObject.Find("GameManager").GetComponent<PrefsControl>();
+		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+		mc = GetComponentInChildren<MeshCollider>(true);
 		launcher = GameObject.Find("Launcher").transform;
 		rb = GetComponent<Rigidbody>();
 		txtVelocity = GameObject.Find("txtVelocity").GetComponent<Text>();
 		ps = GetComponentsInChildren<ParticleSystem>();
 
 		conLayout = 0;       //for testing
-		primaryWeapon = 0;   //for testing
+		primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
+		secondaryWeapon = 0; //for testing - 0=hyper 1=force 2=shockwave
 
 		thrustDirection = new Vector3(0, 0, 0);
 	}
@@ -45,8 +57,33 @@ public class ShipController : MonoBehaviour {
 
 		//if (h !=0 || v != 0 || bT != false) {Debug.Log ("h=" + h + " v=" + v + " b=" + bT); }
 
-		if (primaryWeapon == 0 && bP) {
-			FireTorpedo();
+		if (adjustScaleIn) {   //entering hyperjump
+			timeSpent += Time.deltaTime;
+			if (timeSpent > timeScaleIn) {
+				adjustScaleIn = false;
+				transform.localScale = new Vector3(0f, 0f, 0f);
+				Invoke("HyperJumpOut", (timeScaleIn + timeScaleOut)/2);
+			} else {
+				transform.localScale = new Vector3(1f, 1f, 1f) * (1 - (timeSpent / timeScaleIn));
+			}
+			return;
+		}
+
+		if (adjustScaleOut) {   //exiting hyperjump
+			timeSpent += Time.deltaTime;
+			if (timeSpent > timeScaleOut) {
+				adjustScaleOut = false;
+				transform.localScale = new Vector3(1f, 1f, 1f);
+				mc.enabled = true;  //turn on mesh collider again
+			} else {
+				transform.localScale = new Vector3(1f, 1f, 1f) * (timeSpent / timeScaleOut);
+			}
+			return;
+		}
+
+		if (bP) {
+			if (primaryWeapon == 0)
+				{ FireTorpedo(); }
 		}
 
 		if (conLayout == 0) {
@@ -63,6 +100,11 @@ public class ShipController : MonoBehaviour {
 			}
 			if (h < -deadZone) {
 				TurnCounterClockwise();
+			}
+
+			if (bS) {
+				if (secondaryWeapon == 0)
+					{ HyperJump(); }
 			}
 		}
 
@@ -91,6 +133,11 @@ public class ShipController : MonoBehaviour {
 				bUseThrust = true;
 			} else {
 				bUseThrust = false;
+			}
+
+			if (bS) {
+				if (secondaryWeapon == 0)
+					{ HyperJump(); }
 			}
 		}
 
@@ -229,5 +276,33 @@ public class ShipController : MonoBehaviour {
 	void FireTorpedo() {
 		GameObject go = Instantiate(pre_torpedo, launcher.position, Quaternion.identity) as GameObject;
 		go.transform.rotation = transform.rotation;
+	}
+
+	void FreezeMovement() {
+		//TODO freeze velocity and rotation?
+		rb.velocity = Vector3.zero;
+	}
+
+	void HyperJump() {
+		if (pre_WarpEnter == null) { return; }
+
+		mc.enabled = false;  //make invulnerable
+		GameObject go = Instantiate(pre_WarpEnter, transform.position, Quaternion.identity) as GameObject;
+		adjustScaleIn = true;
+		timeSpent = 0f;
+		FreezeMovement();
+	}
+
+	void HyperJumpOut() {
+		float x = transform.position.x + (gm.level_width/2) - Random.Range(0f, gm.level_width);
+		float y = transform.position.y + (gm.level_height/2) - Random.Range(0f, gm.level_height);
+		transform.position = new Vector3(x, y, transform.position.z);
+		Turn(Random.Range(0f, 360f));
+		FreezeMovement();
+		//TODO drain power from weapons or engines?
+		timeSpent = 0f;
+		GameObject go = Instantiate(pre_WarpExit, transform.position, Quaternion.identity) as GameObject;
+		go.GetComponent<Swirl>().countdown = 1.2f;
+		adjustScaleOut = true;
 	}
 }
