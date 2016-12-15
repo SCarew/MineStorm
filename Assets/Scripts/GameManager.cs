@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour {
 				if (type == mine.Meteor || type == mine.Dense || type == mine.Test) {
 					loc += new Vector3 (Random.Range(0f, spawnRange*2) - spawnRange, Random.Range(0f, spawnRange*2) - spawnRange, 0);
 				} else {   //mine spawned from whirlpool
-					loc += new Vector3 (Random.Range(0f, spawnRange*6) - spawnRange * 3, Random.Range(0f, spawnRange*6) - spawnRange * 3, 0);
+					loc += new Vector3 (Random.Range(0f, spawnRange*8) - spawnRange * 4, Random.Range(0f, spawnRange*8) - spawnRange * 4, 0);
 				}
 				if (Vector3.Distance(loc, loc1) < (size / 2)) {
 					Debug.Log("Altering child spawn loc " + loc + " of " + go.name + " bec of " + loc1);

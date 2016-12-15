@@ -19,6 +19,7 @@ public class ShipController : MonoBehaviour {
 	private float deadZone = 0.25f;
 	private Vector3 velVector = new Vector3(0, 0, 0);
 	private bool bUseThrust = false;
+	private int missileNumber = 8;
 	private Text txtVelocity;  //for testing
 
 	private float timeScaleIn = 1f;   //time for ship to warp in
@@ -28,7 +29,7 @@ public class ShipController : MonoBehaviour {
 	private bool adjustScaleOut = false;
 	[SerializeField] private GameObject pre_WarpEnter, pre_WarpExit;  //warp effects
 
-	public GameObject pre_torpedo;
+	public GameObject pre_torpedo, pre_laser, pre_missile;
 	private Transform launcher;
 	private ParticleSystem[] ps;
 
@@ -42,7 +43,7 @@ public class ShipController : MonoBehaviour {
 		ps = GetComponentsInChildren<ParticleSystem>();
 
 		conLayout = 0;       //for testing
-		primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
+		primaryWeapon = 2;   //for testing - 0=torp 1=laser 2=missiles
 		secondaryWeapon = 0; //for testing - 0=hyper 1=force 2=shockwave
 
 		thrustDirection = new Vector3(0, 0, 0);
@@ -84,6 +85,10 @@ public class ShipController : MonoBehaviour {
 		if (bP) {
 			if (primaryWeapon == 0)
 				{ FireTorpedo(); }
+			else if (primaryWeapon == 1)
+				{ FireLaser(); }
+			else if (primaryWeapon == 2)
+				{ FireMissiles(); }
 		}
 
 		if (conLayout == 0) {
@@ -276,6 +281,22 @@ public class ShipController : MonoBehaviour {
 	void FireTorpedo() {
 		GameObject go = Instantiate(pre_torpedo, launcher.position, Quaternion.identity) as GameObject;
 		go.transform.rotation = transform.rotation;
+		go.name = "Torpedo";
+	}
+
+	void FireLaser() {
+		GameObject go = Instantiate(pre_laser, launcher.position, Quaternion.identity) as GameObject;
+		go.transform.rotation = transform.rotation;
+		go.name = "Laser";
+	}
+
+	void FireMissiles() {
+		for (int i=0; i<missileNumber; i++) {
+			GameObject go = Instantiate(pre_missile, launcher.position, Quaternion.identity) as GameObject;
+			go.transform.rotation = transform.rotation;
+			go.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up + Vector3.up * Random.Range(-0.2f, 0.2f));
+			go.name = "Missile";
+		}
 	}
 
 	void FreezeMovement() {

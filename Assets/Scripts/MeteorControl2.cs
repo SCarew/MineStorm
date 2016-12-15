@@ -11,7 +11,7 @@ public class MeteorControl2 : MonoBehaviour {
 	private Transform parWarp;
 
 	[SerializeField] private GameObject pre_Warp;   //whirlpool effect
-	private float timeScale = 0.4f;  //time for child meteor to warp in 
+	private float timeScale = 1f;  //time for child meteor to warp in 
 	private float timeSpent = 0f;    //counter to timeScale
 	private bool adjustScale = false;
 
@@ -53,7 +53,14 @@ public class MeteorControl2 : MonoBehaviour {
 		w = Random.Range(-1f, 1f);
 		moveSpeed = Random.Range(0.4f, 4 + gm.currentLevel) + (3-iSize);
 
+		if (adjustScale) {   //child meteor warping in
+			Invoke("StartMovement", timeScale);
+		} else {
+			StartMovement();
+		}
+	}
 
+	void StartMovement() {
 		rb.AddForce(new Vector3(h * moveSpeed, v * moveSpeed, 0f), ForceMode.VelocityChange);
 		rb.AddTorque(new Vector3(h * 360 * rotTime, v * 360 * rotTime, w * 360 * rotTime), ForceMode.Force);
 		StartCoroutine(CheckVelocity());
@@ -182,7 +189,7 @@ public class MeteorControl2 : MonoBehaviour {
 		if (coll.gameObject.tag == "Laser") {
 			damage = coll.gameObject.GetComponent<TorpedoController>().GetDamage();
 			eh.DamageHealth(damage);
-			Debug.Log(gameObject.name + " hit for " + damage + " with " + coll.relativeVelocity.magnitude + " vel");
+			//Debug.Log(gameObject.name + " hit for " + damage + " with " + coll.relativeVelocity.magnitude + " vel");
 			Destroy(coll.gameObject);
 		}
 		if (coll.gameObject.tag == "Player") {
