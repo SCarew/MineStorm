@@ -13,7 +13,7 @@ public class MeteorControl2 : MonoBehaviour {
 	[SerializeField] private GameObject pre_Warp;   //whirlpool effect
 	private float timeScale = 1f;  //time for child meteor to warp in 
 	private float timeSpent = 0f;    //counter to timeScale
-	private bool adjustScale = false;
+	private bool adjustScale = false;  //is meteor warping in?
 
 	private float moveSpeed;
 	private float rotTime = 1f / 6f;  // denom = num of secs
@@ -31,7 +31,7 @@ public class MeteorControl2 : MonoBehaviour {
 		eh = gameObject.GetComponentInParent<EnemyHealth>();
 		pShip = GameObject.Find ("PlayerShip").transform;
 		parObj = transform; //transform.parent.transform;
-		parWarp = GameObject.Find("Whirlpools").transform;
+		parWarp = GameObject.Find("Effects").transform;
 
 		SetSize ();
 
@@ -157,16 +157,17 @@ public class MeteorControl2 : MonoBehaviour {
 		float mult = 1f;
 		GameObject go = Instantiate(pre_Warp, parObj.position, Quaternion.identity, parWarp) as GameObject;
 		if (iSize == 2) 
-			{ mult = 0.4f; }
+			{ mult = 0.45f; }
 		else if (iSize == 1) 
-			{ mult = 0.2f; }
+			{ mult = 0.25f; }
 		foreach (Transform t in go.transform) {
 			t.localScale = t.localScale * mult;
 		}
 		adjustScale = true;
 	}
 
-	void FixedUpdate() {
+	void FixedUpdate() {  //magnetic force applied
+		if (adjustScale) { return; }
 		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.ElectroMagnet || eh.myType == GameManager.mine.Test) {
 			if (Vector3.Distance(gameObject.transform.position, pShip.position) < magDistance) {
 				//finish this
@@ -186,7 +187,7 @@ public class MeteorControl2 : MonoBehaviour {
 		int damage = 100;  //temp test
 		//Debug.Log(coll.gameObject.name + " hit for " + damage);
 	
-		if (coll.gameObject.tag == "Laser") {
+		if (coll.gameObject.tag == "Laser" || coll.gameObject.tag == "EnemyLaser") {
 			damage = coll.gameObject.GetComponent<TorpedoController>().GetDamage();
 			eh.DamageHealth(damage);
 			//Debug.Log(gameObject.name + " hit for " + damage + " with " + coll.relativeVelocity.magnitude + " vel");

@@ -24,8 +24,9 @@ public class GameManager : MonoBehaviour {
 	private Text txtScore, txtScorePlus;
 	private string scoreFormat; //sets leading zeroes, set in Start()
 	public GameObject pre_ScorePlus;
+	private LayerMask myLayerMask;
 
-	public enum mine {Test, Meteor, Magnet, Electric, ElectroMagnet, Dense, BlackHole};
+	public enum mine {Test, Meteor, Magnet, Electric, ElectroMagnet, Dense, BlackHole, UFO01, UFO02};
 
 	void Awake () {
 		level_width = 100f;
@@ -38,6 +39,8 @@ public class GameManager : MonoBehaviour {
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
 		txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
 		scoreFormat = txtScore.text;
+		myLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Meteor")) | (1 << LayerMask.NameToLayer("Enemy"));
+		//Debug.Log(myLayerMask + "=" + myLayerMask.value);
 		mine mineType;   //TODO: used anywhere?
 		NextLevel();
 	}
@@ -153,7 +156,7 @@ public class GameManager : MonoBehaviour {
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
 
-		Vector3 loc1 = new Vector3(0, 0, 0);
+		//Vector3 loc1 = new Vector3(0, 0, 0);
 		for (i = 0; i < num; i++) {
 			go = Instantiate (s_Meteor, new Vector3(level_width/2, level_height/2, 5f), Quaternion.identity, parMeteor) as GameObject;
 			go.GetComponent<EnemyHealth>().SetType(type);
@@ -163,17 +166,28 @@ public class GameManager : MonoBehaviour {
 				} else {   //mine spawned from whirlpool
 					loc += new Vector3 (Random.Range(0f, spawnRange*8) - spawnRange * 4, Random.Range(0f, spawnRange*8) - spawnRange * 4, 0);
 				}
-				if (Vector3.Distance(loc, loc1) < (size / 2)) {
-					Debug.Log("Altering child spawn loc " + loc + " of " + go.name + " bec of " + loc1);
+//				if (Vector3.Distance(loc, loc1) < (size / 2)) {
+//					Debug.Log("Altering child spawn loc " + loc + " of " + go.name + " bec of " + loc1);
+//					loc -= new Vector3(1f, 1f, 0f);
+//				}
+				while (FreeLocation(loc, (float) size / 2f) == false) {
+					Debug.Log(" by " + go.name + " at " + loc);
 					loc -= new Vector3(1f, 1f, 0f);
 				}
 				if (go.GetComponentInChildren<MeteorControl>() == null) //TODO simplify this
 					{ go.GetComponentInChildren<MeteorControl2>().SetLocation(loc); }
 				else
 					{ go.GetComponentInChildren<MeteorControl>().SetLocation(loc); }
-				loc1 = loc;
+				//loc1 = loc;
 			}
 		}
+	}
+
+	public bool FreeLocation (Vector3 coords, float fSize) {
+		//returns true when location is free
+		Collider[] hitColl = Physics.OverlapSphere(coords, fSize, myLayerMask.value);
+		if (hitColl.Length > 0) {Debug.Log ("Overlap with " + hitColl[0].gameObject.name);}
+		return (hitColl.Length == 0);
 	}
 
 	public void AddScore (mine type, int size) {
@@ -192,6 +206,12 @@ public class GameManager : MonoBehaviour {
 			points = size * 90;
 		} else if (type == mine.Dense) {  //Dense mine
 			points = size * 120;
+		} else if (type == mine.BlackHole) {  //Blackhole mine
+			points = size * 100;
+		} else if (type == mine.UFO01) {  //Large UFO
+			points = 450;
+		} else if (type == mine.UFO02) {  //Small UFO
+			points = 300;
 		}  //TODO add more scoring to this section
 		score += points;
 

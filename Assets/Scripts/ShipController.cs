@@ -31,6 +31,7 @@ public class ShipController : MonoBehaviour {
 
 	public GameObject pre_torpedo, pre_laser, pre_missile;
 	private Transform launcher;
+	private Transform parEff;   //for empty parent container
 	private ParticleSystem[] ps;
 
 	void Start () {
@@ -39,11 +40,12 @@ public class ShipController : MonoBehaviour {
 		mc = GetComponentInChildren<MeshCollider>(true);
 		launcher = GameObject.Find("Launcher").transform;
 		rb = GetComponent<Rigidbody>();
+		parEff = GameObject.Find("Effects").transform;
 		txtVelocity = GameObject.Find("txtVelocity").GetComponent<Text>();
 		ps = GetComponentsInChildren<ParticleSystem>();
 
 		conLayout = 0;       //for testing
-		primaryWeapon = 2;   //for testing - 0=torp 1=laser 2=missiles
+		primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
 		secondaryWeapon = 0; //for testing - 0=hyper 1=force 2=shockwave
 
 		thrustDirection = new Vector3(0, 0, 0);
@@ -84,9 +86,9 @@ public class ShipController : MonoBehaviour {
 
 		if (bP) {
 			if (primaryWeapon == 0)
-				{ FireTorpedo(); }
+				{ FirePrimaryWeapon(pre_torpedo, "Torpedo"); }
 			else if (primaryWeapon == 1)
-				{ FireLaser(); }
+				{ FirePrimaryWeapon(pre_laser, "Laser"); }
 			else if (primaryWeapon == 2)
 				{ FireMissiles(); }
 		}
@@ -278,25 +280,22 @@ public class ShipController : MonoBehaviour {
 		return zAngle;
 	}
 
-	void FireTorpedo() {
-		GameObject go = Instantiate(pre_torpedo, launcher.position, Quaternion.identity) as GameObject;
-		go.transform.rotation = transform.rotation;
-		go.name = "Torpedo";
-	}
-
-	void FireLaser() {
-		GameObject go = Instantiate(pre_laser, launcher.position, Quaternion.identity) as GameObject;
-		go.transform.rotation = transform.rotation;
-		go.name = "Laser";
-	}
-
 	void FireMissiles() {
 		for (int i=0; i<missileNumber; i++) {
 			GameObject go = Instantiate(pre_missile, launcher.position, Quaternion.identity) as GameObject;
+			go.transform.SetParent(parEff);
 			go.transform.rotation = transform.rotation;
 			go.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up + Vector3.up * Random.Range(-0.2f, 0.2f));
 			go.name = "Missile";
 		}
+	}
+
+	void FirePrimaryWeapon(GameObject pre_primary, string primaryName) {
+		GameObject go = Instantiate(pre_primary, launcher.position, Quaternion.identity) as GameObject;
+		go.transform.SetParent(parEff);
+		go.transform.rotation = transform.rotation;
+		go.name = primaryName;
+
 	}
 
 	void FreezeMovement() {

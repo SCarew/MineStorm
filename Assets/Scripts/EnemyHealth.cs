@@ -3,7 +3,7 @@ using System.Collections;
 
 public class EnemyHealth : MonoBehaviour {
 
-	private int health;
+	private int health = 1;
 	private bool isAlive = true;   //fix for multiple collider problem
 	private GameManager gm;
 	public GameManager.mine myType = GameManager.mine.Meteor;
@@ -36,10 +36,13 @@ public class EnemyHealth : MonoBehaviour {
 	}
 
 	private void KillMeteor() {
+		MeshCollider[] mesh = GetComponentsInChildren<MeshCollider>();
+		for (int i=0; i<mesh.Length; i++)
+			{ mesh[i].gameObject.SetActive(false); }  //disable for FreeLocation check
 		int size;
-		//TODO this if statement must be removed
+		//TODO this if statement must be removed or adapted for UFOs
 		if (GetComponentInChildren<MeteorControl2>() == null) {
-			size = GetComponentInChildren<MeteorControl>().GetSize();
+			size = 1;
 		}
 		else {
 			size = GetComponentInChildren<MeteorControl2>().GetSize();
@@ -79,7 +82,7 @@ public class EnemyHealth : MonoBehaviour {
 			rbt = go.GetComponent<Rigidbody>();
 			Vector3 direction = Vector3.Normalize(v3_ship - v3_mine);
 			rbt.AddForce(direction * fireSpeed, ForceMode.VelocityChange);
-			Destroy(go, 2f);
+			Destroy(go, 3f);
 		}
 	}
 

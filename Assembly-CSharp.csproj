@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\ShipHealth.cs" />
      <Compile Include="Assets\Scripts\Swirl.cs" />
      <Compile Include="Assets\Scripts\TorpedoController.cs" />
+     <Compile Include="Assets\Scripts\UFOController.cs" />
      <Compile Include="Assets\Scripts\Wrapper.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/User Program Files/Unity 5/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
