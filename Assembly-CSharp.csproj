@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\EnemyHealth.cs" />
      <Compile Include="Assets\Scripts\FireCollision.cs" />
+     <Compile Include="Assets\Scripts\Forcefield.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\MeteorControl.cs" />
      <Compile Include="Assets\Scripts\MeteorControl2.cs" />

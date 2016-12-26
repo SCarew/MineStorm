@@ -80,6 +80,8 @@ public class UFOController : MonoBehaviour {
 			go.tag = "EnemyLaser";
 			go.layer = LayerMask.NameToLayer("Enemy fire");
 			go.transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
+
+			if (adjustScaleIn) { bLoop = false; }
 		}
 	}
 
@@ -92,12 +94,25 @@ public class UFOController : MonoBehaviour {
 			if (bPursueMovement) {
 				t = 1f + Random.Range(0f, 1f);
 				GameObject go = Instantiate(pre_torpedo, transform.position, Quaternion.identity) as GameObject;
-				go.name = "UFOLaser";
+				go.name = "UFOTorp";
 				go.tag = "EnemyLaser";
 				go.layer = LayerMask.NameToLayer("Enemy fire");
-				go.transform.rotation = Quaternion.Euler(pShip.position - transform.position);
-
+				//go.transform.rotation = Quaternion.LookRotation((pShip.position - go.transform.position), Vector3.right);
+				Vector3 diff = pShip.position - transform.position;
+//				string s = "";
+//				if (diff.x >= 0f && diff.y >= 0) {s = "+ + ";}
+//				if (diff.x < 0f && diff.y >= 0)  {s = "- + ";}
+//				if (diff.x >= 0f && diff.y < 0)  {s = "+ - ";}
+//				if (diff.x < 0f && diff.y < 0)   {s = "- - ";}
+				float deg = Mathf.Atan2(diff.y, diff.x) * 180/Mathf.PI + 270f;
+				deg = deg + Random.Range(-30f, 30f);
+				//go.transform.rotation = Quaternion.AngleAxis(Vector3.Angle(diff, Vector3.right), Vector3.forward);
+				go.transform.rotation = Quaternion.AngleAxis(deg, Vector3.forward);
+				//Debug.Log(s + (pShip.position - go.transform.position) + "  " + go.transform.rotation.eulerAngles + "  d=" + deg);
+			} else {
+				t = 0.2f;
 			}
+			if (adjustScaleIn) { bLoop = false; }
 		}
 	}
 
@@ -118,7 +133,7 @@ public class UFOController : MonoBehaviour {
 	void Update () {
 		timeToWarp -= Time.deltaTime;
 		timeSpent += Time.deltaTime;
-		if (adjustScaleIn) {    //entering hyperjump
+		if (adjustScaleIn) {    //entering hyperspace
 			foreach (MeshCollider mc1 in mc) {
 				mc1.enabled = false; }
 			if (timeSpent > timeScaleIn) {
@@ -130,7 +145,7 @@ public class UFOController : MonoBehaviour {
 			return;
 		}
 
-		if (adjustScaleOut) {   //exiting hyperjump
+		if (adjustScaleOut) {   //exiting hyperspace
 			foreach (MeshCollider mc1 in mc) {
 				mc1.enabled = false; }
 			if (timeSpent > timeScaleOut) {
@@ -152,6 +167,9 @@ public class UFOController : MonoBehaviour {
 			if (f < maxPursueDistance && f > minPursueDistance) {
 				bPursueMovement = true;
 			} else {
+				if (bPursueMovement) {  //if losing Pursue movement (ie too close/far this frame)
+					timeSpent = timeToDest + 0.1f;
+				}
 				bPursueMovement = false;
 			}
 		}
@@ -160,7 +178,7 @@ public class UFOController : MonoBehaviour {
 			Vector3 v1 = pShip.position - transform.position;
 			rb.AddForce(rb.velocity.normalized * -moveSpeed * Time.deltaTime * 0.5f, ForceMode.Impulse);
 			rb.AddForce(v1.normalized * moveSpeed * Time.deltaTime, ForceMode.Impulse);
-			Debug.Log("*" + gameObject.name + "=" + rb.velocity.normalized);
+			//Debug.Log("*" + gameObject.name + "=" + rb.velocity.normalized);
 			if ((moveSpeed * moveSpeed + 2f) < rb.velocity.sqrMagnitude) {
 				rb.velocity = rb.velocity.normalized * moveSpeed;
 			}

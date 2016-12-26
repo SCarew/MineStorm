@@ -15,12 +15,15 @@ public class TorpedoController : MonoBehaviour {
 	private Quaternion rot;
 	private float missVel;
 	static private Transform parEff;  //for empty parent container
+	static private GameManager gm;
 
 	void Start () {
 		Destroy(gameObject, lifetime);
 		Rigidbody shipRb = GameObject.Find("PlayerShip").GetComponent<Rigidbody>();
 		rb = GetComponent<Rigidbody>();
 		shipVel = shipRb.velocity;
+		if (gm == null) 
+			{ gm = GameObject.Find("GameManager").GetComponent<GameManager>(); }
 		if (parEff == null) 
 			{ parEff = GameObject.Find("Effects").transform; }
 
@@ -31,7 +34,8 @@ public class TorpedoController : MonoBehaviour {
 			//Debug.Log(shipVel + "+" + f);
 		}
 
-		if (gameObject.name == "UFOLaser") {
+		if (gameObject.name == "UFOLaser" || gameObject.name == "UFOTorp") {
+			//rb.rotation = Quaternion.LookRotation(shipRb.transform.position - transform.position);
 			Vector3 f = fireSpeed * transform.up;
 			rb.AddForce(f, ForceMode.VelocityChange);
 		}
@@ -149,6 +153,16 @@ public class TorpedoController : MonoBehaviour {
 	void OnCollisionEnter(Collision coll) {
 		if (coll.gameObject.tag == "EnemyLaser" && gameObject.tag == "Laser") {
 			Destroy(coll.gameObject);
+			Destroy(gameObject);
+		}
+
+		if (coll.gameObject.tag == "Player" && gameObject.name == "UFOLaser") {
+			coll.gameObject.GetComponent<ShipHealth>().DamageHealth(gm.enemyFireL);
+			Destroy(gameObject);
+		}
+
+		if (coll.gameObject.tag == "Player" && gameObject.name == "UFOTorp") {
+			coll.gameObject.GetComponent<ShipHealth>().DamageHealth(gm.enemyFireT);
 			Destroy(gameObject);
 		}
 	}

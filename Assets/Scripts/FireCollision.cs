@@ -17,7 +17,7 @@ public class FireCollision : MonoBehaviour {
 		if (gameObject.tag == "MineLaser") {
 			damage = gm.mineFire;
 		} else {
-			damage = gm.enemyFire;
+			damage = gm.enemyFireT;
 		}
 	}
 

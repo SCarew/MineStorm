@@ -28,6 +28,7 @@ public class ShipController : MonoBehaviour {
 	private bool adjustScaleIn = false;
 	private bool adjustScaleOut = false;
 	[SerializeField] private GameObject pre_WarpEnter, pre_WarpExit;  //warp effects
+	[SerializeField] private GameObject pre_Forcefield;
 
 	public GameObject pre_torpedo, pre_laser, pre_missile;
 	private Transform launcher;
@@ -46,7 +47,7 @@ public class ShipController : MonoBehaviour {
 
 		conLayout = 0;       //for testing
 		primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
-		secondaryWeapon = 0; //for testing - 0=hyper 1=force 2=shockwave
+		secondaryWeapon = 1; //for testing - 0=hyper 1=force 2=shockwave
 
 		thrustDirection = new Vector3(0, 0, 0);
 	}
@@ -112,6 +113,8 @@ public class ShipController : MonoBehaviour {
 			if (bS) {
 				if (secondaryWeapon == 0)
 					{ HyperJump(); }
+				if (secondaryWeapon == 1)
+					{ RaiseForcefield(); }
 			}
 		}
 
@@ -145,6 +148,8 @@ public class ShipController : MonoBehaviour {
 			if (bS) {
 				if (secondaryWeapon == 0)
 					{ HyperJump(); }
+				if (secondaryWeapon == 1)
+					{ RaiseForcefield(); }
 			}
 		}
 
@@ -296,6 +301,13 @@ public class ShipController : MonoBehaviour {
 		go.transform.rotation = transform.rotation;
 		go.name = primaryName;
 
+	}
+
+	void RaiseForcefield() {
+		GameObject go = Instantiate(pre_Forcefield, transform.position, Quaternion.identity) as GameObject;
+		go.transform.SetParent(parEff);
+		go.transform.rotation = transform.rotation;
+		go.name = "Forcefield";
 	}
 
 	void FreezeMovement() {
