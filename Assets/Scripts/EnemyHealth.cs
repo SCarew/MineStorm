@@ -23,6 +23,8 @@ public class EnemyHealth : MonoBehaviour {
 	public void SetHealth(int hp) {
 		if (myType == GameManager.mine.Dense)
 			{ health = hp * 3; }
+		else if (myType == GameManager.mine.BlackHole)
+			{ health = hp * 6 / 5; }
 		else
 			{ health = hp; }
 	}

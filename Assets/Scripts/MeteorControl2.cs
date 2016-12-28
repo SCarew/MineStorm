@@ -9,6 +9,8 @@ public class MeteorControl2 : MonoBehaviour {
 	private Transform parObj;
 	private Transform pShip;
 	private Transform parWarp;
+	private Rigidbody pShipRB;
+	private ParticleSystem ps;   //for Black Hole part system
 
 	[SerializeField] private GameObject pre_Warp;   //whirlpool effect
 	private float timeScale = 1f;  //time for child meteor to warp in 
@@ -22,14 +24,16 @@ public class MeteorControl2 : MonoBehaviour {
 	private int iSize = 3;  //default 3=big 2=medium 1=small
 	private Vector3 location = new Vector3(0f, 0f, 1f);
 	private float spawnDist = 5f;  //distance from ship meteors can spawn
-	private float spawnChildDist = 1f;  //distance from ship child meteors can spawn
+	private float spawnChildDist = 1.5f;  //distance from ship child meteors can spawn
 	private float magDistance = 12f;  //distance from ship Magnets are attracted
+	private float bholeDistance = 12f;  //distance from ship BHole mines attract
 
 	void Start () {
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 		rb = transform.GetComponentInParent<Rigidbody>();
 		eh = gameObject.GetComponentInParent<EnemyHealth>();
 		pShip = GameObject.Find ("PlayerShip").transform;
+		pShipRB = pShip.GetComponent<Rigidbody>();
 		parObj = transform; //transform.parent.transform;
 		parWarp = GameObject.Find("Effects").transform;
 
@@ -46,6 +50,10 @@ public class MeteorControl2 : MonoBehaviour {
 		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.Electric || eh.myType == GameManager.mine.ElectroMagnet || eh.myType == GameManager.mine.BlackHole) {
 		 	if (iSize == 2 || iSize == 1)
 				{ SpawnSwirl(); }
+		}
+
+		if (eh.myType == GameManager.mine.BlackHole) {
+			ps = GetComponentInChildren<ParticleSystem>(false);
 		}
 
 		h = Random.Range(-1f, 1f);
@@ -166,6 +174,13 @@ public class MeteorControl2 : MonoBehaviour {
 		adjustScale = true;
 	}
 
+	void BlackHoleSuck(Vector3 movement) {
+		var velocityOverLifetime = ps.velocityOverLifetime;
+		velocityOverLifetime.x = movement.x;
+		velocityOverLifetime.y = movement.y;
+
+	}
+
 	void FixedUpdate() {  //magnetic force applied
 		if (adjustScale) { return; }
 		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.ElectroMagnet || eh.myType == GameManager.mine.Test) {
@@ -179,6 +194,16 @@ public class MeteorControl2 : MonoBehaviour {
 					//rb.AddForce(-attract * Time.deltaTime, ForceMode.VelocityChange);
 					rb.velocity = rb.velocity.normalized * moveSpeed;
 				}
+			}
+		}
+		if (eh.myType == GameManager.mine.BlackHole) {
+			float dist = Vector3.Distance(gameObject.transform.position, pShip.position);
+			if ( dist < (bholeDistance + (2 * iSize - 2))) {
+				Vector3 attract = Vector3.Normalize(gameObject.transform.position - pShip.position);
+				pShipRB.AddForceAtPosition(attract * Time.deltaTime * iSize, attract + pShip.position, ForceMode.VelocityChange);
+				BlackHoleSuck(attract * ((bholeDistance - dist) / (iSize - 4f)));
+			} else {
+				BlackHoleSuck(Vector3.zero);
 			}
 		}
 	}
