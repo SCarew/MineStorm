@@ -11,16 +11,17 @@ public class ShipController : MonoBehaviour {
 	private int primaryWeapon, secondaryWeapon;   //set somewhere else
 	private Rigidbody rb;
 	private float thrustVelocity = 12f;
-	private float currentThrust = 0f;
+	//private float currentThrust = 0f;
 	private float maxThrust = 15f;
 	//private float inertia = 0.05f;
-	private Vector3 thrustDirection;
+	//private Vector3 thrustDirection;
 	private float rotationSpeed = 4.0f;
 	private float deadZone = 0.25f;
-	private Vector3 velVector = new Vector3(0, 0, 0);
+	//private Vector3 velVector = new Vector3(0, 0, 0);
 	private bool bUseThrust = false;
 	private int missileNumber = 8;
 	private Text txtVelocity;  //for testing
+	private bool bEscape = false;    //true when ship destroyed & escape pod launched
 
 	private float timeScaleIn = 1f;   //time for ship to warp in
 	private float timeScaleOut = 1f;  //time for ship to warp out 
@@ -29,6 +30,8 @@ public class ShipController : MonoBehaviour {
 	private bool adjustScaleOut = false;
 	[SerializeField] private GameObject pre_WarpEnter, pre_WarpExit;  //warp effects
 	[SerializeField] private GameObject pre_Forcefield;
+	[SerializeField] private GameObject pre_Shockwave;
+	[SerializeField] private GameObject pre_ShipExplosion;
 
 	public GameObject pre_torpedo, pre_laser, pre_missile;
 	private Transform launcher;
@@ -47,9 +50,9 @@ public class ShipController : MonoBehaviour {
 
 		conLayout = 0;       //for testing
 		primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
-		secondaryWeapon = 1; //for testing - 0=hyper 1=force 2=shockwave
+		secondaryWeapon = 0; //for testing - 0=hyper 1=force 2=shockwave
 
-		thrustDirection = new Vector3(0, 0, 0);
+		//thrustDirection = new Vector3(0, 0, 0);
 	}
 	
 	void Update () {
@@ -60,6 +63,13 @@ public class ShipController : MonoBehaviour {
 		bool bT = Input.GetButton("Thrust");
 
 		//if (h !=0 || v != 0 || bT != false) {Debug.Log ("h=" + h + " v=" + v + " b=" + bT); }
+
+		if (Input.GetKeyDown(KeyCode.X)) {   //TODO Testing
+			GetComponentInChildren<MeshRenderer>().enabled = bEscape;
+			mc.enabled = bEscape;
+			if (bEscape == false) { BlowUpShip(); }
+			else { bEscape = false; }
+		}
 
 		if (adjustScaleIn) {   //entering hyperjump
 			timeSpent += Time.deltaTime;
@@ -83,6 +93,25 @@ public class ShipController : MonoBehaviour {
 				transform.localScale = new Vector3(1f, 1f, 1f) * (timeSpent / timeScaleOut);
 			}
 			return;
+		}
+
+		if (bEscape) {   //escape pod in use
+			ConstantThrust();
+			if (bS) {   //summon another ship
+				transform.localScale = new Vector3(0f, 0f, 0f);
+				GetComponentInChildren<MeshRenderer>(true).enabled = true;
+				FreezeMovement();
+				//TODO drain power from weapons or engines?
+				timeSpent = 0f;
+				GameObject go = Instantiate(pre_WarpExit, transform.position, Quaternion.identity) as GameObject;
+				go.GetComponent<Swirl>().countdown = 1.2f;
+				adjustScaleOut = true;
+				bEscape = false;
+			}
+			bP = false;   //can't use these while in escape pod
+			bT = false;
+			bS = false;
+			v = 0f;       //can only move H
 		}
 
 		if (bP) {
@@ -113,8 +142,10 @@ public class ShipController : MonoBehaviour {
 			if (bS) {
 				if (secondaryWeapon == 0)
 					{ HyperJump(); }
-				if (secondaryWeapon == 1)
+				else if (secondaryWeapon == 1)
 					{ RaiseForcefield(); }
+				else if (secondaryWeapon == 2)
+					{ LaunchShockwave(); }
 			}
 		}
 
@@ -156,13 +187,10 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void Thrust(float power) {
-		//rb.AddForce(transform.forward * power * 10f);
-		//rb.velocity = new Vector3(rb.velocity.x, thrustVelocity * power, 0f);
-
-		/*float mass = 1.0f;
-		Vector3 accel = new Vector3(power * 10f, 0, 0) / mass;
-		velVector += accel * Time.deltaTime; 
-		if (accel.magnitude < 0.1f) { velVector *= 0.9f; } */
+		if (rb.velocity.sqrMagnitude <= (maxThrust*maxThrust)) {
+			rb.AddForce(transform.up * power * thrustVelocity, ForceMode.Force);
+		}
+		return;
 
 //		Vector3 vecTarget = transform.position + (transform.up * 100f);
 //		transform.position = Vector3.MoveTowards(transform.position, vecTarget, thrustVelocity * power * Time.deltaTime);
@@ -171,23 +199,36 @@ public class ShipController : MonoBehaviour {
 		//velVector += thrustVelocity * power * transform.up;
 		//return;
 		//****End Testing****
-		rb.AddForce(transform.up * power * thrustVelocity, ForceMode.Force);
-		if (rb.velocity.sqrMagnitude > (maxThrust*maxThrust)) {
-			rb.AddForce(transform.up * power * -thrustVelocity, ForceMode.Force);
-		}
+		//rb.AddForce(transform.up * power * thrustVelocity, ForceMode.Force);
+		//if (rb.velocity.sqrMagnitude > (maxThrust*maxThrust)) {
+		//	rb.AddForce(transform.up * power * -thrustVelocity, ForceMode.Force);
+		//}
 //		foreach (ParticleSystem ps1 in ps) {
 //			ps1.Play();
 //		}
-		return;
-		//****End Testing****
 
 //		currentThrust = Mathf.Clamp(currentThrust + (thrustVelocity * power), 0f, maxThrust);
 //		thrustDirection = transform.up * 100f;
 	}
 
+	void BlowUpShip() {
+		GameObject go = Instantiate(pre_ShipExplosion, transform.position, transform.rotation, parEff) as GameObject;
+		go.GetComponentInChildren<ExplodeShip>().StartExplosion();
+		Invoke("LaunchEscapePod", 0.3f);
+	}
+
+	void LaunchEscapePod() {
+		bEscape = true;
+
+	}
+
+	public bool isEscaping() {
+		return bEscape;
+	}
+
 	void FixedUpdate() {
 		if (conLayout == 0 || conLayout == 2) {
-			float mag = rb.velocity.magnitude;   //TODO: change to sqrMag or remove
+			float mag = rb.velocity.sqrMagnitude;   //TODO: change to sqrMag or remove
 			txtVelocity.text = mag.ToString();
 			if (mag < 0.4f && mag != 0f) 
 				{ rb.drag = 4f; }
@@ -248,6 +289,8 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void Turn(float rot) {
+		if (bEscape) 
+			{ rot = rot * 0.5f; }    //slow turning for escape pod
 		transform.Rotate(new Vector3(0,0,1) * rot);
 
 		//Vector3 v = transform.rotation.eulerAngles;
@@ -303,11 +346,24 @@ public class ShipController : MonoBehaviour {
 
 	}
 
+	void LaunchShockwave() {
+		GameObject go = Instantiate(pre_Shockwave, transform.position, transform.rotation) as GameObject;
+		go.transform.SetParent(parEff);
+		go.name = "Shockwave";
+		Destroy(go, go.GetComponent<ParticleSystem>().duration);
+	}
+
 	void RaiseForcefield() {
 		GameObject go = Instantiate(pre_Forcefield, transform.position, Quaternion.identity) as GameObject;
 		go.transform.SetParent(parEff);
 		go.transform.rotation = transform.rotation;
 		go.name = "Forcefield";
+	}
+
+	void ConstantThrust() {   //while in escape pod
+		float speed = 7f;
+		Vector3 velVector = speed * transform.up;
+		rb.velocity = speed * velVector.normalized;
 	}
 
 	void FreezeMovement() {
@@ -320,6 +376,7 @@ public class ShipController : MonoBehaviour {
 
 		mc.enabled = false;  //make invulnerable
 		GameObject go = Instantiate(pre_WarpEnter, transform.position, Quaternion.identity) as GameObject;
+		go.transform.SetParent(parEff);
 		adjustScaleIn = true;
 		timeSpent = 0f;
 		FreezeMovement();

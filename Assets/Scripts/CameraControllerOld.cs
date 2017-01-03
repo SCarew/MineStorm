@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿/* Currently not used in anything */
+
+using UnityEngine;
 using System.Collections;
 
 public class CameraControllerOld : MonoBehaviour {

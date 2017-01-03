@@ -43,11 +43,11 @@ public class EnemyHealth : MonoBehaviour {
 			{ mesh[i].gameObject.SetActive(false); }  //disable for FreeLocation check
 		int size;
 		//TODO this if statement must be removed or adapted for UFOs
-		if (GetComponentInChildren<MeteorControl2>() == null) {
+		if (GetComponentInChildren<MeteorControl>() == null) {
 			size = 1;
 		}
 		else {
-			size = GetComponentInChildren<MeteorControl2>().GetSize();
+			size = GetComponentInChildren<MeteorControl>().GetSize();
 		}
 
 		gm.AddScore(myType, size);

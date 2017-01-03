@@ -22,7 +22,8 @@ public class GameManager : MonoBehaviour {
 		// add additional mines prefabs (array?)
 	private Transform parMeteor, parTextScores;
 	private int score = 0;
-	private Text txtScore, txtScorePlus;
+	private Text txtScore; 
+	//private Text txtScorePlus;
 	private string scoreFormat; //sets leading zeroes, set in Start()
 	public GameObject pre_ScorePlus;
 	private LayerMask myLayerMask;
@@ -38,17 +39,17 @@ public class GameManager : MonoBehaviour {
 		parMeteor = GameObject.Find("Meteors").gameObject.transform;
 		parTextScores = GameObject.Find("TextScores").gameObject.transform;
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
-		txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
+		//txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
 		scoreFormat = txtScore.text;
 		myLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Meteor")) | (1 << LayerMask.NameToLayer("Enemy"));
 		//Debug.Log(myLayerMask + "=" + myLayerMask.value);
-		mine mineType;   //TODO: used anywhere?
+		//mine mineType;  
 		NextLevel();
 	}
 
 	void NextLevel() {
 		int numMeteors = 0, numElecMines = 0, numMagMines = 0, numElecMagMines = 0;
-		int i;
+		int i = 0;
 
 		currentLevel++;
 		if (currentLevel==1) {
@@ -175,10 +176,7 @@ public class GameManager : MonoBehaviour {
 					Debug.Log(" by " + go.name + " at " + loc);
 					loc -= new Vector3(1f, 1f, 0f);
 				}
-				if (go.GetComponentInChildren<MeteorControl>() == null) //TODO simplify this
-					{ go.GetComponentInChildren<MeteorControl2>().SetLocation(loc); }
-				else
-					{ go.GetComponentInChildren<MeteorControl>().SetLocation(loc); }
+				go.GetComponentInChildren<MeteorControl>().SetLocation(loc);
 				//loc1 = loc;
 			}
 		}

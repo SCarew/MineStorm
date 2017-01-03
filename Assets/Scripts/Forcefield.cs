@@ -58,7 +58,7 @@ public class Forcefield : MonoBehaviour {
 		if (coll.gameObject.tag == "Enemy") {
 			coll.gameObject.GetComponentInParent<EnemyHealth>().DamageHealth(damage);
 		}
-		if (coll.gameObject.GetComponent<MeteorControl2>() != null) {
+		if (coll.gameObject.GetComponent<MeteorControl>() != null) {
 			coll.gameObject.GetComponent<EnemyHealth>().DamageHealth(damage);
 		}
 

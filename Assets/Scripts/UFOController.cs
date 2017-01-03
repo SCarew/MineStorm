@@ -209,7 +209,7 @@ public class UFOController : MonoBehaviour {
 			coll.gameObject.GetComponentInParent<ShipHealth>().DamageHealth(damage);
 		}
 		if (coll.gameObject.tag == "Meteor") {
-			eh.DamageHealth(coll.gameObject.GetComponent<MeteorControl2>().GetSize() * 25);
+			eh.DamageHealth(coll.gameObject.GetComponent<MeteorControl>().GetSize() * 25);
 			coll.gameObject.GetComponentInParent<EnemyHealth>().DamageHealth(damage);
 		}
 	}
