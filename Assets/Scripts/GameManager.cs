@@ -12,21 +12,24 @@ public class GameManager : MonoBehaviour {
 
 	public int currentLevel = 0;
 	public float level_width, level_height;
-	public GameObject[] pre_Meteor;   // 0=big  1=med  2=sma
+	public GameObject[] pre_Meteor;   // [0]=big  [1]=med  [2]=sma
 	public GameObject[] pre_Test;
 	public GameObject[] pre_Magnet;
 	public GameObject[] pre_Electric;
 	public GameObject[] pre_ElectroMagnet;
 	public GameObject[] pre_Dense;
 	public GameObject[] pre_BlackHole;
+	public GameObject[] pre_UFO;
 		// add additional mines prefabs (array?)
-	private Transform parMeteor, parTextScores;
+	private Transform parMeteor, parTextScores, parEnemy;
 	private int score = 0;
 	private Text txtScore; 
 	//private Text txtScorePlus;
 	private string scoreFormat; //sets leading zeroes, set in Start()
 	public GameObject pre_ScorePlus;
 	private LayerMask myLayerMask;
+	private float spawnRateUfo1 = 0f, spawnRateUfo2 = 0f;
+	private float spawnTimeUfo1 = 0f, spawnTimeUfo2 = 0f;
 
 	public enum mine {Test, Meteor, Magnet, Electric, ElectroMagnet, Dense, BlackHole, UFO01, UFO02};
 
@@ -38,6 +41,7 @@ public class GameManager : MonoBehaviour {
 	void Start() {
 		parMeteor = GameObject.Find("Meteors").gameObject.transform;
 		parTextScores = GameObject.Find("TextScores").gameObject.transform;
+		parEnemy = GameObject.Find("Enemies").gameObject.transform;
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
 		//txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
 		scoreFormat = txtScore.text;
@@ -48,15 +52,16 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void NextLevel() {
-		int numMeteors = 0, numElecMines = 0, numMagMines = 0, numElecMagMines = 0;
+		int numMeteors = 0, numElecMines = 0, numMagMines = 0;
+		int numElecMagMines = 0, numDenseMines = 0, numBHMines = 0;
+		spawnRateUfo1 = 0f;    //purple mothership 
+		spawnRateUfo2 = 0f;    //gray ship
 		int i = 0;
 
 		currentLevel++;
 		if (currentLevel==1) {
 			numMeteors = 8;
-			numMagMines = 0;
-			numElecMines = 0;
-			numElecMagMines = 0;
+			spawnRateUfo2 = 60f;
 		}
 
 		//add other levels
@@ -73,8 +78,21 @@ public class GameManager : MonoBehaviour {
 		if (numElecMagMines > 0) {
 			SpawnMeteor(mine.ElectroMagnet, 3, numElecMagMines);
 		}
-
+		if (numDenseMines > 0) {
+			SpawnMeteor(mine.Dense, 3, numDenseMines);
+		}
+		if (numBHMines > 0) {
+			SpawnMeteor(mine.BlackHole, 3, numBHMines);
+		}
 		//add other Mines instantiation
+
+		if (spawnRateUfo1 > 0f) {
+			spawnTimeUfo1 = Random.Range(spawnRateUfo1, spawnRateUfo1 * 2);
+		}
+		if (spawnRateUfo2 > 0f) {
+			spawnTimeUfo2 = Random.Range(spawnRateUfo2, spawnRateUfo2 * 2);
+		}
+
 	}
 
 	public void SpawnMeteor (mine type, int size, int num) {
@@ -189,6 +207,28 @@ public class GameManager : MonoBehaviour {
 		return (hitColl.Length == 0);
 	}
 
+	private void SpawnUFO (int ufoType) {
+		Transform pShip = GameObject.FindGameObjectWithTag("Player").transform;
+		if (pShip == null) {
+			Debug.LogError("Missing player ship for UFO spawn");
+		}
+		Vector3 loc = pShip.position + new Vector3(Random.Range(0, level_width) - (level_width/2), Random.Range(0, level_height) - (level_height/2), 0f);
+		while (FreeLocation(loc, 3) == false) {
+			Debug.Log("UFO" + ufoType + " moved spawn from " + loc);
+			loc -= new Vector3(1f, 1f, 0f);
+		}
+
+		GameObject go = Instantiate(pre_UFO[ufoType - 1], loc, Quaternion.identity) as GameObject; 
+		go.transform.SetParent(parEnemy);
+		go.name = "UFO.0" + ufoType.ToString();
+		go.GetComponent<EnemyHealth>().SetHealth(75 * (3 - ufoType));
+//		if (ufoType == 1) {
+//			spawnTimeUfo1 += go.GetComponent<UFOController>().TimeToWarp();
+//		} else {
+//			spawnTimeUfo2 += go.GetComponent<UFOController>().TimeToWarp();
+//		}
+	}
+
 	public void AddScore (mine type, int size) {
 		int points = 0;
 
@@ -252,4 +292,22 @@ public class GameManager : MonoBehaviour {
 //	void ClearScore() {
 //		txtScorePlus.text = "";
 //	}
+
+	void Update() {
+		if (spawnRateUfo1 > 0) {
+			spawnTimeUfo1 -= Time.deltaTime; 
+			if (spawnTimeUfo1 < 0) {
+				SpawnUFO(1);
+				spawnTimeUfo1 = Random.Range(spawnRateUfo1, spawnRateUfo1 * 2) + spawnRateUfo1;
+			}
+		}
+		if (spawnRateUfo2 > 0) {
+			spawnTimeUfo2 -= Time.deltaTime; 
+			if (spawnTimeUfo2 < 0) {
+				SpawnUFO(2);
+				spawnTimeUfo2 = Random.Range(spawnRateUfo2, spawnRateUfo2 * 2) + spawnRateUfo2;
+			}
+		}
+	}
+
 }

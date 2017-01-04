@@ -21,6 +21,7 @@ public class UFOController : MonoBehaviour {
 	private bool bPursueMovement = false;
 
 	[SerializeField] private GameObject pre_WarpEnter;
+	[SerializeField] private GameObject pre_WarpExit;
 	private bool adjustScaleIn, adjustScaleOut = false;
 	private float timeScaleIn = 1.3f;   //time to fully warp into hyperspace
 	private float timeScaleOut = 1f;   //time to warp into regular space
@@ -42,6 +43,7 @@ public class UFOController : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 		rb.AddTorque(transform.forward * rotateSpeed, ForceMode.Force);
 
+		HyperJumpIn();
 		adjustScaleOut = true;
 		renderChild.localScale = Vector3.zero;
 
@@ -78,6 +80,7 @@ public class UFOController : MonoBehaviour {
 			GameObject go = Instantiate(pre_laser, transform.position, Quaternion.identity) as GameObject;
 			go.name = "UFOLaser";
 			go.tag = "EnemyLaser";
+			go.transform.SetParent(parEff);
 			go.layer = LayerMask.NameToLayer("Enemy fire");
 			go.transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, 360f));
 
@@ -96,6 +99,7 @@ public class UFOController : MonoBehaviour {
 				GameObject go = Instantiate(pre_torpedo, transform.position, Quaternion.identity) as GameObject;
 				go.name = "UFOTorp";
 				go.tag = "EnemyLaser";
+				go.transform.SetParent(parEff);
 				go.layer = LayerMask.NameToLayer("Enemy fire");
 				//go.transform.rotation = Quaternion.LookRotation((pShip.position - go.transform.position), Vector3.right);
 				Vector3 diff = pShip.position - transform.position;
@@ -129,6 +133,24 @@ public class UFOController : MonoBehaviour {
 		rb.velocity = Vector3.zero;
 		timeSpent = 0f;
 	}
+
+	void HyperJumpIn() {     //warp in on spawn
+		if (pre_WarpExit == null) { return; }
+
+		GameObject go = Instantiate(pre_WarpExit, transform.position, Quaternion.identity, parEff) as GameObject;
+		foreach (Transform t in go.transform) {
+			if (gameObject.name == "UFO.01") 
+				{ t.localScale = t.localScale * 1.7f; }
+			else
+				{ t.localScale = t.localScale * 1.2f; }
+		}
+		rb.velocity = Vector3.zero;
+		timeSpent = 0f;
+	}
+
+//	public float TimeToWarp() {
+//		return timeToWarp;
+//	}
 
 	void Update () {
 		timeToWarp -= Time.deltaTime;

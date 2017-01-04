@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\CameraControllerOld.cs" />
      <Compile Include="Assets\Scripts\EnemyHealth.cs" />
      <Compile Include="Assets\Scripts\ExplodeShip.cs" />
+     <Compile Include="Assets\Scripts\ExplodeUFO.cs" />
      <Compile Include="Assets\Scripts\FireCollision.cs" />
      <Compile Include="Assets\Scripts\Forcefield.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />

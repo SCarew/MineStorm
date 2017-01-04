@@ -6,6 +6,7 @@ public class EnemyHealth : MonoBehaviour {
 	private int health = 1;
 	private bool isAlive = true;   //fix for multiple collider problem
 	private GameManager gm;
+	private Transform parEff;
 	public GameManager.mine myType = GameManager.mine.Meteor;
 	public GameObject ps_Pieces;
 	public GameObject pre_Torpedo;
@@ -13,7 +14,8 @@ public class EnemyHealth : MonoBehaviour {
 	private float fireSpeed = 7f;  //for Electric mines' torps
 
 	void Start () {
-		gm = GameObject.Find("GameManager").GetComponent<GameManager>();	
+		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+		parEff = GameObject.Find("Effects").transform;
 	}
 
 	public void SetType(GameManager.mine type) {
@@ -58,19 +60,30 @@ public class EnemyHealth : MonoBehaviour {
 			gm.SpawnMeteor(myType, 1, 2, gameObject.transform.position);
 			//Debug.Log(gameObject.name + " spawning sma " + myType);
 		}
-		ExplodeIntoPieces();
+		if (myType == GameManager.mine.UFO01 || myType == GameManager.mine.UFO02) 
+			{ ExplodeUFOIntoPieces(); }
+		else
+			{ ExplodeMineIntoPieces(); }
 		if (myType == GameManager.mine.Electric || myType == GameManager.mine.ElectroMagnet)
 			{ FireElecTorpedo(); }
 		Destroy(gameObject, 0.1f);
 	}
 
-	private void ExplodeIntoPieces() {
+	private void ExplodeMineIntoPieces() {
 		ParticleSystem ps;
 		GameObject go;
 		go = Instantiate(ps_Pieces, gameObject.transform.position, Quaternion.identity) as GameObject;
+		go.transform.SetParent(parEff);
 		ps = go.GetComponent<ParticleSystem>();
 		ps.Play();
 		Destroy(go, ps.duration);
+	}
+
+	private void ExplodeUFOIntoPieces() {
+		GameObject go;
+		go = Instantiate(ps_Pieces, gameObject.transform.position, Quaternion.identity) as GameObject;
+		go.transform.SetParent(parEff);
+		Destroy(go, go.GetComponentInChildren<ParticleSystem>().duration);
 	}
 
 	private void FireElecTorpedo() {
