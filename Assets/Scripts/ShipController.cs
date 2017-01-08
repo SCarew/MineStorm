@@ -24,7 +24,7 @@ public class ShipController : MonoBehaviour {
 	private bool bEscape = false;    //true when ship destroyed & escape pod launched
 
 	private float timeScaleIn = 1f;   //time for ship to warp in
-	private float timeScaleOut = 1f;  //time for ship to warp out 
+	private float timeScaleOut = 1.5f;  //time for ship to warp out 
 	private float timeSpent = 0f;    //counter to timeScale
 	private bool adjustScaleIn = false;
 	private bool adjustScaleOut = false;
@@ -33,10 +33,19 @@ public class ShipController : MonoBehaviour {
 	[SerializeField] private GameObject pre_Shockwave;
 	[SerializeField] private GameObject pre_ShipExplosion;
 
-	public GameObject pre_torpedo, pre_laser, pre_missile;
+	[SerializeField] private GameObject pre_torpedo, pre_laser, pre_missile;
 	private Transform launcher;
 	private Transform parEff;   //for empty parent container
 	private ParticleSystem[] ps;
+
+	public float priRechargeRate = 2f;   //for weapons; set in Start()
+	public float priCurrentCharge = 0f;  
+	private float chargeTorp = 1.5f, chargeLaser = 0.2f, chargeMissile = 2f;
+	public float secRechargeRate = 4f;   //for secondary device
+	public float secCurrentCharge = 0f;
+	private float chargeHyperjump = 6f, chargeForcefield = 8f, chargeShockwave = 60f;
+	public float engRechargeRate = 5f;
+	public float engCurrentCharge = 0f;
 
 	void Start () {
 		pc = GameObject.Find("GameManager").GetComponent<PrefsControl>();
@@ -49,20 +58,42 @@ public class ShipController : MonoBehaviour {
 		ps = GetComponentsInChildren<ParticleSystem>();
 
 		conLayout = 0;       //for testing
-		primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
-		secondaryWeapon = 0; //for testing - 0=hyper 1=force 2=shockwave
+		primaryWeapon = 2;   //for testing - 0=torp 1=laser 2=missiles
+		secondaryWeapon = 2; //for testing - 0=hyper 1=force 2=shockwave
 
-		//thrustDirection = new Vector3(0, 0, 0);
+		if (primaryWeapon == 0)         //torp
+			{ priRechargeRate = chargeTorp; }
+		else if (primaryWeapon == 1)    //laser
+			{ priRechargeRate = chargeLaser; }
+		else if (primaryWeapon == 2)    //missiles
+			{ priRechargeRate = chargeMissile; }
+		priCurrentCharge = priRechargeRate;
+		if (secondaryWeapon == 0)         //hyperjump
+			{ secRechargeRate = chargeHyperjump; }
+		else if (secondaryWeapon == 1)    //forcefield
+			{ secRechargeRate = chargeForcefield; }
+		else if (secondaryWeapon == 2)    //shockwave
+			{ secRechargeRate = chargeShockwave; }
+		secCurrentCharge = secRechargeRate;
 	}
 	
 	void Update () {
 		float h = Input.GetAxis("Horizontal");
 		float v = Input.GetAxis("Vertical");
-		bool bP = Input.GetButtonDown("Primary");
 		bool bS = Input.GetButtonDown("Secondary");
 		bool bT = Input.GetButton("Thrust");
+		bool bP;
+		if (primaryWeapon == 1)   //lasers
+			{ bP = Input.GetButton("Primary"); }
+		else     // torps or missiles
+			{ bP = Input.GetButtonDown("Primary"); }
 
 		//if (h !=0 || v != 0 || bT != false) {Debug.Log ("h=" + h + " v=" + v + " b=" + bT); }
+
+		priCurrentCharge += Time.deltaTime;
+		if (priCurrentCharge > priRechargeRate)  { priCurrentCharge = priRechargeRate; }
+		secCurrentCharge += Time.deltaTime;
+		if (secCurrentCharge > secRechargeRate)  { secCurrentCharge = secRechargeRate; }
 
 		if (Input.GetKeyDown(KeyCode.X)) {   //TODO Testing
 			GetComponentInChildren<MeshRenderer>().enabled = bEscape;
@@ -70,6 +101,33 @@ public class ShipController : MonoBehaviour {
 			if (bEscape == false) { BlowUpShip(); }
 			else { bEscape = false; }
 		}
+
+		// **** Testing Start ****    //TODO remove this section
+		if (Input.GetKeyDown(KeyCode.Alpha1)) { 
+			primaryWeapon = 0; priRechargeRate = chargeTorp;
+			Debug.Log("* Primary weapon: Torpedo");
+		} 
+		if (Input.GetKeyDown(KeyCode.Alpha2)) {
+			primaryWeapon = 1; priRechargeRate = chargeLaser;
+			Debug.Log("* Primary weapon: Laser");
+		} 
+		if (Input.GetKeyDown(KeyCode.Alpha3)) {
+			primaryWeapon = 2; priRechargeRate = chargeMissile;
+			Debug.Log("* Primary weapon: Missile");
+		} 
+		if (Input.GetKeyDown(KeyCode.Alpha4)) { 
+			secondaryWeapon = 0; secRechargeRate = chargeHyperjump;
+			Debug.Log("* Secondary weapon: Hyperjump");
+		} 
+		if (Input.GetKeyDown(KeyCode.Alpha5)) { 
+			secondaryWeapon = 1; secRechargeRate = chargeForcefield;
+			Debug.Log("* Secondary weapon: Forcefield");
+		} 
+		if (Input.GetKeyDown(KeyCode.Alpha6)) { 
+			secondaryWeapon = 2; secRechargeRate = chargeShockwave;
+			Debug.Log("* Secondary weapon: Shockwave");
+		} 
+		// **** Testing End ****
 
 		if (adjustScaleIn) {   //entering hyperjump
 			timeSpent += Time.deltaTime;
@@ -114,7 +172,8 @@ public class ShipController : MonoBehaviour {
 			v = 0f;       //can only move H
 		}
 
-		if (bP) {
+		if (bP && (priCurrentCharge >= priRechargeRate)) {
+			priCurrentCharge = 0f;
 			if (primaryWeapon == 0)
 				{ FirePrimaryWeapon(pre_torpedo, "Torpedo"); }
 			else if (primaryWeapon == 1)
@@ -139,7 +198,7 @@ public class ShipController : MonoBehaviour {
 				TurnCounterClockwise();
 			}
 
-			if (bS) {
+			if (bS && (secCurrentCharge >= secRechargeRate)) {
 				if (secondaryWeapon == 0)
 					{ HyperJump(); }
 				else if (secondaryWeapon == 1)
@@ -176,11 +235,13 @@ public class ShipController : MonoBehaviour {
 				bUseThrust = false;
 			}
 
-			if (bS) {
+			if (bS && (secCurrentCharge >= secRechargeRate)) {
 				if (secondaryWeapon == 0)
 					{ HyperJump(); }
-				if (secondaryWeapon == 1)
+				else if (secondaryWeapon == 1) 
 					{ RaiseForcefield(); }
+				else if (secondaryWeapon == 2)
+					{ LaunchShockwave(); }
 			}
 		}
 
@@ -347,6 +408,8 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void LaunchShockwave() {
+		secCurrentCharge = 0f;
+
 		GameObject go = Instantiate(pre_Shockwave, transform.position, transform.rotation) as GameObject;
 		go.transform.SetParent(parEff);
 		go.name = "Shockwave";
@@ -373,6 +436,7 @@ public class ShipController : MonoBehaviour {
 
 	void HyperJump() {
 		if (pre_WarpEnter == null) { return; }
+		secCurrentCharge = 0f;
 
 		mc.enabled = false;  //make invulnerable
 		GameObject go = Instantiate(pre_WarpEnter, transform.position, Quaternion.identity) as GameObject;
@@ -391,7 +455,7 @@ public class ShipController : MonoBehaviour {
 		//TODO drain power from weapons or engines?
 		timeSpent = 0f;
 		GameObject go = Instantiate(pre_WarpExit, transform.position, Quaternion.identity) as GameObject;
-		go.GetComponent<Swirl>().countdown = 1.2f;
+		go.GetComponent<Swirl>().countdown = 1.4f;
 		adjustScaleOut = true;
 	}
 }

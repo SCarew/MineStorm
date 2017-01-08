@@ -121,7 +121,9 @@ public class TorpedoController : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		Vector3 pos = transform.position - 0.4f * (rb.velocity.normalized);
+		Vector3 pos = transform.position;
+		if (gameObject.name != "Missile") 
+			{ pos -= 0.4f * (rb.velocity.normalized); }  //for correcting explosion location
 		//Debug.Log(transform.position + " -> " + pos);
 		GameObject go;
 		//Debug.Log(lifetime + " vs " + lifeSpent + " t=" + (lifetime - lifeSpent));

@@ -12,9 +12,11 @@ public class Forcefield : MonoBehaviour {
 	private bool bWarmup = true;
 	private bool firstTime = true;
 	private Transform pShip;
+	private ShipController sc;
 
 	void Start () {
 		pShip = GameObject.Find("PlayerShip").transform;
+		sc = pShip.gameObject.GetComponent<ShipController>();
 		childCol = GetComponentInChildren<MeshCollider>();
 		childCol.enabled = false;
 		childRend = GetComponentInChildren<MeshRenderer>().materials;
@@ -47,6 +49,9 @@ public class Forcefield : MonoBehaviour {
 			GetComponentInChildren<MeshRenderer>(true).enabled = false;
 			GetComponentInChildren<ParticleSystem>().Play();
 			Destroy(gameObject, 0.7f);
+		} else {
+			sc.secCurrentCharge -= Time.deltaTime * (sc.secRechargeRate / 1.5f);
+			//TODO start damage if sc.secCurrentCharge < 0
 		}
 	}
 

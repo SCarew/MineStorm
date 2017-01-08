@@ -10,7 +10,7 @@ public class Background : MonoBehaviour {
 	void Start () {
 		MeshRenderer mr = GetComponent<MeshRenderer>();
 		mat = mr.material;
-		trans = transform.parent.transform;
+		trans = transform.parent.transform;   //camera transform
 	}
 	
 	void Update () {
