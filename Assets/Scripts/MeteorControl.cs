@@ -186,7 +186,6 @@ public class MeteorControl : MonoBehaviour {
 		if (pShip.GetComponent<ShipController>().isEscaping()) { return; }
 		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.ElectroMagnet || eh.myType == GameManager.mine.Test) {
 			if (Vector3.Distance(gameObject.transform.position, pShip.position) < magDistance) {
-				//finish this
 				Vector3 attract = Vector3.Normalize(pShip.position - gameObject.transform.position);
 				//Debug.Log(gameObject.name + ":" + attract + " Vel=" + rb.velocity);
 				rb.AddForce(attract * moveSpeed * Time.deltaTime, ForceMode.VelocityChange);
@@ -201,7 +200,8 @@ public class MeteorControl : MonoBehaviour {
 			float dist = Vector3.Distance(gameObject.transform.position, pShip.position);
 			if ( dist < (bholeDistance + (2 * iSize - 2))) {
 				Vector3 attract = Vector3.Normalize(gameObject.transform.position - pShip.position);
-				pShipRB.AddForceAtPosition(attract * Time.deltaTime * iSize, attract + pShip.position, ForceMode.VelocityChange);
+				pShipRB.AddForceAtPosition(attract * Time.fixedDeltaTime * (iSize + 1) * (pShipRB.mass/2), attract + pShip.position, ForceMode.Impulse); 
+					//was ForceMode.VelocityChange); before adding pShipRB.mass
 				BlackHoleSuck(attract * ((bholeDistance - dist) / (iSize - 4f)));
 			} else {
 				BlackHoleSuck(Vector3.zero);

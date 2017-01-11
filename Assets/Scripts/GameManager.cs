@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour {
 		// add additional mines prefabs (array?)
 	private Transform parMeteor, parTextScores, parEnemy;
 	private int score = 0;
-	private Text txtScore; 
+	private Text txtScore, txtScorePlus; 
 	//private Text txtScorePlus;
 	private string scoreFormat; //sets leading zeroes, set in Start()
 	public GameObject pre_ScorePlus;
@@ -40,12 +40,15 @@ public class GameManager : MonoBehaviour {
 
 	void Start() {
 		parMeteor = GameObject.Find("Meteors").gameObject.transform;
-		parTextScores = GameObject.Find("TextScores").gameObject.transform;
+		parTextScores = GameObject.Find("txtScorePlus").gameObject.transform;
 		parEnemy = GameObject.Find("Enemies").gameObject.transform;
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
+		txtScorePlus = parTextScores.GetComponent<Text>();
 		//txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
 		scoreFormat = txtScore.text;
 		myLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Meteor")) | (1 << LayerMask.NameToLayer("Enemy"));
+		//Debug.Log(myLayerMask + "=" + myLayerMask.value);
+		myLayerMask = myLayerMask | (1 << LayerMask.NameToLayer("MapPlayer")) | (1 << LayerMask.NameToLayer("MapMeteor")) | (1 << LayerMask.NameToLayer("MapEnemy"));
 		//Debug.Log(myLayerMask + "=" + myLayerMask.value);
 		//mine mineType;  
 		NextLevel();
@@ -267,14 +270,17 @@ public class GameManager : MonoBehaviour {
 //	}
 
 	private void ShowPoints(int pts) {
-		int num = 2 * parTextScores.childCount + 1;
-		float base_x = txtScore.rectTransform.position.x;
-		float base_y = txtScore.rectTransform.position.y;
-		float base_z = txtScore.rectTransform.position.z;
+		//int num = 2 * parTextScores.childCount + 1;
+		float num = parTextScores.childCount * 1.25f;
+		float base_x = txtScorePlus.rectTransform.position.x;
+		float base_y = txtScorePlus.rectTransform.position.y;
+		float base_z = txtScorePlus.rectTransform.position.z;
+		float base_w = txtScorePlus.rectTransform.rect.width;
 
 		GameObject go;
 		go = Instantiate (pre_ScorePlus, new Vector3(0f, 0f, 0f), Quaternion.identity, parTextScores) as GameObject;
-		go.GetComponent<RectTransform>().position = new Vector3(base_x + 75f - (35f * num), base_y - 30f, base_z);
+		//go.GetComponent<RectTransform>().position = new Vector3(base_x + 75f - (35f * num), base_y - 30f, base_z);
+		go.GetComponent<RectTransform>().position = new Vector3(base_x - (num * base_w), base_y, base_z);
 		go.GetComponent<Text>().text = "+" + pts.ToString();
 		StartCoroutine (DestroyText(go));
 	}
@@ -284,7 +290,7 @@ public class GameManager : MonoBehaviour {
 		Destroy(obj);
 		if (parTextScores.childCount > 0) {
 			foreach (Transform t in parTextScores) {
-				t.transform.position = new Vector3(t.transform.position.x + 70f, t.transform.position.y, t.transform.position.z);
+				t.transform.position = new Vector3(t.transform.position.x + (txtScorePlus.rectTransform.rect.width * 1.25f), t.transform.position.y, t.transform.position.z);
 			}
 		}
 	}

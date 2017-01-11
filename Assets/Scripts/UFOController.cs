@@ -34,7 +34,9 @@ public class UFOController : MonoBehaviour {
 		pShip = GameObject.Find("PlayerShip").transform;
 		parEff = GameObject.Find("Effects").transform;
 		mc = GetComponentsInChildren<MeshCollider>(true);
-		renderChild = GetComponentInChildren<MeshRenderer>().gameObject.transform;
+		MeshRenderer[] mr = GetComponentsInChildren<MeshRenderer>();
+		renderChild = mr[mr.Length - 1].gameObject.transform;
+		mr = null;
 		eh = GetComponent<EnemyHealth>();
 		originalScale = renderChild.localScale;
 
@@ -176,10 +178,12 @@ public class UFOController : MonoBehaviour {
 				timeSpent = 0f;
 				foreach (MeshCollider mc1 in mc) 
 					{ mc1.enabled = true; }
+				//Debug.Log("Renderchild=" + renderChild.name);
 			} else {
 				float ts = timeSpent / timeScaleOut;
 				if (ts < 0.1f) { ts = 0.1f; }
 				renderChild.localScale = originalScale * ts;
+				//Debug.Log("ts=" + ts + " timespent=" + timeSpent);
 			}
 			return;
 		}
