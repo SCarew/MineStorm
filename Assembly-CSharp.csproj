@@ -48,6 +48,8 @@
      <Compile Include="Assets\Scripts\Background.cs" />
      <Compile Include="Assets\Scripts\CameraController.cs" />
      <Compile Include="Assets\Scripts\CameraControllerOld.cs" />
+     <Compile Include="Assets\Scripts\Choice\ButtonControl.cs" />
+     <Compile Include="Assets\Scripts\Choice\Detection.cs" />
      <Compile Include="Assets\Scripts\EnemyHealth.cs" />
      <Compile Include="Assets\Scripts\ExplodeShip.cs" />
      <Compile Include="Assets\Scripts\ExplodeUFO.cs" />

@@ -61,6 +61,9 @@ public class ShipController : MonoBehaviour {
 		ps = GetComponentsInChildren<ParticleSystem>();
 		mr = GetComponentsInChildren<MeshRenderer>(true);
 
+		primaryWeapon = pc.GetPrimaryWeapon();
+		secondaryWeapon = pc.GetSecondaryWeapon();
+
 		conLayout = 0;       //for testing
 		primaryWeapon = 1;   //for testing - 0=torp 1=laser 2=missiles
 		secondaryWeapon = 2; //for testing - 0=hyper 1=force 2=shockwave
@@ -163,7 +166,17 @@ public class ShipController : MonoBehaviour {
 
 		if (bEscape) {   //escape pod in use
 			ConstantThrust();
-			if (bS) {   //summon another ship
+			if (lifeCurrentCharge <= 0f) {
+				//Debug.Log("Game Over");
+				if (gm.shipsRemaining > 0) {
+					bS = true;   //make sense to summon ship automatically when time expired?
+				} else {
+					Debug.Log("Game Over");
+					// TODO complete this section
+					return;
+				}
+			}
+			if (bS && (gm.shipsRemaining > 0)) {   //summon another ship
 				transform.localScale = new Vector3(0f, 0f, 0f);
 				mr[1].enabled = true;
 				FreezeMovement();
@@ -174,10 +187,7 @@ public class ShipController : MonoBehaviour {
 				adjustScaleOut = true;
 				bEscape = false;
 				lifeCurrentCharge = lifeRechargeRate;
-			}
-			if (lifeCurrentCharge <= 0f) {
-				Debug.Log("Game Over");
-				//TODO add this section
+				gm.shipsRemaining -= 1;
 			}
 			bP = false;   //can't use these while in escape pod
 			bT = false;

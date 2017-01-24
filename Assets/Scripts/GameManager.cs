@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour {
 	public int mineHit = 100;  //from hitting a mine/meteor
 
 	public int currentLevel = 0;
+	public int shipsRemaining = 0;
 	public float level_width, level_height;
 	public GameObject[] pre_Meteor;   // [0]=big  [1]=med  [2]=sma
 	public GameObject[] pre_Test;
