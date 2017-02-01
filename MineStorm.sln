@@ -1,7 +1,7 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2008
-
-Project("{6CAC2656-7A97-695E-452C-FE09C3AAADC5}") = "MineStorm", "Assembly-CSharp.csproj", "{86DB184A-5D82-C863-5C4F-2270939C4281}"
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MineStorm", "Assembly-CSharp.csproj", "{86DB184A-5D82-C863-5C4F-2270939C4281}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

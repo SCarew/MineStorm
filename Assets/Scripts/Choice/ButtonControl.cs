@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class ButtonControl : MonoBehaviour {
 
 	private PrefsControl prefs;
-	private Image[] img;
+	private RawImage[] img;
 	private Text[] txt, txtValue;
 	private Color colUnselected, colSelected, colMouseover;
 	private int numSelected = 0;
@@ -15,10 +15,13 @@ public class ButtonControl : MonoBehaviour {
 
 	void Start () {
 		prefs = GetComponent<PrefsControl>();
-		img = new Image[3];
-		img[0] = GameObject.Find("Choice0").GetComponent<Image>();
-		img[1] = GameObject.Find("Choice1").GetComponent<Image>();
-		img[2] = GameObject.Find("Choice2").GetComponent<Image>();
+		img = new RawImage[3];
+//		img[0] = GameObject.Find("Choice0").GetComponent<Image>();
+//		img[1] = GameObject.Find("Choice1").GetComponent<Image>();
+//		img[2] = GameObject.Find("Choice2").GetComponent<Image>();
+		img[0] = GameObject.Find("ChoiceImage0").GetComponent<RawImage>();
+		img[1] = GameObject.Find("ChoiceImage1").GetComponent<RawImage>();
+		img[2] = GameObject.Find("ChoiceImage2").GetComponent<RawImage>();
 		txt = new Text[3];
 		txt[0] = GameObject.Find("ChoiceText0").GetComponent<Text>();
 		txt[1] = GameObject.Find("ChoiceText1").GetComponent<Text>();
@@ -67,7 +70,7 @@ public class ButtonControl : MonoBehaviour {
 				txt[i].fontStyle = FontStyle.Bold;
 			}
 			img[numSelected - 1].color = colMouseover;
-			txt[numSelected - 1].fontStyle = FontStyle.Italic;
+			//txt[numSelected - 1].fontStyle = FontStyle.Italic;
 		}
 	}
 
