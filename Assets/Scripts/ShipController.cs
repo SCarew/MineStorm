@@ -65,7 +65,7 @@ public class ShipController : MonoBehaviour {
 		secondaryWeapon = pc.GetSecondaryWeapon();
 
 		conLayout = 0;       //for testing
-		primaryWeapon = 1;   //for testing - 0=torp 1=laser 2=missiles
+		primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
 		secondaryWeapon = 2; //for testing - 0=hyper 1=force 2=shockwave
 
 		if (primaryWeapon == 0)         //torp
@@ -439,7 +439,7 @@ public class ShipController : MonoBehaviour {
 		GameObject go = Instantiate(pre_Shockwave, transform.position, transform.rotation) as GameObject;
 		go.transform.SetParent(parEff);
 		go.name = "Shockwave";
-		Destroy(go, go.GetComponent<ParticleSystem>().duration);
+		Destroy(go, go.GetComponent<ParticleSystem>().main.duration);
 	}
 
 	void RaiseForcefield() {

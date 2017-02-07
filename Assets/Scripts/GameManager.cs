@@ -13,14 +13,16 @@ public class GameManager : MonoBehaviour {
 	public int currentLevel = 0;
 	public int shipsRemaining = 0;
 	public float level_width, level_height;
-	public GameObject[] pre_Meteor;   // [0]=big  [1]=med  [2]=sma
-	public GameObject[] pre_Test;
+	public GameObject[] pre_Meteor;  
+	public GameObject[] pre_Test;       // [0]=big  [1]=med  [2]=sma
 	public GameObject[] pre_Magnet;
 	public GameObject[] pre_Electric;
 	public GameObject[] pre_ElectroMagnet;
 	public GameObject[] pre_Dense;
 	public GameObject[] pre_BlackHole;
 	public GameObject[] pre_UFO;
+	private int metBig = 0, metMed = 0, metSma = 0;
+	private int denBig = 0, denMed = 0, denSma = 0;
 		// add additional mines prefabs (array?)
 	private Transform parMeteor, parTextScores, parEnemy;
 	private int score = 0;
@@ -52,6 +54,17 @@ public class GameManager : MonoBehaviour {
 		myLayerMask = myLayerMask | (1 << LayerMask.NameToLayer("MapPlayer")) | (1 << LayerMask.NameToLayer("MapMeteor")) | (1 << LayerMask.NameToLayer("MapEnemy"));
 		//Debug.Log(myLayerMask + "=" + myLayerMask.value);
 		//mine mineType;  
+		for (int i=0; i < pre_Meteor.Length; i++) {   //set up for PickMeteor()
+			if (pre_Meteor[i].name.Contains(".B.")) { metBig++; }
+			if (pre_Meteor[i].name.Contains(".M.")) { metMed++; }
+			if (pre_Meteor[i].name.Contains(".S.")) { metSma++; }
+		}
+		for (int i=0; i < pre_Dense.Length; i++) {   //set up for PickMeteor()
+			if (pre_Dense[i].name.Contains(".B.")) { denBig++; }
+			if (pre_Dense[i].name.Contains(".M.")) { denMed++; }
+			if (pre_Dense[i].name.Contains(".S.")) { denSma++; }
+		}
+
 		NextLevel();
 	}
 
@@ -60,15 +73,26 @@ public class GameManager : MonoBehaviour {
 		int numElecMagMines = 0, numDenseMines = 0, numBHMines = 0;
 		spawnRateUfo1 = 0f;    //purple mothership 
 		spawnRateUfo2 = 0f;    //gray ship
-		int i = 0;
+		//int i = 0;
 
 		currentLevel++;
 		if (currentLevel==1) {
 			numMeteors = 8;
 			spawnRateUfo2 = 60f;
 		}
-
+		if (currentLevel==2) {
+			numMeteors = 6;
+			numElecMines = 2;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==3) {
+			numMeteors = 7;
+			numElecMines = 4;
+			spawnRateUfo2 = 60f;
+		}
 		//add other levels
+
+		//---------------------------------------------------------------
 
 		if (numMeteors > 0) {
 			SpawnMeteor(mine.Meteor, 3, numMeteors);
@@ -96,7 +120,17 @@ public class GameManager : MonoBehaviour {
 		if (spawnRateUfo2 > 0f) {
 			spawnTimeUfo2 = Random.Range(spawnRateUfo2, spawnRateUfo2 * 2);
 		}
+		StartCoroutine(CheckForLevelEnd());
+	}
 
+	void LevelClear() {
+		if (currentLevel < 25) {  //final level = 25?
+			//message to player that level is clear
+			//open warp
+			NextLevel();  //TODO instead, go to hyperspace scene
+		} else {
+			//game over
+		}
 	}
 
 	public void SpawnMeteor (mine type, int size, int num) {
@@ -110,12 +144,8 @@ public class GameManager : MonoBehaviour {
 		bool child = (loc.z != 1f);
 
 		if (type == mine.Meteor) {   //Meteor
-			if (size == 3) 
-				{ s_Meteor = pre_Meteor[0]; }
-			else if (size == 2)
-				{ s_Meteor = pre_Meteor[1]; }
-			else if (size == 1)
-				{ s_Meteor = pre_Meteor[2]; } 
+			if ((size <= 3) && (size >= 1)) 
+				{ s_Meteor = PickMeteor(type, size); }
 			else 
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
@@ -160,12 +190,8 @@ public class GameManager : MonoBehaviour {
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
 		if (type == mine.Dense) { 
-			if (size == 3) 
-				{ s_Meteor = pre_Dense[0]; }
-			else if (size == 2)
-				{ s_Meteor = pre_Dense[1]; }
-			else if (size == 1)
-				{ s_Meteor = pre_Dense[2]; } 
+			if ((size <= 3) && (size >= 1)) 
+				{ s_Meteor = PickMeteor(type, size); }
 			else 
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
@@ -182,6 +208,8 @@ public class GameManager : MonoBehaviour {
 
 		//Vector3 loc1 = new Vector3(0, 0, 0);
 		for (i = 0; i < num; i++) {
+			if (type == mine.Meteor || type == mine.Dense) 
+				{ s_Meteor = PickMeteor(type, size); }  //refresh for each iteration
 			go = Instantiate (s_Meteor, new Vector3(level_width/2, level_height/2, 5f), Quaternion.identity, parMeteor) as GameObject;
 			go.GetComponent<EnemyHealth>().SetType(type);
 			if (child) {
@@ -202,6 +230,29 @@ public class GameManager : MonoBehaviour {
 				//loc1 = loc;
 			}
 		}
+	}
+
+	private GameObject PickMeteor(mine meteorType, int meteorSize) {
+		int r = 0;
+
+		if (meteorType == mine.Meteor) {
+			if (meteorSize == 3) { r = Random.Range(0, metBig); }
+			if (meteorSize == 2) { r = metBig + Random.Range(0, metMed); }
+			if (meteorSize == 1) { r = metBig + metMed + Random.Range(0, metSma); }
+			//Debug.Log("#" + r + ": " + pre_Meteor[r].name);
+			return pre_Meteor[r];
+		}
+
+		if (meteorType == mine.Dense) {
+			if (meteorSize == 3) { r = Random.Range(0, denBig); }
+			if (meteorSize == 2) { r = denBig + Random.Range(0, denMed); }
+			if (meteorSize == 1) { r = denBig + denMed + Random.Range(0, denSma); }
+			//Debug.Log("#" + r + ": " + pre_Dense[r].name);
+			return pre_Dense[r];
+		}
+
+		Debug.Log("Error in PickMeteor()");
+		return null;
 	}
 
 	public bool FreeLocation (Vector3 coords, float fSize) {
@@ -299,6 +350,17 @@ public class GameManager : MonoBehaviour {
 //	void ClearScore() {
 //		txtScorePlus.text = "";
 //	}
+
+	private IEnumerator CheckForLevelEnd() {
+		bool bEnd = false;
+		Transform t1 = GameObject.Find("Meteors").transform;
+		Transform t2 = GameObject.Find("Enemies").transform;
+		while (!bEnd) {
+			if (t1.childCount + t2.childCount < 1) { bEnd = true; }
+			yield return new WaitForSeconds(0.5f);
+		}
+		LevelClear();
+	}
 
 	void Update() {
 		if (spawnRateUfo1 > 0) {

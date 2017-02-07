@@ -65,7 +65,6 @@
      <Compile Include="Assets\Scripts\ShipController.cs" />
      <Compile Include="Assets\Scripts\ShipHealth.cs" />
      <Compile Include="Assets\Scripts\Shockwave.cs" />
-     <Compile Include="Assets\Scripts\ShockwaveOld.cs" />
      <Compile Include="Assets\Scripts\Swirl.cs" />
      <Compile Include="Assets\Scripts\TorpedoController.cs" />
      <Compile Include="Assets\Scripts\UFOController.cs" />

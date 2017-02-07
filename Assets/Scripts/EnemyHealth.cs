@@ -76,14 +76,14 @@ public class EnemyHealth : MonoBehaviour {
 		go.transform.SetParent(parEff);
 		ps = go.GetComponent<ParticleSystem>();
 		ps.Play();
-		Destroy(go, ps.duration);
+		Destroy(go, ps.main.duration);
 	}
 
 	private void ExplodeUFOIntoPieces() {
 		GameObject go;
 		go = Instantiate(ps_Pieces, gameObject.transform.position, Quaternion.identity) as GameObject;
 		go.transform.SetParent(parEff);
-		Destroy(go, go.GetComponentInChildren<ParticleSystem>().duration);
+		Destroy(go, go.GetComponentInChildren<ParticleSystem>().main.duration);
 	}
 
 	private void FireElecTorpedo() {
