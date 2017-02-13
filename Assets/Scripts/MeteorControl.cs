@@ -220,8 +220,11 @@ public class MeteorControl : MonoBehaviour {
 			Destroy(coll.gameObject);
 		}
 		if (coll.gameObject.tag == "Player") {
+			if (iSize == 3)		  { damage = gm.mineBHit; }
+			else if (iSize == 2)  { damage = gm.mineMHit; }
+			else if (iSize == 1)  { damage = gm.mineSHit; }
 			eh.DamageHealth(400);
-			coll.gameObject.GetComponentInParent<ShipHealth>().DamageHealth(gm.mineHit);
+			coll.gameObject.GetComponentInParent<ShipHealth>().DamageHealth(damage);
 		}
 	}
 

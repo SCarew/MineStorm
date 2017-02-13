@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿//used on Main screen
+using UnityEngine;
 using System.Collections;
 
 public class Background : MonoBehaviour {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿//used on Choice screen only
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

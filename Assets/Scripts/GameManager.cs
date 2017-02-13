@@ -7,8 +7,10 @@ public class GameManager : MonoBehaviour {
 	private float spawnRange = 1.5f;  //of child mines
 	public int enemyFireL = 50;  //from enemy UFOs
 	public int enemyFireT = 100;  //from enemy UFOs
-	public int mineFire = 100;  //from electro mines
-	public int mineHit = 100;  //from hitting a mine/meteor
+	public int mineFire = 50;  //from electro mines
+	public int mineBHit = 100;  //from hitting a mine/meteor
+	public int mineMHit = 70;  //from hitting a mine/meteor
+	public int mineSHit = 35;  //from hitting a mine/meteor
 
 	public int currentLevel = 0;
 	public int shipsRemaining = 0;
