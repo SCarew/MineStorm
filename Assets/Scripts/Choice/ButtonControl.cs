@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class ButtonControl : MonoBehaviour {
 
 	private PrefsControl prefs;
+	private LevelManager lm;
 	private RawImage[] img;
 	private Text[] txt, txtValue;
 	private Color colUnselected, colSelected, colMouseover;
@@ -14,7 +15,8 @@ public class ButtonControl : MonoBehaviour {
 	private float offset = 0.2f;
 
 	void Start () {
-		prefs = GetComponent<PrefsControl>();
+		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
+		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		img = new RawImage[3];
 //		img[0] = GameObject.Find("Choice0").GetComponent<Image>();
 //		img[1] = GameObject.Find("Choice1").GetComponent<Image>();
@@ -77,5 +79,7 @@ public class ButtonControl : MonoBehaviour {
 	void ButtonSelected() {
 		int sel = int.Parse(txtValue[numSelected - 1].text);
 		prefs.SetChosenValue(sel);
+		prefs.UpdateSetChoice();
+		lm.LoadNextScene();
 	}
 }

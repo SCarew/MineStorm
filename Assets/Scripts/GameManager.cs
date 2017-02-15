@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour {
 	public int mineMHit = 70;  //from hitting a mine/meteor
 	public int mineSHit = 35;  //from hitting a mine/meteor
 
+	private PrefsControl pc;
 	public int currentLevel = 0;
 	public int shipsRemaining = 0;
 	public float level_width, level_height;
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour {
 	private int denBig = 0, denMed = 0, denSma = 0;
 		// add additional mines prefabs (array?)
 	private Transform parMeteor, parTextScores, parEnemy;
+	private bool bArcadeMode = false;
 	private int score = 0;
 	private Text txtScore, txtScorePlus; 
 	//private Text txtScorePlus;
@@ -47,6 +49,7 @@ public class GameManager : MonoBehaviour {
 		parMeteor = GameObject.Find("Meteors").gameObject.transform;
 		parTextScores = GameObject.Find("txtScorePlus").gameObject.transform;
 		parEnemy = GameObject.Find("Enemies").gameObject.transform;
+		pc = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
 		txtScorePlus = parTextScores.GetComponent<Text>();
 		//txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
@@ -66,6 +69,8 @@ public class GameManager : MonoBehaviour {
 			if (pre_Dense[i].name.Contains(".M.")) { denMed++; }
 			if (pre_Dense[i].name.Contains(".S.")) { denSma++; }
 		}
+		if (pc.GetGameType() == "Arcade")  { bArcadeMode = true; }
+		if (pc.GetGameType() == "Continue")  { SetupContinueMode(); }
 
 		NextLevel();
 	}
@@ -123,6 +128,11 @@ public class GameManager : MonoBehaviour {
 			spawnTimeUfo2 = Random.Range(spawnRateUfo2, spawnRateUfo2 * 2);
 		}
 		StartCoroutine(CheckForLevelEnd());
+	}
+
+	void SetupContinueMode()
+	{
+		//TODO set this up
 	}
 
 	void LevelClear() {

@@ -67,7 +67,9 @@
      <Compile Include="Assets\Scripts\ShipHealth.cs" />
      <Compile Include="Assets\Scripts\Shockwave.cs" />
      <Compile Include="Assets\Scripts\Start\BGScrollControl.cs" />
+     <Compile Include="Assets\Scripts\Start\LevelManager.cs" />
      <Compile Include="Assets\Scripts\Start\SpawnMeteors.cs" />
+     <Compile Include="Assets\Scripts\Start\StartSelect.cs" />
      <Compile Include="Assets\Scripts\Swirl.cs" />
      <Compile Include="Assets\Scripts\TorpedoController.cs" />
      <Compile Include="Assets\Scripts\UFOController.cs" />

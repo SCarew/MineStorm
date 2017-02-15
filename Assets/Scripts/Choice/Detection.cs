@@ -15,7 +15,7 @@ public class Detection : MonoBehaviour {
 
 	void Start() {
 		//detect image choices from preferences
-		prefs = GetComponent<PrefsControl>();
+		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		title = GameObject.Find("TitleText").GetComponent<Text>();
 		c1 = GameObject.Find("ChoiceText0").GetComponent<Text>();
 		c2 = GameObject.Find("ChoiceText1").GetComponent<Text>();
@@ -25,7 +25,7 @@ public class Detection : MonoBehaviour {
 		cv3 = GameObject.Find("ChoiceValue2").GetComponent<Text>();
 
 		// ***Testing***
-		prefs.SetChoice("Select Primary Weapon/Torpedo/Laser/Missile", "101/102/103", 3); 
+		//prefs.SetChoice("Select Primary Weapon/Torpedo/Laser/Missile", "101/102/103", 3); 
 		// ***Testing End***
 
 		str = prefs.GetChoices();

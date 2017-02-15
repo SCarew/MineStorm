@@ -51,7 +51,7 @@ public class ShipController : MonoBehaviour {
 	public float lifeCurrentCharge = 0f;
 
 	void Start () {
-		pc = GameObject.Find("GameManager").GetComponent<PrefsControl>();
+		pc = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 		mc = GetComponentInChildren<MeshCollider>(true);
 		launcher = GameObject.Find("Launcher").transform;
@@ -61,12 +61,17 @@ public class ShipController : MonoBehaviour {
 		ps = GetComponentsInChildren<ParticleSystem>();
 		mr = GetComponentsInChildren<MeshRenderer>(true);
 
-		primaryWeapon = pc.GetPrimaryWeapon();
-		secondaryWeapon = pc.GetSecondaryWeapon();
+		if (pc.GetGameType() == "Arcade") {
+			primaryWeapon = pc.GetPrimaryWeapon(true);
+			secondaryWeapon = pc.GetSecondaryWeapon(true);
+		} else {
+			primaryWeapon = pc.GetPrimaryWeapon();
+			secondaryWeapon = pc.GetSecondaryWeapon();
+		}
 
 		conLayout = 0;       //for testing
-		primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
-		secondaryWeapon = 2; //for testing - 0=hyper 1=force 2=shockwave
+		//primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
+		//secondaryWeapon = 2; //for testing - 0=hyper 1=force 2=shockwave
 
 		if (primaryWeapon == 0)         //torp
 			{ priRechargeRate = chargeTorp; }
@@ -443,7 +448,7 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void RaiseForcefield() {
-		priCurrentCharge = -2.5f;
+		priCurrentCharge = -2.5f;   //also done in ForceField.cs when shield ends
 
 		GameObject go = Instantiate(pre_Forcefield, transform.position, Quaternion.identity) as GameObject;
 		go.transform.SetParent(parEff);
