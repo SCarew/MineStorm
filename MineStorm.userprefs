@@ -1,21 +1,16 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Forcefield.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Main\SoundManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\EnemyHealth.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\GameManager.cs" Line="54" Column="36" />
-      <File FileName="Assets\Scripts\ShipController.cs" Line="451" Column="31" />
-      <File FileName="Assets\Scripts\ShipHealth.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\ExplodeShip.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\MeteorControl.cs" Line="21" Column="33" />
-      <File FileName="Assets\Scripts\PanelController.cs" Line="13" Column="42" />
-      <File FileName="Assets\Scripts\PrefsControl.cs" Line="41" Column="23" />
       <File FileName="Assets\Scripts\Choice\Detection.cs" Line="28" Column="5" />
       <File FileName="Assets\Scripts\Choice\ButtonControl.cs" Line="83" Column="22" />
       <File FileName="Assets\Scripts\Start\StartSelect.cs" Line="95" Column="4" />
       <File FileName="Assets\Scripts\FadeIn\Fader.cs" Line="43" Column="1" />
       <File FileName="Assets\Scripts\Start\LevelManager.cs" Line="16" Column="45" />
-      <File FileName="Assets\Scripts\Forcefield.cs" Line="52" Column="32" />
+      <File FileName="Assets\Scripts\Start\BGScrollControl.cs" Line="17" Column="1" />
+      <File FileName="Assets\Scripts\Title\ImgScrollControl.cs" Line="12" Column="3" />
+      <File FileName="Assets\Scripts\Title\TitleManager.cs" Line="33" Column="5" />
+      <File FileName="Assets\Scripts\Main\SoundManager.cs" Line="52" Column="40" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

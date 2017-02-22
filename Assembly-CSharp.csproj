@@ -46,34 +46,39 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Background.cs" />
-     <Compile Include="Assets\Scripts\CameraController.cs" />
-     <Compile Include="Assets\Scripts\CameraControllerOld.cs" />
      <Compile Include="Assets\Scripts\Choice\BGScroll.cs" />
      <Compile Include="Assets\Scripts\Choice\ButtonControl.cs" />
      <Compile Include="Assets\Scripts\Choice\Detection.cs" />
-     <Compile Include="Assets\Scripts\EnemyHealth.cs" />
-     <Compile Include="Assets\Scripts\ExplodeShip.cs" />
-     <Compile Include="Assets\Scripts\ExplodeUFO.cs" />
      <Compile Include="Assets\Scripts\FadeIn\Fader.cs" />
-     <Compile Include="Assets\Scripts\FireCollision.cs" />
-     <Compile Include="Assets\Scripts\Forcefield.cs" />
-     <Compile Include="Assets\Scripts\GameManager.cs" />
-     <Compile Include="Assets\Scripts\MeteorControl.cs" />
-     <Compile Include="Assets\Scripts\MeteorControlOld.cs" />
-     <Compile Include="Assets\Scripts\PanelController.cs" />
-     <Compile Include="Assets\Scripts\PrefsControl.cs" />
-     <Compile Include="Assets\Scripts\ShipController.cs" />
-     <Compile Include="Assets\Scripts\ShipHealth.cs" />
-     <Compile Include="Assets\Scripts\Shockwave.cs" />
+     <Compile Include="Assets\Scripts\Main\Background.cs" />
+     <Compile Include="Assets\Scripts\Main\CameraController.cs" />
+     <Compile Include="Assets\Scripts\Main\CameraControllerOld.cs" />
+     <Compile Include="Assets\Scripts\Main\EnemyHealth.cs" />
+     <Compile Include="Assets\Scripts\Main\ExplodeShip.cs" />
+     <Compile Include="Assets\Scripts\Main\ExplodeUFO.cs" />
+     <Compile Include="Assets\Scripts\Main\FireCollision.cs" />
+     <Compile Include="Assets\Scripts\Main\Forcefield.cs" />
+     <Compile Include="Assets\Scripts\Main\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Main\MeteorControl.cs" />
+     <Compile Include="Assets\Scripts\Main\MeteorControlOld.cs" />
+     <Compile Include="Assets\Scripts\Main\PanelController.cs" />
+     <Compile Include="Assets\Scripts\Main\PrefsControl.cs" />
+     <Compile Include="Assets\Scripts\Main\ShipController.cs" />
+     <Compile Include="Assets\Scripts\Main\ShipHealth.cs" />
+     <Compile Include="Assets\Scripts\Main\Shockwave.cs" />
+     <Compile Include="Assets\Scripts\Main\SoundEffect.cs" />
+     <Compile Include="Assets\Scripts\Main\SoundManager.cs" />
+     <Compile Include="Assets\Scripts\Main\Swirl.cs" />
+     <Compile Include="Assets\Scripts\Main\TorpedoController.cs" />
+     <Compile Include="Assets\Scripts\Main\UFOController.cs" />
+     <Compile Include="Assets\Scripts\Main\Wrapper.cs" />
      <Compile Include="Assets\Scripts\Start\BGScrollControl.cs" />
      <Compile Include="Assets\Scripts\Start\LevelManager.cs" />
      <Compile Include="Assets\Scripts\Start\SpawnMeteors.cs" />
      <Compile Include="Assets\Scripts\Start\StartSelect.cs" />
-     <Compile Include="Assets\Scripts\Swirl.cs" />
-     <Compile Include="Assets\Scripts\TorpedoController.cs" />
-     <Compile Include="Assets\Scripts\UFOController.cs" />
-     <Compile Include="Assets\Scripts\Wrapper.cs" />
+     <Compile Include="Assets\Scripts\Title\AnimatedGIFDrawer.cs" />
+     <Compile Include="Assets\Scripts\Title\ImgScrollControl.cs" />
+     <Compile Include="Assets\Scripts\Title\TitleManager.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/User Program Files/Unity 5/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -91,6 +96,9 @@
  </Reference>
  <Reference Include="UnityEngine.VR">
  <HintPath>C:/User Program Files/Unity 5/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Drawing">
+ <HintPath>D:/Unity/MineStorm/MineStorm/Assets/Imports/Title/System.Drawing.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

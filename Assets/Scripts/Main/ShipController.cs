@@ -6,6 +6,7 @@ public class ShipController : MonoBehaviour {
 
 	private PrefsControl pc;
 	private GameManager gm;
+	private SoundManager aud;
 	private MeshCollider mc;
 	private MeshRenderer[] mr;
 	private int conLayout;   //controller layout set somewhere else
@@ -53,6 +54,7 @@ public class ShipController : MonoBehaviour {
 	void Start () {
 		pc = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		mc = GetComponentInChildren<MeshCollider>(true);
 		launcher = GameObject.Find("Launcher").transform;
 		rb = GetComponent<Rigidbody>();
@@ -420,6 +422,7 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void FireMissiles() {
+		aud.PlaySound("Missile");
 		for (int i=0; i<missileNumber; i++) {
 			GameObject go = Instantiate(pre_missile, launcher.position, Quaternion.identity) as GameObject;
 			go.transform.SetParent(parEff);

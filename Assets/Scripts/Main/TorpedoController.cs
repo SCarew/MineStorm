@@ -16,6 +16,7 @@ public class TorpedoController : MonoBehaviour {
 	private float missVel;
 	static private Transform parEff;  //for empty parent container
 	static private GameManager gm;
+	static private SoundManager aud;
 
 	void Start () {
 		Destroy(gameObject, lifetime);
@@ -26,6 +27,8 @@ public class TorpedoController : MonoBehaviour {
 			{ gm = GameObject.Find("GameManager").GetComponent<GameManager>(); }
 		if (parEff == null) 
 			{ parEff = GameObject.Find("Effects").transform; }
+		if (aud == null) 
+			{ aud = GameObject.Find("SoundManager").GetComponent<SoundManager>(); }
 
 		if (gameObject.name == "Torpedo" || gameObject.name == "Laser" || gameObject.name == "Missile") {   //torpedo1 has rigidbody for movement
 			rb.MoveRotation(shipRb.rotation);
@@ -42,6 +45,8 @@ public class TorpedoController : MonoBehaviour {
 
 		if (gameObject.name == "Missile") {
 			StartCoroutine(Drift());
+		} else {     //sound for missile played from ShipController
+			aud.PlaySound(gameObject.name);   
 		}
 	}
 
@@ -136,6 +141,13 @@ public class TorpedoController : MonoBehaviour {
 		if ((gameObject.name == "Laser") || (gameObject.name == "UFOLaser"))
 			{ go.transform.rotation = MakeInverse(transform.rotation); }
 		Destroy (go, 2.0f);
+
+		// TODO finish Play sound
+		if (gameObject.name == "Missile") { aud.PlaySound("expsmall"); }
+		else if (gameObject.name == "Laser") {  }
+		else if (gameObject.name == "Torpedo") {  }
+		else if (gameObject.name == "UFOLaser") {  }
+		else if (gameObject.name == "UFOTorp") {  }
 	}
 
 //	void OnCollisionEnter(Collision coll) {

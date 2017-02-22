@@ -5,8 +5,9 @@ public class EnemyHealth : MonoBehaviour {
 
 	private int health = 1;
 	private bool isAlive = true;   //fix for multiple collider problem
-	private GameManager gm;
-	private Transform parEff;
+	static private GameManager gm;
+	static private SoundManager aud;
+	static private Transform parEff;
 	public GameManager.mine myType = GameManager.mine.Meteor;
 	public GameObject ps_Pieces;
 	public GameObject pre_Torpedo;
@@ -14,8 +15,12 @@ public class EnemyHealth : MonoBehaviour {
 	private float fireSpeed = 7f;  //for Electric mines' torps
 
 	void Start () {
-		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-		parEff = GameObject.Find("Effects").transform;
+		if (gm == null) 
+			{ gm = GameObject.Find("GameManager").GetComponent<GameManager>(); }
+		if (aud == null) 
+			{ aud = GameObject.Find("SoundManager").GetComponent<SoundManager>(); }
+		if (parEff == null) 
+			{ parEff = GameObject.Find("Effects").transform; }
 	}
 
 	public void SetType(GameManager.mine type) {
@@ -67,6 +72,19 @@ public class EnemyHealth : MonoBehaviour {
 		if (myType == GameManager.mine.Electric || myType == GameManager.mine.ElectroMagnet)
 			{ FireElecTorpedo(); }
 		Destroy(gameObject, 0.1f);
+
+		//TODO Play Sound
+		if (myType == GameManager.mine.Meteor) 
+			{ aud.PlaySound("explosionMeteor"); }
+		else if (myType == GameManager.mine.Electric || myType == GameManager.mine.ElectroMagnet) 
+			{ aud.PlaySound("explosionElectric"); }
+		else if (myType == GameManager.mine.Dense) 
+			{ aud.PlaySound("explosionDense"); }
+		else if (myType == GameManager.mine.Magnet) 
+			{ aud.PlaySound("explosionMagnet"); }
+		else if (myType == GameManager.mine.BlackHole) 
+			{ aud.PlaySound("explosionBHole"); }
+
 	}
 
 	private void ExplodeMineIntoPieces() {
