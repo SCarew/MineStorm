@@ -12,6 +12,7 @@ public class StartSelect : MonoBehaviour {
 	public Text[] textMini;
 	private PrefsControl prefs;
 	private LevelManager lm;
+	private SoundManager aud;
 
 	private float offset = 0.2f;
 	private float fChange = 0f;   //check for delaying input
@@ -26,6 +27,7 @@ public class StartSelect : MonoBehaviour {
 		ResetMenu();
 		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		optionPanel.SetActive(false);
 		startPanel.SetActive(true);
 	}
@@ -40,6 +42,7 @@ public class StartSelect : MonoBehaviour {
 	void Update () {
 		if (Input.GetButtonDown("Primary") && (currentButton >= 0)) {
 			textOptions[currentButton].color = colorFinal;
+			aud.PlaySoundImmediate("startSelect");
 			Invoke("ButtonSelected", 0.4f);
 			return;
 		}
@@ -83,6 +86,7 @@ public class StartSelect : MonoBehaviour {
 			}
 			textOptions[currentButton].color = colorSelected;
 			textMini[currentButton].enabled = true;
+			aud.PlaySoundImmediate("startMove");
 		}
 	}
 

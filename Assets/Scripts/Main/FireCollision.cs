@@ -7,10 +7,12 @@ public class FireCollision : MonoBehaviour {
 	private int damage;
 	public GameObject pre_ElecExplosion;
 	static private Transform parEff;
+	static private GameManager gm;
 
 	void Start() {
 		sh = GameObject.FindGameObjectWithTag("Player").GetComponentInParent<ShipHealth>();
-		GameManager gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+		if (gm == null)
+			{ gm = GameObject.Find("GameManager").GetComponent<GameManager>(); }
 		if (parEff == null) 
 			{ parEff = GameObject.Find("Effects").transform; }
 
@@ -41,6 +43,7 @@ public class FireCollision : MonoBehaviour {
 	}
 
 	void OnDestroy() {
+		if (gm.bGameOver) { return; }
 		GameObject go = Instantiate(pre_ElecExplosion, transform.position, Quaternion.identity) as GameObject;
 		go.transform.SetParent(parEff);
 		Destroy(go, 2.0f);

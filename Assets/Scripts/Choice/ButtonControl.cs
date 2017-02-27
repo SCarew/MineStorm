@@ -6,6 +6,7 @@ public class ButtonControl : MonoBehaviour {
 
 	private PrefsControl prefs;
 	private LevelManager lm;
+	private SoundManager aud;
 	private RawImage[] img;
 	private Text[] txt, txtValue;
 	private Color colUnselected, colSelected, colMouseover;
@@ -17,6 +18,7 @@ public class ButtonControl : MonoBehaviour {
 	void Start () {
 		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		img = new RawImage[3];
 //		img[0] = GameObject.Find("Choice0").GetComponent<Image>();
 //		img[1] = GameObject.Find("Choice1").GetComponent<Image>();
@@ -46,7 +48,8 @@ public class ButtonControl : MonoBehaviour {
 			Debug.Log("Button " + numSelected + " => " + txtValue[numSelected-1].text);
 			img[numSelected - 1].color = colSelected;
 			txt[numSelected - 1].fontStyle = FontStyle.BoldAndItalic;
-			Invoke("ButtonSelected", 0.4f);
+			aud.PlaySoundImmediate("choiceSelect");
+			Invoke("ButtonSelected", 0.5f);
 		}
 
 		if (fChange > 0) {
@@ -67,6 +70,7 @@ public class ButtonControl : MonoBehaviour {
 			fChange += 0.5f;    //delay to next button change
 			if (numSelected < 1) { numSelected = 1; }
 			if (numSelected > 3) { numSelected = 3; }
+			aud.PlaySoundImmediate("choiceMove");
 			for (int i=0; i<3; i++) {
 				img[i].color = colUnselected;
 				txt[i].fontStyle = FontStyle.Bold;

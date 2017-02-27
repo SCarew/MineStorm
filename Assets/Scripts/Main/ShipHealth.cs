@@ -5,13 +5,19 @@ public class ShipHealth : MonoBehaviour {
 
 	private int health = 100;
 	public int maxHealth = 100;
+	private ShipController sc;
 
 	void Start() {
 		health = maxHealth;
+		sc = GetComponent<ShipController>();
 	}
 
 	public int GetHealth() {
 		return health;
+	}
+
+	public void ResetHealth() {
+		health = maxHealth;
 	}
 
 	public void DamageHealth (int hp) {
@@ -22,8 +28,8 @@ public class ShipHealth : MonoBehaviour {
 	}
 
 	void KillShip() {
-		Debug.Log("Ship destroyed");
-
+		//Debug.Log("Ship destroyed");
+		sc.BlowUpShip();
 	}
 
 }

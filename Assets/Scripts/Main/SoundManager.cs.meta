@@ -1,10 +1,34 @@
 fileFormatVersion: 2
 guid: 570dfb7e599d5ee49a7d8eb9d1e9989c
-timeCreated: 1487765644
+timeCreated: 1488044587
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - pre_SoundEffect: {fileID: 1306678179854160, guid: ae09c2878a598924289fa4d756499a36,
+      type: 2}
+  - laser1: {fileID: 8300000, guid: 1a00a290597fdc8468c3785d6a9a5613, type: 3}
+  - torp1: {fileID: 8300000, guid: 2742b74bf98a003469ef4350d399464e, type: 3}
+  - missile1: {fileID: 8300000, guid: 5b2cd2995e4ddb24a8816ef5aaaa48d9, type: 3}
+  - forcefieldOn1: {fileID: 8300000, guid: e2ff289a2951d264aa325e5f3fe7efa1, type: 3}
+  - forcefieldOff1: {fileID: 8300000, guid: 9beeaae0ed7beb6458400950d2337a25, type: 3}
+  - shockwave1: {fileID: 8300000, guid: b16abd11e2e032347a7a88eb0a0f2738, type: 3}
+  - explosionMet1: {fileID: 8300000, guid: 4a468a3158ddb764697aa07d86603890, type: 3}
+  - explosionMag1: {fileID: 8300000, guid: 56224cfed9a0c604a88f215955ddf715, type: 3}
+  - explosionElec1: {fileID: 8300000, guid: 768296bd87d3c0d4db32e5298d4aba44, type: 3}
+  - explosionDen1: {fileID: 8300000, guid: d723cca753173984c85eb47a417fe9e9, type: 3}
+  - explosionBHole1: {fileID: 8300000, guid: bc408cf134d305e448eeba0b4f3df1f7, type: 3}
+  - expLaser1: {fileID: 8300000, guid: c67e1c2014b18b8478bf278af6b0938c, type: 3}
+  - expTorpedo1: {fileID: 8300000, guid: d501fa542d6d6114a9a111fa9d30236b, type: 3}
+  - expMissile1: {fileID: 8300000, guid: 7a6a9ef4ccb18f14d87f8e1c8824d574, type: 3}
+  - expUFOTorpedo1: {fileID: 8300000, guid: e83e9451bfcf77840a1b07ea08cbbe8e, type: 3}
+  - expUFOLaser1: {fileID: 8300000, guid: c67e1c2014b18b8478bf278af6b0938c, type: 3}
+  - UFOTorpedo1: {fileID: 8300000, guid: 4c85873ba23acad4899d69d6d39b6b57, type: 3}
+  - UFOLaser1: {fileID: 8300000, guid: 9ed3973bfaf968240900d78eeaac827f, type: 3}
+  - explosionUFO11: {fileID: 8300000, guid: 673651b65a7628b4f91b3b6eeaadca0e, type: 3}
+  - explosionUFO21: {fileID: 8300000, guid: 673651b65a7628b4f91b3b6eeaadca0e, type: 3}
+  - explosionShip1: {fileID: 8300000, guid: 3da3f95076c70514b8d33d93064cfb93, type: 3}
+  - meteorCollide1: {fileID: 8300000, guid: b7412ff0bd439b94ba40af160022c08d, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

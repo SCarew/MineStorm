@@ -10,6 +10,7 @@ public class MeteorControl : MonoBehaviour {
 	private Transform pShip;
 	private Transform parWarp;
 	private Rigidbody pShipRB;
+	private SoundManager aud;
 	private ParticleSystem ps;   //for Black Hole part system
 
 	[SerializeField] private GameObject pre_Warp;   //whirlpool effect
@@ -29,9 +30,11 @@ public class MeteorControl : MonoBehaviour {
 	private float bholeDistance = 12f;  //distance from ship BHole mines attract
 
 	void Start () {
+		// TODO possibly make some of these static for efficiency
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 		rb = transform.GetComponentInParent<Rigidbody>();
 		eh = gameObject.GetComponentInParent<EnemyHealth>();
+		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		pShip = GameObject.Find ("PlayerShip").transform;
 		pShipRB = pShip.GetComponent<Rigidbody>();
 		parObj = transform; //transform.parent.transform;
@@ -225,6 +228,11 @@ public class MeteorControl : MonoBehaviour {
 			else if (iSize == 1)  { damage = gm.mineSHit; }
 			eh.DamageHealth(400);
 			coll.gameObject.GetComponentInParent<ShipHealth>().DamageHealth(damage);
+			Debug.Log("Ship hit for damage: -" + damage + "-->" + pShip.GetComponent<ShipHealth>().GetHealth());
+		}
+		if (coll.gameObject.tag == "MeteorParent") {
+			//Debug.Log("!!! Meteor Collision detected for " + coll.gameObject.tag);
+			aud.PlaySoundVisible("meteorHit", gameObject.transform, Mathf.Min(iSize, coll.gameObject.GetComponent<MeteorControl>().GetSize()));
 		}
 	}
 

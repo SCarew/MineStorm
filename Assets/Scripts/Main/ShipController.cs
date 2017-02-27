@@ -24,6 +24,7 @@ public class ShipController : MonoBehaviour {
 	private int missileNumber = 8;
 	private Text txtVelocity;  //for testing
 	private bool bEscape = false;    //true when ship destroyed & escape pod launched
+	private bool bGameOver = false;  //true when in escape pod and no ships left
 
 	private float timeScaleIn = 1f;   //time for ship to warp in
 	private float timeScaleOut = 1.5f;  //time for ship to warp out 
@@ -48,7 +49,7 @@ public class ShipController : MonoBehaviour {
 	private float chargeHyperjump = 6f, chargeForcefield = 8f, chargeShockwave = 60f;
 	public float engRechargeRate = 2.5f;
 	public float engCurrentCharge = 0f;
-	public float lifeRechargeRate = 6f;
+	public float lifeRechargeRate = 6f;   //for escape pod life support
 	public float lifeCurrentCharge = 0f;
 
 	void Start () {
@@ -116,8 +117,6 @@ public class ShipController : MonoBehaviour {
 
 		// **** Testing Start ****    //TODO remove this section
 		if (Input.GetKeyDown(KeyCode.X)) {   
-			mr[1].enabled = bEscape;
-			mc.enabled = bEscape;
 			if (bEscape == false) { BlowUpShip(); }
 			else { bEscape = false; lifeCurrentCharge = lifeRechargeRate; }
 		}
@@ -178,7 +177,11 @@ public class ShipController : MonoBehaviour {
 				if (gm.shipsRemaining > 0) {
 					bS = true;   //make sense to summon ship automatically when time expired?
 				} else {
-					Debug.Log("Game Over");
+					//Debug.Log("Game Over");
+					if (!bGameOver) {
+						gm.ShowGameOver();
+					}
+					bGameOver = true;
 					// TODO complete this section
 					return;
 				}
@@ -194,7 +197,8 @@ public class ShipController : MonoBehaviour {
 				adjustScaleOut = true;
 				bEscape = false;
 				lifeCurrentCharge = lifeRechargeRate;
-				gm.shipsRemaining -= 1;
+				gm.LoseShip();
+				GetComponent<ShipHealth>().ResetHealth();
 			}
 			bP = false;   //can't use these while in escape pod
 			bT = false;
@@ -216,6 +220,7 @@ public class ShipController : MonoBehaviour {
 			if ((v > deadZone) && (engCurrentCharge > 0)) {
 				engCurrentCharge -= Time.deltaTime * 1.5f;
 				Thrust(v);
+				aud.PlaySoundLimited("engine", 2); 
 				bUseThrust = true;
 			} else {
 				//Thrust(0);
@@ -261,6 +266,7 @@ public class ShipController : MonoBehaviour {
 
 			if (bT && (engCurrentCharge > 0)) {
 				engCurrentCharge -= Time.deltaTime * 1.5f;
+				aud.PlaySoundLimited("engine", 2); 
 				Thrust(0.75f);
 				bUseThrust = true;
 			} else {
@@ -304,15 +310,19 @@ public class ShipController : MonoBehaviour {
 //		thrustDirection = transform.up * 100f;
 	}
 
-	void BlowUpShip() {
+	public void BlowUpShip() {
 		GameObject go = Instantiate(pre_ShipExplosion, transform.position, transform.rotation, parEff) as GameObject;
 		go.GetComponentInChildren<ExplodeShip>().StartExplosion();
+		mr[1].enabled = bEscape;
+		mc.enabled = bEscape;
 		Invoke("LaunchEscapePod", 0.3f);
+
+		aud.PlaySoundImmediate("explosionShip");
+		//gm.LoseShip();
 	}
 
 	void LaunchEscapePod() {
 		bEscape = true;
-
 	}
 
 	public bool isEscaping() {
@@ -422,7 +432,7 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void FireMissiles() {
-		aud.PlaySound("Missile");
+		aud.PlaySoundImmediate("Missile");
 		for (int i=0; i<missileNumber; i++) {
 			GameObject go = Instantiate(pre_missile, launcher.position, Quaternion.identity) as GameObject;
 			go.transform.SetParent(parEff);

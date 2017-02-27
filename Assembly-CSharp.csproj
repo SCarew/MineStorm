@@ -59,6 +59,7 @@
      <Compile Include="Assets\Scripts\Main\FireCollision.cs" />
      <Compile Include="Assets\Scripts\Main\Forcefield.cs" />
      <Compile Include="Assets\Scripts\Main\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Main\GameOverMenu.cs" />
      <Compile Include="Assets\Scripts\Main\MeteorControl.cs" />
      <Compile Include="Assets\Scripts\Main\MeteorControlOld.cs" />
      <Compile Include="Assets\Scripts\Main\PanelController.cs" />

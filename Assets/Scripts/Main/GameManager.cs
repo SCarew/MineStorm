@@ -38,6 +38,9 @@ public class GameManager : MonoBehaviour {
 	private float spawnRateUfo1 = 0f, spawnRateUfo2 = 0f;
 	private float spawnTimeUfo1 = 0f, spawnTimeUfo2 = 0f;
 
+	private GameOverMenu gameOverMenu;
+	public bool bGameOver = false;
+
 	public enum mine {Test, Meteor, Magnet, Electric, ElectroMagnet, Dense, BlackHole, UFO01, UFO02};
 
 	void Awake () {
@@ -50,6 +53,7 @@ public class GameManager : MonoBehaviour {
 		parTextScores = GameObject.Find("txtScorePlus").gameObject.transform;
 		parEnemy = GameObject.Find("Enemies").gameObject.transform;
 		pc = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
+		gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
 		txtScorePlus = parTextScores.GetComponent<Text>();
 		//txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
@@ -143,6 +147,17 @@ public class GameManager : MonoBehaviour {
 		} else {
 			//game over
 		}
+	}
+
+	public void LoseShip() {
+		shipsRemaining--;
+
+	}
+
+	public void ShowGameOver() {
+		bGameOver = true;
+		gameOverMenu.LaunchGameOver();
+		//canvasGameOver.SetActive(true);
 	}
 
 	public void SpawnMeteor (mine type, int size, int num) {

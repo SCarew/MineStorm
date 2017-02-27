@@ -22,7 +22,7 @@ public class Forcefield : MonoBehaviour {
 		childCol = GetComponentInChildren<MeshCollider>();
 		childCol.enabled = false;
 		childRend = GetComponentInChildren<MeshRenderer>().materials;
-		aud.PlaySound("forcefield");
+		aud.PlaySoundImmediate("forcefield");
 	}
 
 	void Update () {
@@ -49,7 +49,7 @@ public class Forcefield : MonoBehaviour {
 		transform.rotation = pShip.rotation;
 		if (Input.GetButtonUp("Secondary")) {
 			childCol.enabled = false;
-			aud.PlaySound("forcefieldoff");
+			aud.PlaySoundImmediate("forcefieldoff");
 			GetComponentInChildren<MeshRenderer>(true).enabled = false;
 			GetComponentInChildren<ParticleSystem>().Play();
 			Destroy(gameObject, 0.7f);

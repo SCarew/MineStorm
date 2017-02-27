@@ -75,15 +75,15 @@ public class EnemyHealth : MonoBehaviour {
 
 		//TODO Play Sound
 		if (myType == GameManager.mine.Meteor) 
-			{ aud.PlaySound("explosionMeteor"); }
+			{ aud.PlaySoundVisible("explosionMeteor", gameObject.transform, size); }
 		else if (myType == GameManager.mine.Electric || myType == GameManager.mine.ElectroMagnet) 
-			{ aud.PlaySound("explosionElectric"); }
+			{ aud.PlaySoundVisible("explosionElectric", gameObject.transform, size); }
 		else if (myType == GameManager.mine.Dense) 
-			{ aud.PlaySound("explosionDense"); }
+			{ aud.PlaySoundVisible("explosionDense", gameObject.transform, size); }
 		else if (myType == GameManager.mine.Magnet) 
-			{ aud.PlaySound("explosionMagnet"); }
+			{ aud.PlaySoundVisible("explosionMagnet", gameObject.transform, size); }
 		else if (myType == GameManager.mine.BlackHole) 
-			{ aud.PlaySound("explosionBHole"); }
+			{ aud.PlaySoundVisible("explosionBHole", gameObject.transform, size); }
 
 	}
 
@@ -102,6 +102,11 @@ public class EnemyHealth : MonoBehaviour {
 		go = Instantiate(ps_Pieces, gameObject.transform.position, Quaternion.identity) as GameObject;
 		go.transform.SetParent(parEff);
 		Destroy(go, go.GetComponentInChildren<ParticleSystem>().main.duration);
+		if (myType == GameManager.mine.UFO01) {
+			aud.PlaySoundVisible("explosionUFO1", gameObject.transform, 3);  //purple
+		} else {
+			aud.PlaySoundVisible("explosionUFO2", gameObject.transform, 3);  //gray
+		}
 	}
 
 	private void FireElecTorpedo() {

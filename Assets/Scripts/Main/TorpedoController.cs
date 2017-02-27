@@ -46,7 +46,11 @@ public class TorpedoController : MonoBehaviour {
 		if (gameObject.name == "Missile") {
 			StartCoroutine(Drift());
 		} else {     //sound for missile played from ShipController
-			aud.PlaySound(gameObject.name);   
+			if (gameObject.name == "Laser" || gameObject.name == "Torpedo") {
+				aud.PlaySoundImmediate(gameObject.name);   
+			} else {    //UFOLaser and UFOTorp
+				aud.PlaySoundVisible(gameObject.name, gameObject.transform);
+			}
 		}
 	}
 
@@ -126,6 +130,7 @@ public class TorpedoController : MonoBehaviour {
 	}
 
 	void OnDestroy() {
+		if (gm.bGameOver) { return; }
 		Vector3 pos = transform.position;
 		if (gameObject.name != "Missile") 
 			{ pos -= 0.4f * (rb.velocity.normalized); }  //for correcting explosion location
@@ -142,12 +147,11 @@ public class TorpedoController : MonoBehaviour {
 			{ go.transform.rotation = MakeInverse(transform.rotation); }
 		Destroy (go, 2.0f);
 
-		// TODO finish Play sound
-		if (gameObject.name == "Missile") { aud.PlaySound("expsmall"); }
-		else if (gameObject.name == "Laser") {  }
-		else if (gameObject.name == "Torpedo") {  }
-		else if (gameObject.name == "UFOLaser") {  }
-		else if (gameObject.name == "UFOTorp") {  }
+		if (gameObject.name == "Missile") { aud.PlaySoundVisible("expMissile", gameObject.transform); }
+		else if (gameObject.name == "Laser") { aud.PlaySoundVisible("expLaser", gameObject.transform); }
+		else if (gameObject.name == "Torpedo") { aud.PlaySoundVisible("expTorpedo", gameObject.transform); }
+		else if (gameObject.name == "UFOLaser") { aud.PlaySoundVisible("expUFOLaser", gameObject.transform); }
+		else if (gameObject.name == "UFOTorp") { aud.PlaySoundVisible("expUFOTorp", gameObject.transform); }
 	}
 
 //	void OnCollisionEnter(Collision coll) {

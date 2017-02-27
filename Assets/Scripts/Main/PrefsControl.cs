@@ -127,4 +127,12 @@ public class PrefsControl : MonoBehaviour {
 			PlayerPrefs.SetString("GameType", "Arcade");
 		}
 	}
+
+	public float GetMainVolume() {
+		return PlayerPrefs.GetFloat("SoundEffectsVolume", 0.5f);
+	}
+
+	public void SetMainVolume(float f) {
+		PlayerPrefs.SetFloat("SoundEffectsVolume", f);
+	}
 }

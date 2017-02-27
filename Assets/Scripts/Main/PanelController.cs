@@ -45,7 +45,7 @@ public class PanelController : MonoBehaviour {
 	void Update () {
 		sPrimaryWeapon.value = sc.priCurrentCharge / sc.priRechargeRate;
 		sSecondaryWeapon.value = sc.secCurrentCharge / sc.secRechargeRate;
-		sHealth.value = sh.GetHealth() / sh.maxHealth;
+		sHealth.value = (float)sh.GetHealth() / (float)sh.maxHealth;
 		sEngine.value = sc.engCurrentCharge / sc.engRechargeRate;
 		sLifeSupport.value = sc.lifeCurrentCharge / sc.lifeRechargeRate;
 
