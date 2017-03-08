@@ -27,7 +27,7 @@ public class TorpedoController : MonoBehaviour {
 			{ gm = GameObject.Find("GameManager").GetComponent<GameManager>(); }
 		if (parEff == null) 
 			{ parEff = GameObject.Find("Effects").transform; }
-		if (aud == null) 
+		if (!aud) 
 			{ aud = GameObject.Find("SoundManager").GetComponent<SoundManager>(); }
 
 		if (gameObject.name == "Torpedo" || gameObject.name == "Laser" || gameObject.name == "Missile") {   //torpedo1 has rigidbody for movement
@@ -54,7 +54,7 @@ public class TorpedoController : MonoBehaviour {
 		}
 	}
 
-	IEnumerator Drift() {
+	IEnumerator Drift() {        //for missiles
 		bool bLoop = true;
 		while(bLoop) {
 			yield return new WaitForSeconds(0.2f);
@@ -67,7 +67,7 @@ public class TorpedoController : MonoBehaviour {
 		}
 	}
 
-	void AlterCourse() {
+	void AlterCourse() {         //for missiles
 //		Vector3 v1 = rb.velocity.normalized;
 //		float v2 = rb.velocity.magnitude;
 //		v1 = v1 + new Vector3(0.1f,0.1f,0.0f);

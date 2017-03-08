@@ -11,6 +11,7 @@ public class SoundEffect : MonoBehaviour {
 	}
 
 	void SelfDestruct() {
+		if (audio.loop) { return; }
 		float t = 1f;
 		if (audio.clip != null) {
 			t = audio.clip.length;

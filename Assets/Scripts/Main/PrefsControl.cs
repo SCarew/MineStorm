@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PrefsControl : MonoBehaviour {
 
+	public enum stats {Ships, Score, Level};
+	public enum option {Camera, Sound, Music};
+
 	public string GetChoices() {
 		string value;
 		value = PlayerPrefs.GetString("ChoiceTitle", "");
@@ -15,10 +18,6 @@ public class PrefsControl : MonoBehaviour {
 
 	public string GetChoiceValue(int i) {
 		return PlayerPrefs.GetString("ChoiceValue" + i.ToString(), "");
-	}
-
-	public void SetChoice2(string s, string c, int num = 3) {
-		SetChoice(s, c, num, true);
 	}
 
 	public void UpdateSetChoice() {
@@ -36,6 +35,10 @@ public class PrefsControl : MonoBehaviour {
 		}
 		PlayerPrefs.SetString("ChoiceTitle", PlayerPrefs.GetString("NextChoiceTitle", ""));
 		PlayerPrefs.SetString("NextChoiceTitle", "");
+	}
+
+	public void SetChoice2(string s, string c, int num = 3) {
+		SetChoice(s, c, num, true);
 	}
 
 	public void SetChoice(string s, string c, int num = 3, bool bNext=false) {
@@ -128,6 +131,16 @@ public class PrefsControl : MonoBehaviour {
 		}
 	}
 
+	public int GetControlLayout() {
+		return PlayerPrefs.GetInt("ControlScheme", 0);
+	}
+
+	public void SetControlLayout(int i) {
+		if (i < 0 || i > 2) 
+			{ i = 0; }
+		PlayerPrefs.SetInt("ControlScheme", i);
+	}
+
 	public float GetMainVolume() {
 		return PlayerPrefs.GetFloat("SoundEffectsVolume", 0.5f);
 	}
@@ -135,4 +148,50 @@ public class PrefsControl : MonoBehaviour {
 	public void SetMainVolume(float f) {
 		PlayerPrefs.SetFloat("SoundEffectsVolume", f);
 	}
+
+	public float GetMusicVolume() {
+		return PlayerPrefs.GetFloat("MusicVolume", 0.5f);
+	}
+
+	public void SetMusicVolume(float f) {
+		PlayerPrefs.SetFloat("MusicVolume", f);
+	}
+
+	public int GetSoundSet() {
+		return PlayerPrefs.GetInt("SoundEffectsSet", 1);
+	}
+
+	public void SetSoundSet(int i) {
+		PlayerPrefs.SetInt("SoundEffectsSet", i);
+	}
+
+	public bool GetCameraMode() {
+		int n = PlayerPrefs.GetInt("CameraMode", 0);
+		if (n == 1) 
+			{ return true; } 
+		else 
+			{ return false; }
+	}
+
+	public void SetCameraMode(bool b) {
+		if (b) { PlayerPrefs.SetInt("CameraMode", 1); }
+		else   { PlayerPrefs.SetInt("CameraMode", 0); }
+	}
+
+	public int GetGameStats(stats type) {
+		int returnValue = 0;
+		if (type == stats.Ships) { returnValue = PlayerPrefs.GetInt("ShipsRemaining", 0); }
+		if (type == stats.Score) { returnValue = PlayerPrefs.GetInt("StoryScore", 0); }
+		if (type == stats.Level) { returnValue = PlayerPrefs.GetInt("CurrentLevel", 0); }
+
+		return returnValue;
+	}
+
+	public void SetGameStats(stats type, int value) {
+		if (type == stats.Ships) { PlayerPrefs.SetInt("ShipsRemaining", value); }
+		if (type == stats.Score) { PlayerPrefs.SetInt("StoryScore", value); }
+		if (type == stats.Level) { PlayerPrefs.SetInt("CurrentLevel", value); }
+
+	}
+
 }

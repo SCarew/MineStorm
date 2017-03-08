@@ -174,6 +174,7 @@ public class MeteorControl : MonoBehaviour {
 		foreach (Transform t in go.transform) {
 			t.localScale = t.localScale * mult;
 		}
+		//aud.PlaySoundConstant("swirlSmall", go.transform);
 		adjustScale = true;
 	}
 

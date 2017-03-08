@@ -5,11 +5,13 @@ using UnityEngine.UI;
 public class StartSelect : MonoBehaviour {
 
 	private int currentButton = -1;
-	private bool disableOptions = false;
+	private bool disableContinue = false;
 	private Color colorUnselected, colorSelected, colorFinal, colorDisabled;
 	public GameObject startPanel, optionPanel;
 	public Text[] textOptions;
 	public Text[] textMini;
+	public Slider[] sldMini;
+	private int sliderSound = 7, sliderMusic = 8;   //locations of sliders
 	private PrefsControl prefs;
 	private LevelManager lm;
 	private SoundManager aud;
@@ -30,6 +32,16 @@ public class StartSelect : MonoBehaviour {
 		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		optionPanel.SetActive(false);
 		startPanel.SetActive(true);
+		LoadOptions();
+
+		if (prefs.GetGameStats(PrefsControl.stats.Level) < 1) {
+			DisableOption ("txtContinue");
+			disableContinue = true;
+		}
+		foreach (Slider sld0 in sldMini) {
+			//sld0.enabled = false;
+			sld0.gameObject.SetActive(false);
+		}
 	}
 
 	void ResetMenu() {
@@ -47,6 +59,15 @@ public class StartSelect : MonoBehaviour {
 			return;
 		}
 
+		if (!menuStart && Input.GetButtonDown("Cancel")) {   //cancel Options menu
+			startPanel.SetActive(true);
+			optionPanel.SetActive(false);
+			currentButton = -1;
+			menuStart = true;
+			LoadOptions();   //reset changed options to previously saved
+			return;
+		}
+
 		if (fChange > 0) {
 			fChange -= Time.deltaTime;
 			return;
@@ -54,13 +75,16 @@ public class StartSelect : MonoBehaviour {
 
 		float v = Input.GetAxis("Vertical");
 		bool bChange = false;
+		int nextButton = -1;
 		if (v - offset > 0) {
 			currentButton -= 1;
+			nextButton = currentButton - 1;
 			bChange = true;
 		}
 		if (v + offset < 0) {
 			currentButton += 1;
-			bChange=true;
+			nextButton = currentButton + 1;
+			bChange = true;
 		}
 
 		if (bChange) {
@@ -68,6 +92,9 @@ public class StartSelect : MonoBehaviour {
 			if (currentButton < 0) { currentButton = 0; }
 			if (currentButton > (textOptions.Length - 1)) { 
 				currentButton = textOptions.Length - 1; 
+			}
+			if (disableContinue && textOptions[currentButton].name == "txtContinue") {
+				currentButton = nextButton;
 			}
 			if (menuStart) {
 				if (currentButton > (startMenuOptions - 1)) {
@@ -84,15 +111,40 @@ public class StartSelect : MonoBehaviour {
 			foreach (Text txt0 in textMini) {
 				txt0.enabled = false;
 			}
+			foreach (Slider sld0 in sldMini) {
+				sld0.gameObject.SetActive(false);
+			}
+			if (disableContinue) { DisableOption("txtContinue"); }
 			textOptions[currentButton].color = colorSelected;
 			textMini[currentButton].enabled = true;
+			if (currentButton == sliderSound) { sldMini[0].gameObject.SetActive(true); }
+			if (currentButton == sliderMusic) { sldMini[1].gameObject.SetActive(true); }
 			aud.PlaySoundImmediate("startMove");
 		}
+
+		float h = Input.GetAxis("Horizontal");
+		if (currentButton == sliderSound || currentButton == sliderMusic) {
+			if (h - offset > 0) {
+				sldMini[currentButton - sliderSound].value += 0.01f;
+			}
+			if (h + offset < 0) {
+				sldMini[currentButton - sliderSound].value -= 0.01f;
+			}
+		} 
+
 	}
 
 	void StartGame() {
 		//TODO launch Choice and game here
 		if (textOptions[currentButton].name == "txtStory") {
+			prefs.SetChoice("Select Primary Weapon/Torpedo/Laser/Missile", "101/102/103", 3); 
+			prefs.SetChoice2("Select Secondary Weapon/Hyperjump/Forcefield/Shockwave", "201/202/203", 3); 
+			lm.LoadScene("Choice", "Choice", "Main");
+		}
+		if (textOptions[currentButton].name == "txtContinue") {
+			lm.LoadScene("Main");
+		}
+		if (textOptions[currentButton].name == "txtArcade") {
 			prefs.SetChoice("Select Primary Weapon/Torpedo/Laser/Missile", "101/102/103", 3); 
 			prefs.SetChoice2("Select Secondary Weapon/Hyperjump/Forcefield/Shockwave", "201/202/203", 3); 
 			lm.LoadScene("Choice", "Choice", "Main");
@@ -125,14 +177,79 @@ public class StartSelect : MonoBehaviour {
 
 		//****************** Options Menu below ***********************
 		if (textOptions[currentButton].name == "txtCamera") {
+			if (textMini[currentButton].text == "Chasing") {
+				textMini[currentButton].text = "Fixed";
+			} else {
+				textMini[currentButton].text = "Chasing";
+			}
+		}
+		if (textOptions[currentButton].name == "txtControls") {
+			
+		}
+		if (textOptions[currentButton].name == "txtSound") {
+			if (textMini[currentButton].text == "Set 1") {
+				textMini[currentButton].text = "Set 1";  //not set up for second sound set yet
+			} else {
+				textMini[currentButton].text = "Set 1";
+			}
+		}
+		if (textOptions[currentButton].name == "txtMusic") {
 			
 		}
 		if (textOptions[currentButton].name == "txtStart") {
+			SaveOptions();
 			startPanel.SetActive(true);
 			optionPanel.SetActive(false);
 			currentButton = -1;
 			menuStart = true;
 			return;
+		}
+
+		if (!menuStart) {
+			textOptions[currentButton].color = colorSelected;
+		}
+	}
+
+	void DisableOption (string s)
+	{
+		foreach (Text txt in textOptions) {
+			if (txt.name == s) {
+				txt.color = colorDisabled;
+			}
+		}
+	}
+
+	void LoadOptions() {
+		//TODO read Controller Setup from Prefs
+		sldMini[0].value = prefs.GetMainVolume();
+		sldMini[1].value = prefs.GetMusicVolume();
+		foreach (Text txt in textMini) {
+			if (txt.name == "txtMiniCamera") { 
+				if (prefs.GetCameraMode() == true) 
+					{ txt.text = "Fixed"; }
+				else
+					{ txt.text = "Chasing"; }
+			}
+			if (txt.name == "txtMiniSound") { 
+				txt.text = "Set " + prefs.GetSoundSet();
+			}
+		}
+	}
+
+	void SaveOptions() {
+		//TODO write Controller Setup to prefs
+		prefs.SetMainVolume(sldMini[0].value);
+		prefs.SetMusicVolume(sldMini[1].value);
+		foreach (Text txt in textMini) {
+			if (txt.name == "txtMiniCamera") { 
+				if (txt.text == "Fixed") 
+					{ prefs.SetCameraMode(true); } 
+				else
+					{ prefs.SetCameraMode(false); } 
+			}
+			if (txt.name == "txtMiniSound") { 
+				prefs.SetSoundSet(int.Parse(txt.text.Substring(txt.text.Length - 1, 1)));
+			}
 		}
 	}
 }

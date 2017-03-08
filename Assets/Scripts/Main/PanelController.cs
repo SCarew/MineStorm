@@ -10,8 +10,8 @@ public class PanelController : MonoBehaviour {
 	private ShipHealth sh;
 	[SerializeField] private Image fillPrimaryWeapon, fillSecondaryWeapon;
 	[SerializeField] private Image fillHealth, fillEngine, fillLifeSupport;
+	[SerializeField] private Material[] Gauges;
 	private Color level0, level1, levelminus;
-//	private Image[] imgArray;
 
 	void Start () {
 		sc = GameObject.Find("PlayerShip").GetComponent<ShipController>();
@@ -30,16 +30,7 @@ public class PanelController : MonoBehaviour {
 		level0 = new Color(255/255,  26/255,  26/255, 255/255);      //empty bar
 		level1 = new Color( 58/255, 255/255, 133/255, 255/255);      //full bar
 		levelminus = new Color(0, 0, 0, 0);                          //negative bar
-
-//		imgArray = new Image[8];
-//		imgArray[0] = sPrimaryWeapon.GetComponentInChildren<Image>();
-//		imgArray[1] = fillPrimaryWeapon;
-//		imgArray[2] = sSecondaryWeapon.GetComponentInChildren<Image>();
-//		imgArray[3] = fillSecondaryWeapon;
-//		imgArray[4] = sHealth.GetComponentInChildren<Image>();
-//		imgArray[5] = fillHealth;
-//		imgArray[6] = sEngine.GetComponentInChildren<Image>();
-//		imgArray[7] = fillEngine;
+		FixOverlay();
 	}
 	
 	void Update () {
@@ -65,19 +56,17 @@ public class PanelController : MonoBehaviour {
 			panMapCam.SetActive(true);
 		}
 
-		//GameObject.Find("TextSecondary").GetComponent<Text>().text = sc.priCurrentCharge.ToString();
-//		if (sc.priCurrentCharge < 0f) {
-//			imgArray[0].color = levelminus; 
-//			imgArray[1].color = levelminus;
-//		}
-//		if (sc.secCurrentCharge < 0f) {
-//			imgArray[2].color = levelminus; 
-//			imgArray[3].color = levelminus;
-//		}
-//		if (sc.engCurrentCharge < 0f) {
-//			imgArray[6].color = levelminus; 
-//			imgArray[7].color = levelminus;
-//		}
-
 	}
+
+	private void FixOverlay() {
+		bool bArcadeMode = GameObject.Find("GameManager").GetComponent<GameManager>().bArcadeMode;
+		PrefsControl prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
+		Image img1 = GameObject.Find("Primary_Gauge").GetComponent<Image>();
+		Image img2 = GameObject.Find("Secondary_Gauge").GetComponent<Image>();
+		int weap1 = prefs.GetPrimaryWeapon(bArcadeMode);
+		int weap2 = prefs.GetSecondaryWeapon(bArcadeMode);
+		img1.material = Gauges[weap1];
+		img2.material = Gauges[weap2 + 3];
+	}
+
 }

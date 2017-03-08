@@ -4,6 +4,7 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour {
 
 	[SerializeField] private GameObject pre_SoundEffect;
+
 	private Transform parAudio;   //for empty parent container
 	private float mainVolume = 0.5f;
 
@@ -22,6 +23,8 @@ public class SoundManager : MonoBehaviour {
 	[SerializeField] private AudioClip expLaser1;
 	[SerializeField] private AudioClip expTorpedo1;
 	[SerializeField] private AudioClip expMissile1;
+	[SerializeField] private AudioClip UFO11;
+	[SerializeField] private AudioClip UFO12;
 	[SerializeField] private AudioClip expUFOTorpedo1;
 	[SerializeField] private AudioClip expUFOLaser1;
 	[SerializeField] private AudioClip UFOTorpedo1;
@@ -30,6 +33,8 @@ public class SoundManager : MonoBehaviour {
 	[SerializeField] private AudioClip explosionUFO21;
 	[SerializeField] private AudioClip explosionShip1;
 	[SerializeField] private AudioClip meteorCollide1;
+	[SerializeField] private AudioClip swirlLarge1;
+	[SerializeField] private AudioClip swirlSmall1;
 	[SerializeField] private AudioClip[] choiceButtons;
 	[SerializeField] private AudioClip[] startButtons;
 
@@ -45,8 +50,13 @@ public class SoundManager : MonoBehaviour {
 	private void PlaySound(AudioClip ac, float volume = 1f, Transform parAttach = null, bool bLoop = false, int num = 1) {
 		GameObject go;
 		AudioSource audio;
+		bool bConstant = false;
 		if (!parAudio)  { FindAudioParent(); }  //will be null on scene change
-		if (!parAttach) { parAttach = parAudio; }
+		if (!parAttach) { 
+			parAttach = parAudio; 
+		} else {
+			bConstant = true;
+		}
 		go = Instantiate(pre_SoundEffect, parAttach) as GameObject;
 
 		if (num > 1) {     //for PlaySoundLimited() only
@@ -67,6 +77,7 @@ public class SoundManager : MonoBehaviour {
 		if (bLoop) {
 			audio.loop = true;
 		}
+		if (bConstant) { go.AddComponent<SoundEffectConstant>(); }
 		audio.volume = mainVolume * volume;
 		audio.Play();
 	}
@@ -85,6 +96,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = laser1; }
 		else if (soundName == "missile") 
 			{ ac = missile1; }
+		else if (soundName == "hyplaser") 
+			{ ac = laser1; }
 		else if (soundName == "forcefield") 
 			{ ac = forcefieldOn1; }
 		else if (soundName == "forcefieldoff") 
@@ -122,20 +135,25 @@ public class SoundManager : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Plays a constant sound while object is alive.  Intended for UFOs and bosses.
+	/// Plays a constant sound while object is alive and visible.  Intended for UFOs and bosses.
 	/// </summary>
 	/// <param name="soundName">Sound name.</param>
 	/// <param name="parObj">Object to attach sound to.</param>
 	public void PlaySoundConstant(string soundName, Transform parObj) {   //constant/looping (if visible)
 		AudioClip ac = null;
+		float vol = 1f;
 		soundName = soundName.ToLower();
 
+		//this section includes all sound names for reference
+		//  only those marked with *** should be called in this function
 		if (soundName == "torpedo" || soundName == "torp") 
 			{ ac = torp1; }
 		else if (soundName == "laser") 
 			{ ac = laser1; }
 		else if (soundName == "missile") 
 			{ ac = missile1; }
+		else if (soundName == "hyplaser") 
+			{ ac = laser1; }
 		else if (soundName == "forcefield") 
 			{ ac = forcefieldOn1; }
 		else if (soundName == "forcefieldoff") 
@@ -174,10 +192,19 @@ public class SoundManager : MonoBehaviour {
 			{ ac = explosionUFO21; }
 		else if (soundName == "meteorhit") 
 			{ ac = meteorCollide1; }
+		else if (soundName == "swirllarge") //***
+			{ ac = swirlLarge1; }
+		else if (soundName == "swirlsmall") 
+			{ ac = swirlSmall1; }
+			//vol = parObj.GetComponentInChildren<ParticleSystem>().transform.localScale.x; }
 		else if (soundName == "engine") 
 			{ ac = engine1; }
+		else if (soundName == "ufo1")  //***
+			{ ac = UFO11; }
+		else if (soundName == "ufo2")  //***
+			{ ac = UFO12; }
 
-		PlaySound(ac, 1, parObj, true);
+		PlaySound(ac, vol, parObj, true);
 	}
 
 	/// <summary>
@@ -226,6 +253,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = explosionUFO21; }
 		else if (soundName == "meteorhit") 
 			{ ac = meteorCollide1; vol = vol * 0.25f; }
+		else if (soundName == "swirlsmall") 
+			{ ac = swirlSmall1; }
 
 		PlaySound(ac, vol);
 	}

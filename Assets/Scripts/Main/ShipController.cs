@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ShipController : MonoBehaviour {
 
-	private PrefsControl pc;
+	private PrefsControl prefs;
 	private GameManager gm;
 	private SoundManager aud;
 	private MeshCollider mc;
@@ -25,6 +25,7 @@ public class ShipController : MonoBehaviour {
 	private Text txtVelocity;  //for testing
 	private bool bEscape = false;    //true when ship destroyed & escape pod launched
 	private bool bGameOver = false;  //true when in escape pod and no ships left
+	private bool bPaused = false;    //true when game is paused
 
 	private float timeScaleIn = 1f;   //time for ship to warp in
 	private float timeScaleOut = 1.5f;  //time for ship to warp out 
@@ -53,7 +54,7 @@ public class ShipController : MonoBehaviour {
 	public float lifeCurrentCharge = 0f;
 
 	void Start () {
-		pc = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
+		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		mc = GetComponentInChildren<MeshCollider>(true);
@@ -64,15 +65,17 @@ public class ShipController : MonoBehaviour {
 		ps = GetComponentsInChildren<ParticleSystem>();
 		mr = GetComponentsInChildren<MeshRenderer>(true);
 
-		if (pc.GetGameType() == "Arcade") {
-			primaryWeapon = pc.GetPrimaryWeapon(true);
-			secondaryWeapon = pc.GetSecondaryWeapon(true);
+		if (prefs.GetGameType() == "Arcade") {
+			primaryWeapon = prefs.GetPrimaryWeapon(true);
+			secondaryWeapon = prefs.GetSecondaryWeapon(true);
 		} else {
-			primaryWeapon = pc.GetPrimaryWeapon();
-			secondaryWeapon = pc.GetSecondaryWeapon();
+			primaryWeapon = prefs.GetPrimaryWeapon();
+			secondaryWeapon = prefs.GetSecondaryWeapon();
 		}
+		Debug.Log("Primary=" + primaryWeapon + "  Secondary=" + secondaryWeapon + "  GameType=" + prefs.GetGameType());
 
-		conLayout = 0;       //for testing
+		conLayout = prefs.GetControlLayout();
+		//conLayout = 0;       //for testing
 		//primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
 		//secondaryWeapon = 2; //for testing - 0=hyper 1=force 2=shockwave
 
@@ -105,6 +108,7 @@ public class ShipController : MonoBehaviour {
 		else     // torps or missiles
 			{ bP = Input.GetButtonDown("Primary"); }
 
+		if (bPaused) { return; }
 		//if (h !=0 || v != 0 || bT != false) {Debug.Log ("h=" + h + " v=" + v + " b=" + bT); }
 
 		priCurrentCharge += Time.deltaTime;
@@ -244,7 +248,7 @@ public class ShipController : MonoBehaviour {
 			}
 		}
 
-		if (conLayout == 1) {    //this doesn't fully work yet
+		if (conLayout == 1) {    //TODO this doesn't fully work yet
 			if (v > deadZone || v < -deadZone || h > deadZone || h < -deadZone) { 
 				Vector3 dir = new Vector3(-h, 0f, v);
 				Vector3 old = transform.rotation.eulerAngles;
@@ -429,6 +433,14 @@ public class ShipController : MonoBehaviour {
 			else { zAngle = 180; }
 		}
 		return zAngle;
+	}
+
+	public void FreezeRotation(bool isPaused) {   //for game pause
+		//transform.Rotate(new Vector3(0,0,1) );
+		//transform.rotation = transform.up;
+		//transform.Rotate(0,0,-transform.rotation.eulerAngles.z);
+		bPaused = isPaused;
+		Debug.Log ("Freezing ship at " + transform.rotation.eulerAngles);
 	}
 
 	void FireMissiles() {

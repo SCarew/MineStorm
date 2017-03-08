@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour {
 	public int mineMHit = 70;  //from hitting a mine/meteor
 	public int mineSHit = 35;  //from hitting a mine/meteor
 
-	private PrefsControl pc;
+	private PrefsControl prefs;
 	public int currentLevel = 0;
 	public int shipsRemaining = 0;
 	public float level_width, level_height;
@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour {
 	private int denBig = 0, denMed = 0, denSma = 0;
 		// add additional mines prefabs (array?)
 	private Transform parMeteor, parTextScores, parEnemy;
-	private bool bArcadeMode = false;
 	private int score = 0;
 	private Text txtScore, txtScorePlus; 
 	//private Text txtScorePlus;
@@ -40,6 +39,7 @@ public class GameManager : MonoBehaviour {
 
 	private GameOverMenu gameOverMenu;
 	public bool bGameOver = false;
+	public bool bArcadeMode = false;
 
 	public enum mine {Test, Meteor, Magnet, Electric, ElectroMagnet, Dense, BlackHole, UFO01, UFO02};
 
@@ -52,12 +52,13 @@ public class GameManager : MonoBehaviour {
 		parMeteor = GameObject.Find("Meteors").gameObject.transform;
 		parTextScores = GameObject.Find("txtScorePlus").gameObject.transform;
 		parEnemy = GameObject.Find("Enemies").gameObject.transform;
-		pc = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
+		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
 		txtScorePlus = parTextScores.GetComponent<Text>();
 		//txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
 		scoreFormat = txtScore.text;
+
 		myLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Meteor")) | (1 << LayerMask.NameToLayer("Enemy"));
 		//Debug.Log(myLayerMask + "=" + myLayerMask.value);
 		myLayerMask = myLayerMask | (1 << LayerMask.NameToLayer("MapPlayer")) | (1 << LayerMask.NameToLayer("MapMeteor")) | (1 << LayerMask.NameToLayer("MapEnemy"));
@@ -73,8 +74,9 @@ public class GameManager : MonoBehaviour {
 			if (pre_Dense[i].name.Contains(".M.")) { denMed++; }
 			if (pre_Dense[i].name.Contains(".S.")) { denSma++; }
 		}
-		if (pc.GetGameType() == "Arcade")  { bArcadeMode = true; }
-		if (pc.GetGameType() == "Continue")  { SetupContinueMode(); }
+		if (prefs.GetGameType() == "Arcade")  { bArcadeMode = true; }
+		if (prefs.GetGameType() == "Continue")  { SetupContinueMode(); }
+		if (prefs.GetCameraMode() == true) { Invoke("CameraModeSet", 0.1f); }
 
 		NextLevel();
 	}
@@ -87,6 +89,7 @@ public class GameManager : MonoBehaviour {
 		//int i = 0;
 
 		currentLevel++;
+		UpdateForContinueMode();
 		if (currentLevel==1) {
 			numMeteors = 8;
 			spawnRateUfo2 = 60f;
@@ -136,7 +139,20 @@ public class GameManager : MonoBehaviour {
 
 	void SetupContinueMode()
 	{
-		//TODO set this up
+		currentLevel = prefs.GetGameStats(PrefsControl.stats.Level) - 1;
+		score = prefs.GetGameStats(PrefsControl.stats.Score);
+		shipsRemaining = prefs.GetGameStats(PrefsControl.stats.Ships);
+	}
+
+	void UpdateForContinueMode() {
+		if (bArcadeMode) { return; }
+		prefs.SetGameStats(PrefsControl.stats.Level, currentLevel);
+		prefs.SetGameStats(PrefsControl.stats.Score, score);
+		prefs.SetGameStats(PrefsControl.stats.Ships, shipsRemaining);
+	}
+
+	void CameraModeSet() {
+		GameObject.Find("Main Camera").GetComponent<CameraController>().fixedCam = true;
 	}
 
 	void LevelClear() {

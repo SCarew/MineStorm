@@ -38,6 +38,7 @@ public class UFOController : MonoBehaviour {
 		renderChild = mr[mr.Length - 1].gameObject.transform;
 		mr = null;
 		eh = GetComponent<EnemyHealth>();
+		SoundManager aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		originalScale = renderChild.localScale;
 
 		rotateSpeed = Random.Range(-rotateSpeed, rotateSpeed);
@@ -53,8 +54,10 @@ public class UFOController : MonoBehaviour {
 		timeToWarp += Random.Range(0f, timeToWarp/2f);
 
 		if (gameObject.name == "UFO.01") {
+			aud.PlaySoundConstant("UFO1", gameObject.transform);
 			StartCoroutine(UseTorp());
 		} else if (gameObject.name == "UFO.02") {
+			aud.PlaySoundConstant("UFO2", gameObject.transform);
 			StartCoroutine(UseLaser());
 		}
 	}
@@ -148,6 +151,7 @@ public class UFOController : MonoBehaviour {
 		}
 		rb.velocity = Vector3.zero;
 		timeSpent = 0f;
+		//aud.PlaySoundConstant("SwirlLarge", go.transform);
 	}
 
 //	public float TimeToWarp() {

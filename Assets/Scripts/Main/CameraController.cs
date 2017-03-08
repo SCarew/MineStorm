@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour {
 	private Vector3[] coords;
 	private int steps = 5;
 	//private float smoothing = 2.5f;
-	[SerializeField] private bool fixedCam = false;  //true = camera is fixed on ship
+	public  bool fixedCam = false;  //true = camera is fixed on ship
 	private float smoothTime = 0.5f;
 	private Vector3 velocity = Vector3.zero;
 

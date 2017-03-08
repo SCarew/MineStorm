@@ -50,6 +50,9 @@
      <Compile Include="Assets\Scripts\Choice\ButtonControl.cs" />
      <Compile Include="Assets\Scripts\Choice\Detection.cs" />
      <Compile Include="Assets\Scripts\FadeIn\Fader.cs" />
+     <Compile Include="Assets\Scripts\Hyperspace\HypLaser.cs" />
+     <Compile Include="Assets\Scripts\Hyperspace\HypShipController.cs" />
+     <Compile Include="Assets\Scripts\Hyperspace\HyperSwirl.cs" />
      <Compile Include="Assets\Scripts\Main\Background.cs" />
      <Compile Include="Assets\Scripts\Main\CameraController.cs" />
      <Compile Include="Assets\Scripts\Main\CameraControllerOld.cs" />
@@ -63,11 +66,13 @@
      <Compile Include="Assets\Scripts\Main\MeteorControl.cs" />
      <Compile Include="Assets\Scripts\Main\MeteorControlOld.cs" />
      <Compile Include="Assets\Scripts\Main\PanelController.cs" />
+     <Compile Include="Assets\Scripts\Main\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\Main\PrefsControl.cs" />
      <Compile Include="Assets\Scripts\Main\ShipController.cs" />
      <Compile Include="Assets\Scripts\Main\ShipHealth.cs" />
      <Compile Include="Assets\Scripts\Main\Shockwave.cs" />
      <Compile Include="Assets\Scripts\Main\SoundEffect.cs" />
+     <Compile Include="Assets\Scripts\Main\SoundEffectConstant.cs" />
      <Compile Include="Assets\Scripts\Main\SoundManager.cs" />
      <Compile Include="Assets\Scripts\Main\Swirl.cs" />
      <Compile Include="Assets\Scripts\Main\TorpedoController.cs" />
