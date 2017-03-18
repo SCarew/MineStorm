@@ -32,6 +32,7 @@ public class SoundManager : MonoBehaviour {
 	[SerializeField] private AudioClip explosionUFO11;
 	[SerializeField] private AudioClip explosionUFO21;
 	[SerializeField] private AudioClip explosionShip1;
+	[SerializeField] private AudioClip hypExplosionMeteor1;
 	[SerializeField] private AudioClip meteorCollide1;
 	[SerializeField] private AudioClip swirlLarge1;
 	[SerializeField] private AudioClip swirlSmall1;
@@ -106,6 +107,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = shockwave1; }
 		else if (soundName == "explosionship") 
 			{ ac = explosionShip1; }
+		else if (soundName == "explosionhypmeteor") 
+			{ ac = hypExplosionMeteor1; }
 		/* ----------------------------------- */
 		else if (soundName == "choicemove") 
 			{ ac = choiceButtons[0]; }
@@ -144,64 +147,14 @@ public class SoundManager : MonoBehaviour {
 		float vol = 1f;
 		soundName = soundName.ToLower();
 
-		//this section includes all sound names for reference
-		//  only those marked with *** should be called in this function
-		if (soundName == "torpedo" || soundName == "torp") 
-			{ ac = torp1; }
-		else if (soundName == "laser") 
-			{ ac = laser1; }
-		else if (soundName == "missile") 
-			{ ac = missile1; }
-		else if (soundName == "hyplaser") 
-			{ ac = laser1; }
-		else if (soundName == "forcefield") 
-			{ ac = forcefieldOn1; }
-		else if (soundName == "forcefieldoff") 
-			{ ac = forcefieldOff1; }
-		else if (soundName == "shockwave") 
-			{ ac = shockwave1; }
-		else if (soundName == "explosionmeteor") 
-			{ ac = explosionMet1; }
-		else if (soundName == "explosionmagnet") 
-			{ ac = explosionMag1; }
-		else if (soundName == "explosionelectric") 
-			{ ac = explosionElec1; }
-		else if (soundName == "explosiondense") 
-			{ ac = explosionDen1; }
-		else if (soundName == "explosionbhole") 
-			{ ac = explosionBHole1; }
-		else if (soundName == "expmissile") 
-			{ ac = expMissile1; }
-		else if (soundName == "explaser") 
-			{ ac = expLaser1; }
-		else if (soundName == "exptorpedo") 
-			{ ac = expTorpedo1; }
-		else if (soundName == "ufolaser") 
-			{ ac = UFOLaser1; }
-		else if (soundName == "ufotorp") 
-			{ ac = UFOTorpedo1; }
-		else if (soundName == "expufolaser") 
-			{ ac = expUFOLaser1; }
-		else if (soundName == "expufotorp") 
-			{ ac = expUFOTorpedo1; }
-		else if (soundName == "explosionship") 
-			{ ac = explosionShip1; }
-		else if (soundName == "explosionufo1") 
-			{ ac = explosionUFO11; }
-		else if (soundName == "explosionufo2") 
-			{ ac = explosionUFO21; }
-		else if (soundName == "meteorhit") 
-			{ ac = meteorCollide1; }
-		else if (soundName == "swirllarge") //***
+		if (soundName == "swirllarge") 
 			{ ac = swirlLarge1; }
-		else if (soundName == "swirlsmall") 
+		else if (soundName == "swirlsmall") //actually played from PlaySoundVisible()
 			{ ac = swirlSmall1; }
 			//vol = parObj.GetComponentInChildren<ParticleSystem>().transform.localScale.x; }
-		else if (soundName == "engine") 
-			{ ac = engine1; }
-		else if (soundName == "ufo1")  //***
+		else if (soundName == "ufo1")  
 			{ ac = UFO11; }
-		else if (soundName == "ufo2")  //***
+		else if (soundName == "ufo2") 
 			{ ac = UFO12; }
 
 		PlaySound(ac, vol, parObj, true);
@@ -223,7 +176,7 @@ public class SoundManager : MonoBehaviour {
 			return;    //object not visible to camera, so don't play sound
 		}
 
-		else if (soundName == "explosionmeteor") 
+		if (soundName == "explosionmeteor") 
 			{ ac = explosionMet1; }
 		else if (soundName == "explosionmagnet") 
 			{ ac = explosionMag1; }
@@ -259,5 +212,76 @@ public class SoundManager : MonoBehaviour {
 		PlaySound(ac, vol);
 	}
 
+	/// <summary>
+	/// Plays all sounds generically.  Reference function - should not be used.
+	/// </summary>
+	/// <param name="soundName">Sound name.</param>
+	public void PlaySoundGeneric(string soundName) {
+		AudioClip ac = null;
+		float vol = 1f;
+		soundName = soundName.ToLower();
 
+		//this section includes all sound names for reference
+		if (soundName == "torpedo" || soundName == "torp") 
+			{ ac = torp1; }
+		else if (soundName == "laser") 
+			{ ac = laser1; }
+		else if (soundName == "missile") 
+			{ ac = missile1; }
+		else if (soundName == "hyplaser") 
+			{ ac = laser1; }
+		else if (soundName == "forcefield") 
+			{ ac = forcefieldOn1; }
+		else if (soundName == "forcefieldoff") 
+			{ ac = forcefieldOff1; }
+		else if (soundName == "shockwave") 
+			{ ac = shockwave1; }
+		else if (soundName == "explosionmeteor") 
+			{ ac = explosionMet1; }
+		else if (soundName == "explosionmagnet") 
+			{ ac = explosionMag1; }
+		else if (soundName == "explosionelectric") 
+			{ ac = explosionElec1; }
+		else if (soundName == "explosiondense") 
+			{ ac = explosionDen1; }
+		else if (soundName == "explosionbhole") 
+			{ ac = explosionBHole1; }
+		else if (soundName == "explosionhypmeteor") 
+			{ ac = hypExplosionMeteor1; }
+		else if (soundName == "expmissile") 
+			{ ac = expMissile1; }
+		else if (soundName == "explaser") 
+			{ ac = expLaser1; }
+		else if (soundName == "exptorpedo") 
+			{ ac = expTorpedo1; }
+		else if (soundName == "ufolaser") 
+			{ ac = UFOLaser1; }
+		else if (soundName == "ufotorp") 
+			{ ac = UFOTorpedo1; }
+		else if (soundName == "expufolaser") 
+			{ ac = expUFOLaser1; }
+		else if (soundName == "expufotorp") 
+			{ ac = expUFOTorpedo1; }
+		else if (soundName == "explosionship") 
+			{ ac = explosionShip1; }
+		else if (soundName == "explosionufo1") 
+			{ ac = explosionUFO11; }
+		else if (soundName == "explosionufo2") 
+			{ ac = explosionUFO21; }
+		else if (soundName == "meteorhit") 
+			{ ac = meteorCollide1; }
+		else if (soundName == "swirllarge") //***
+			{ ac = swirlLarge1; }
+		else if (soundName == "swirlsmall") 
+			{ ac = swirlSmall1; }
+			//vol = parObj.GetComponentInChildren<ParticleSystem>().transform.localScale.x; }
+		else if (soundName == "engine") 
+			{ ac = engine1; }
+		else if (soundName == "ufo1")  //***
+			{ ac = UFO11; }
+		else if (soundName == "ufo2")  //***
+			{ ac = UFO12; }
+
+		PlaySound(ac);
+	}
 }

@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class HypLaser : MonoBehaviour {
 
-	[SerializeField] private float fireSpeed = 10.0f;
-	[SerializeField] private int damage = 100;
+	private float fireSpeed = 15.0f;
+	private int damage = 100;
+
 	public float lifetime = 3.0f;
 	[SerializeField] private GameObject pre_Explosion;
 	[SerializeField] private GameObject pre_LaserTimedExplosion;
@@ -18,6 +19,7 @@ public class HypLaser : MonoBehaviour {
 	static private SoundManager aud;
 	static private Camera cam;
 	static private Transform quad;
+	static private HypCrosshair cross;
 
 	void Start () {
 		Destroy(gameObject, lifetime);
@@ -33,7 +35,9 @@ public class HypLaser : MonoBehaviour {
 			{ cam = GameObject.Find("Main Camera").GetComponent<Camera>(); }
 		if (quad == null)
 			{ quad = GameObject.Find("Background").transform; }
-
+		if (cross == null)
+			{ cross = GameObject.Find("Crosshair").GetComponent<HypCrosshair>(); }
+		
 		//rb.MoveRotation(shipRb.rotation);
 		//Vector3 v3 = new Vector3(0f, -1f, 0f);
 		//transform.rotation = Quaternion.FromToRotation(transform.forward, transform.forward + v3);
@@ -60,13 +64,14 @@ public class HypLaser : MonoBehaviour {
 	}
 
 	private void GetTarget() {
-		//Vector3 pos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.y - transform.position.y);
-		//Vector3 pos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20f);
-		Vector3 target = GameObject.Find("TempTarget").GetComponent<RectTransform>().position;
-		Vector3 pos = new Vector3(target.x, target.y, quad.position.z * 1.5f);
+		Vector3 target = GameObject.Find("Crosshair").GetComponent<RectTransform>().position;
+		//Vector3 pos = new Vector3(target.x, target.y, quad.position.z * 1.5f);
+		Vector3 pos = new Vector3(target.x, target.y, cross.GetZDistance() - cam.transform.position.z);
 	    pos = cam.ScreenToWorldPoint(pos);
+	    //pos.z = cross.GetZDistance();
     	Vector3 aimingDirection = pos - transform.position;
      	transform.rotation = Quaternion.LookRotation(aimingDirection);
+     	Debug.Log("pos = " + pos);
 	}
 
 	void OnDestroy() {

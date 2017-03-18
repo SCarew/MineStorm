@@ -18,18 +18,18 @@ public class HypShipController : MonoBehaviour {
 	private float deadZone = 0.25f;
 	private float laserRechargeRate = 1f;
 	private float laserCurrentCharge = 0f;  
-	private float return_x = 3f, return_y = 2f;
+	private float return_x = 0.9f, return_y = 0.6f;
 
 	//testing
-	public Text txtX, txtY;
+	//public Text txtX, txtY;
 
 	void Start () {
 		quad = GameObject.Find("Background").transform;
 		pre_Effects = GameObject.Find("Effects").transform;
-		targetObj = GameObject.Find("TempTarget").GetComponent<RectTransform>();
+		targetObj = GameObject.Find("Crosshair").GetComponent<RectTransform>();
 		cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-		max_x = 790f;
-		max_y = 440f;
+		max_x = 750f;   //X = 1600 / 2
+		max_y = 410f;   //Y =  900 / 2
 		laserCurrentCharge = laserRechargeRate;
 		original_x = transform.position.x;
 		original_y = transform.position.y;
@@ -81,11 +81,12 @@ public class HypShipController : MonoBehaviour {
 			laserCurrentCharge = 0f;		
 			FireLaser(); 
 		}
-		if (h > deadZone) { TurnRight(); }
-		else if (h < -deadZone) { TurnLeft(); }
-		else if (v > deadZone) { TurnUp(); }
-		else if (v < -deadZone) { TurnDown(); }
-		else { ReturnXY(); }
+		bool bMovement = false;
+		if (h > deadZone) { TurnRight(); bMovement = true; }
+		if (h < -deadZone) { TurnLeft(); bMovement = true; }
+		if (v > deadZone) { TurnUp(); bMovement = true; }
+		if (v < -deadZone) { TurnDown(); bMovement = true; }
+		if (!bMovement) { ReturnXY(); }
 
 		if (target.x > max_x) { target.x = max_x; }
 		if (target.x < -max_x) { target.x = -max_x; }
@@ -98,7 +99,8 @@ public class HypShipController : MonoBehaviour {
 		//txtX.text = x.ToString();
 		//txtY.text = y.ToString();
 		transform.rotation = Quaternion.Euler(y * -7f, x * 30f, 0f);
-		cam.transform.rotation = Quaternion.Euler(y * -2f, x * 6f, 0f);
+		//cam.transform.rotation = Quaternion.Euler(y * 2f, x * -6f, 0f);
+		cam.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 		transform.position = new Vector3(original_x + x * 10f, original_y + y * 8f, original_z);
 	}
 }
