@@ -50,11 +50,13 @@
      <Compile Include="Assets\Scripts\Choice\ButtonControl.cs" />
      <Compile Include="Assets\Scripts\Choice\Detection.cs" />
      <Compile Include="Assets\Scripts\FadeIn\Fader.cs" />
+     <Compile Include="Assets\Scripts\Hyperspace\CorridorControl.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypCrosshair.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypEnder.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypLaser.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypMeteor.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypShipController.cs" />
+     <Compile Include="Assets\Scripts\Hyperspace\HypShipHealth.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypSpawner.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypUFO.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HyperSwirl.cs" />

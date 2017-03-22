@@ -102,5 +102,6 @@ public class HypShipController : MonoBehaviour {
 		//cam.transform.rotation = Quaternion.Euler(y * 2f, x * -6f, 0f);
 		cam.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 		transform.position = new Vector3(original_x + x * 10f, original_y + y * 8f, original_z);
+		//GameObject.Find("Instruments").GetComponent<RectTransform>().anchoredPosition
 	}
 }

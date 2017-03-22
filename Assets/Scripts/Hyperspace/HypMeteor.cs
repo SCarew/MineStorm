@@ -8,6 +8,7 @@ public class HypMeteor : MonoBehaviour {
 	private Transform parEff;
 	private ScoreManager sm;
 	private SoundManager aud;
+	private HypShipHealth pShipHealth;
 	[SerializeField] private GameObject ps_Pieces;
 
 	private float moveSpeed = 1f;
@@ -24,6 +25,7 @@ public class HypMeteor : MonoBehaviour {
 		parEff = GameObject.Find("Effects").transform;
 		sm = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
 		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
+		pShipHealth = GameObject.Find("Hyp_PlayerShip").GetComponent<HypShipHealth>();
 	}
 
 	public void SetTarget (Vector3 location, float speed = 0f) {
@@ -59,12 +61,17 @@ public class HypMeteor : MonoBehaviour {
 	}
 
 	void OnCollisionEnter (Collision coll) {
+		//Debug.Log(coll.gameObject.name + " was hit");
 		if (coll.gameObject.name == "HypLaser") {
 			Destroy(coll.gameObject);
 			health -= 1;
 			if (health <= 0) {
 				Explode();
 			}
+		}
+		if (coll.gameObject.name == "Hyp_PlayerShip") {
+			pShipHealth.TakeDamage();
+			Explode();
 		}
 	}
 }
