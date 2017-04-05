@@ -8,10 +8,12 @@ public class HypShipController : MonoBehaviour {
 	private Camera cam;
 	public  float targetMoveSpeed = 15f;
 	private RectTransform targetObj;
+	private RectTransform instObj;
 	private Transform quad;
 	private Transform pre_Effects;
 	private Vector2 target = new Vector2(0f, 0f);
 	private bool bPaused = false;
+	private bool bInvertY = false;
 	private float max_x, max_y;
 	private float original_x, original_y, original_z;
 
@@ -27,6 +29,7 @@ public class HypShipController : MonoBehaviour {
 		quad = GameObject.Find("Background").transform;
 		pre_Effects = GameObject.Find("Effects").transform;
 		targetObj = GameObject.Find("Crosshair").GetComponent<RectTransform>();
+		instObj = GameObject.Find("Instruments").GetComponent<RectTransform>();
 		cam = GameObject.Find("Main Camera").GetComponent<Camera>();
 		max_x = 750f;   //X = 1600 / 2
 		max_y = 410f;   //Y =  900 / 2
@@ -34,6 +37,9 @@ public class HypShipController : MonoBehaviour {
 		original_x = transform.position.x;
 		original_y = transform.position.y;
 		original_z = transform.position.z;
+
+		PrefsControl prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
+		bInvertY = prefs.GetHyperY();
 	}
 
 	void FireLaser() {
@@ -74,6 +80,7 @@ public class HypShipController : MonoBehaviour {
 
 		float h = Input.GetAxis("Horizontal");
 		float v = Input.GetAxis("Vertical");
+		if (bInvertY) { v = -v; }
 		bool bS = Input.GetButtonDown("Secondary");
 		bool bP = Input.GetButtonDown("Primary");
 
@@ -102,6 +109,8 @@ public class HypShipController : MonoBehaviour {
 		//cam.transform.rotation = Quaternion.Euler(y * 2f, x * -6f, 0f);
 		cam.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 		transform.position = new Vector3(original_x + x * 10f, original_y + y * 8f, original_z);
-		//GameObject.Find("Instruments").GetComponent<RectTransform>().anchoredPosition
+		instObj.rotation = Quaternion.Euler(0f, 0f, x * -10f);
+		instObj.anchoredPosition = new Vector2(0 + x * 50f, 150 + y * 20f);
+		targetObj.rotation = Quaternion.Euler(0f, 0f, x * -10f);
 	}
 }

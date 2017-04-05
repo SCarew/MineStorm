@@ -12,6 +12,7 @@ public class HypShipHealth : MonoBehaviour {
 	private float timeReset = 0.20f;
 	private float timeElapsed = 0f;
 	private bool bTakeHit = false;
+	private float invulnerableTime = 0f;
 
 	void Start () {
 		imgShield = GameObject.Find("imgShieldStrength").GetComponent<RawImage>();
@@ -29,6 +30,7 @@ public class HypShipHealth : MonoBehaviour {
 	}
 
 	public void TakeDamage() {
+		if (invulnerableTime > 0) { return; }
 		shields -= 1;
 		Debug.Log("Shields = " + shields);
 		if (shields < 0) {
@@ -36,6 +38,7 @@ public class HypShipHealth : MonoBehaviour {
 			return;
 		}
 
+		invulnerableTime = 0.5f;
 		UpdateShields();
 		bTakeHit = true;
 	}
@@ -51,5 +54,6 @@ public class HypShipHealth : MonoBehaviour {
 				redFlash.SetActive(true);
 			}
 		}
+		if (invulnerableTime > 0f) { invulnerableTime -= Time.deltaTime; }
 	}
 }

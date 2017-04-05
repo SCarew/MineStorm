@@ -131,6 +131,20 @@ public class PrefsControl : MonoBehaviour {
 		}
 	}
 
+	public bool GetHyperY() {
+		if (PlayerPrefs.GetInt("InvertYAxis", 0) == 0)
+			{ return false; }
+		else 
+			{ return true; }
+	}
+
+	public void SetHyperY(bool bInvert) {
+		if (bInvert)
+			{ PlayerPrefs.SetInt("InvertYAxis", 1); }
+		else
+			{ PlayerPrefs.SetInt("InvertYAxis", 0); }
+	}
+
 	public int GetControlLayout() {
 		return PlayerPrefs.GetInt("ControlScheme", 0);
 	}

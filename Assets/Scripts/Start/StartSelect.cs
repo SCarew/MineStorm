@@ -7,11 +7,13 @@ public class StartSelect : MonoBehaviour {
 	private int currentButton = -1;
 	private bool disableContinue = false;
 	private Color colorUnselected, colorSelected, colorFinal, colorDisabled;
-	public GameObject startPanel, optionPanel;
+	public GameObject startPanel, optionPanel, controlsPanel;
 	public Text[] textOptions;
 	public Text[] textMini;
 	public Slider[] sldMini;
-	private int sliderSound = 7, sliderMusic = 8;   //locations of sliders
+	public GameObject[] panelLayout;
+	public Text txtLayout, txtMiniLayout;
+	private int sliderSound = 8, sliderMusic = 9;   //locations of sliders
 	private PrefsControl prefs;
 	private LevelManager lm;
 	private SoundManager aud;
@@ -20,6 +22,7 @@ public class StartSelect : MonoBehaviour {
 	private float fChange = 0f;   //check for delaying input
 	private bool menuStart = true;  //on Start(t) or Option(f) menu
 	public int startMenuOptions = 5;  
+	public int optionMenuOptions = 6;
 
 	void Start () {
 		colorUnselected = new Color(151/255f, 244/255f, 248/255f, 255/255f);
@@ -30,7 +33,9 @@ public class StartSelect : MonoBehaviour {
 		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
+
 		optionPanel.SetActive(false);
+		controlsPanel.SetActive(false);
 		startPanel.SetActive(true);
 		LoadOptions();
 
@@ -52,7 +57,14 @@ public class StartSelect : MonoBehaviour {
 	}
 
 	void Update () {
+		bool bChange = false;
 		if (Input.GetButtonDown("Primary") && (currentButton >= 0)) {
+			if (controlsPanel.activeSelf) {
+				txtLayout.color = colorFinal;
+				aud.PlaySoundImmediate("startSelect");
+				Invoke("LayoutSelected", 0.4f);
+				return;
+			}
 			textOptions[currentButton].color = colorFinal;
 			aud.PlaySoundImmediate("startSelect");
 			Invoke("ButtonSelected", 0.4f);
@@ -60,12 +72,19 @@ public class StartSelect : MonoBehaviour {
 		}
 
 		if (!menuStart && Input.GetButtonDown("Cancel")) {   //cancel Options menu
-			startPanel.SetActive(true);
-			optionPanel.SetActive(false);
-			currentButton = -1;
-			menuStart = true;
-			LoadOptions();   //reset changed options to previously saved
-			return;
+			if (optionPanel.activeSelf) {
+				startPanel.SetActive(true);
+				optionPanel.SetActive(false);
+				currentButton = -1;
+				menuStart = true;
+				LoadOptions();   //reset changed options to previously saved
+				return;
+			} else {    //cancel Controls menu
+				optionPanel.SetActive(true);
+				controlsPanel.SetActive(false);
+				currentButton = startMenuOptions + 1;
+				bChange = true;
+			}
 		}
 
 		if (fChange > 0) {
@@ -74,7 +93,6 @@ public class StartSelect : MonoBehaviour {
 		}
 
 		float v = Input.GetAxis("Vertical");
-		bool bChange = false;
 		int nextButton = -1;
 		if (v - offset > 0) {
 			currentButton -= 1;
@@ -151,6 +169,31 @@ public class StartSelect : MonoBehaviour {
 		}
 	}
 
+	void UpdateControlLayout() {
+		for (int i=0; i < panelLayout.Length; i++) {
+			panelLayout[i].SetActive(false);
+		}
+
+		if (txtMiniLayout.text == "Layout 1") {
+			panelLayout[0].SetActive(true);
+		} else if (txtMiniLayout.text == "Layout 2") {
+			panelLayout[1].SetActive(true);
+		} else {   //Layout 3
+			panelLayout[2].SetActive(true);
+		}
+	}
+
+	void LayoutSelected() {
+		if (txtMiniLayout.text == "Layout 1") 
+			{ txtMiniLayout.text = "Layout 2"; }
+		else if (txtMiniLayout.text == "Layout 2") 
+			{ txtMiniLayout.text = "Layout 3"; }
+		else 
+			{ txtMiniLayout.text = "Layout 1"; }
+		UpdateControlLayout();
+		txtLayout.color = colorUnselected;
+	}
+
 	void ButtonSelected() {
 		if (textOptions[currentButton].name == "txtStory") {
 			prefs.SetGameType("Story");
@@ -184,7 +227,16 @@ public class StartSelect : MonoBehaviour {
 			}
 		}
 		if (textOptions[currentButton].name == "txtControls") {
-			
+			controlsPanel.SetActive(true);
+			optionPanel.SetActive(false);
+			UpdateControlLayout();
+		}
+		if (textOptions[currentButton].name == "txtHyperY") {
+			if (textMini[currentButton].text == "Normal") {
+				textMini[currentButton].text = "Inverted";
+			} else {
+				textMini[currentButton].text = "Normal";
+			}
 		}
 		if (textOptions[currentButton].name == "txtSound") {
 			if (textMini[currentButton].text == "Set 1") {
@@ -233,7 +285,16 @@ public class StartSelect : MonoBehaviour {
 			if (txt.name == "txtMiniSound") { 
 				txt.text = "Set " + prefs.GetSoundSet();
 			}
+			if (txt.name == "txtMiniHyperY") {
+				if (prefs.GetHyperY() == true) {
+					txt.text = "Inverted";
+				} else {
+					txt.text = "Normal";
+				}
+			}
 		}
+		int con = prefs.GetControlLayout() + 1;
+		txtMiniLayout.text = "Layout " + con;
 	}
 
 	void SaveOptions() {
@@ -250,6 +311,13 @@ public class StartSelect : MonoBehaviour {
 			if (txt.name == "txtMiniSound") { 
 				prefs.SetSoundSet(int.Parse(txt.text.Substring(txt.text.Length - 1, 1)));
 			}
+			if (txt.name == "txtMiniHyperY") {
+				if (txt.text == "Normal") 
+					{ prefs.SetHyperY(false); }
+				else 
+					{ prefs.SetHyperY(true); }
+			}
 		}
+		prefs.SetControlLayout(int.Parse(txtMiniLayout.text.Substring(txtMiniLayout.text.Length - 1, 1)) - 1);
 	}
 }

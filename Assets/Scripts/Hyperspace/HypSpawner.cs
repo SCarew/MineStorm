@@ -5,9 +5,11 @@ public class HypSpawner : MonoBehaviour {
 
 	private Transform spawner, ender;
 	private Transform parMet;
-	private Vector3 max0, min0;   //bounds of spawner object
+	private Vector3 max0, min0;   //bounds of meteor spawner object
 	private Vector3 max1, min1;   //bounds of target object (ender)
 	[SerializeField] private GameObject[] mines;
+	[SerializeField] private GameObject[] Ufos;
+	[SerializeField] private GameObject[] UFOSpawners;
 	private int iMeteor = 0;
 
 	void Start () {
@@ -24,7 +26,7 @@ public class HypSpawner : MonoBehaviour {
 		//Debug.Log("  ender max: " + max1);
 		//Debug.Log("  ender min: " + min1);
 
-		SpawnMeteor();
+		//SpawnMeteor();
 	}
 
 	void SpawnMeteor() {
@@ -40,9 +42,19 @@ public class HypSpawner : MonoBehaviour {
 		go.GetComponent<HypMeteor>().SetTarget(rnd1);
 	}
 
+	void SpawnUFO() {
+		//Transform spawn = UFOSpawners[Random.Range(0, UFOSpawners.Length)].transform;
+		Transform spawn = UFOSpawners[1].transform;
+		GameObject go = Instantiate(Ufos[1], spawn.position, Quaternion.identity, parMet) as GameObject;
+
+	}
+
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			SpawnMeteor();
+		}
+		if (Input.GetKeyDown(KeyCode.U)) {
+			SpawnUFO();
 		}
 	}
 }
