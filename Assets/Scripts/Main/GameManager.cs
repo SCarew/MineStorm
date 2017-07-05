@@ -104,7 +104,18 @@ public class GameManager : MonoBehaviour {
 			numElecMines = 4;
 			spawnRateUfo2 = 60f;
 		}
-		//add other levels
+		//TODO add other levels
+
+		//---------------------------------------------------------------
+
+		//start music   TODO: decide on sectors
+		int n = 0;
+		MusicManager music = GameObject.Find("MusicManager").GetComponent<MusicManager>();
+		if (currentLevel >=  1 && currentLevel <=  6)  { n = 1; }  //sector alpha
+		if (currentLevel >=  7 && currentLevel <= 11)  { n = 2; }  //sector beta
+		if (currentLevel >= 12 && currentLevel <= 16)  { n = 3; }  //sector delta
+		if (currentLevel >= 17 && currentLevel <= 24)  { n = 4; }  //sector omega
+		music.PlayMusic(n);
 
 		//---------------------------------------------------------------
 

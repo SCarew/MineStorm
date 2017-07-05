@@ -73,6 +73,7 @@
      <Compile Include="Assets\Scripts\Main\GameOverMenu.cs" />
      <Compile Include="Assets\Scripts\Main\MeteorControl.cs" />
      <Compile Include="Assets\Scripts\Main\MeteorControlOld.cs" />
+     <Compile Include="Assets\Scripts\Main\MusicManager.cs" />
      <Compile Include="Assets\Scripts\Main\PanelController.cs" />
      <Compile Include="Assets\Scripts\Main\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\Main\PrefsControl.cs" />

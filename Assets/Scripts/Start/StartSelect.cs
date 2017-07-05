@@ -47,6 +47,10 @@ public class StartSelect : MonoBehaviour {
 			//sld0.enabled = false;
 			sld0.gameObject.SetActive(false);
 		}
+
+		//play music theme
+		MusicManager music = GameObject.Find("MusicManager").GetComponent<MusicManager>();
+		music.PlayMusic(0);	
 	}
 
 	void ResetMenu() {

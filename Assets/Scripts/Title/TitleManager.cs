@@ -14,6 +14,10 @@ public class TitleManager : MonoBehaviour {
 		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		tx = GameObject.Find("TextInfo").GetComponent<RawImage>();
 		title = GameObject.Find("TitleImage").GetComponent<RawImage>();
+
+		//play music theme
+		MusicManager music = GameObject.Find("MusicManager").GetComponent<MusicManager>();
+		music.PlayMusic(0);
 	}
 
 	void Update () {

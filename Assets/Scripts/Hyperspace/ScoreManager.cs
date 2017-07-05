@@ -9,6 +9,10 @@ public class ScoreManager : MonoBehaviour {
 	void Start () {
 		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		score = prefs.GetGameStats(PrefsControl.stats.Score);
+
+		//play music 
+		MusicManager music = GameObject.Find("MusicManager").GetComponent<MusicManager>();
+		music.PlayMusic(5);
 	}
 
 	public void AddScore(int amount) {
