@@ -50,11 +50,13 @@ public class HypSpawner : MonoBehaviour {
 	}
 
 	void Update () {
+		//*** testing ***
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			SpawnMeteor();
 		}
 		if (Input.GetKeyDown(KeyCode.U)) {
 			SpawnUFO();
 		}
+		//***************
 	}
 }

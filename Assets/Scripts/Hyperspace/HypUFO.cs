@@ -6,6 +6,7 @@ public class HypUFO : MonoBehaviour {
 	public  enum UFOType {Pink, Gray};
 	public  UFOType myType = UFOType.Gray;
 	[SerializeField] private GameObject ps_Pieces;
+	[SerializeField] private GameObject ps_SmokeExplosion;
 	[SerializeField] private GameObject pre_SmallMeteor;
 	private Transform parEff, parMet;
 	private SoundManager aud;
@@ -15,10 +16,11 @@ public class HypUFO : MonoBehaviour {
 	private Vector3 myTarget, myGravity;
 	private bool bInCorridor = false;
 	private bool bNewlySpawned = false;
+	private bool bOutOfBounds = false;
 	private int health = 4;
 	private int pinkScore = 225, grayScore = 150;
 	private float weaponTime = 0.25f;
-	private float maxDistance = 21f;   //for remaining in play
+	private float maxDistance = 25f;   //for remaining in play
 
 	private Vector3 velocity, gravity;
 
@@ -49,7 +51,7 @@ public class HypUFO : MonoBehaviour {
 	}
 
 	void Explode () {
-		Instantiate(ps_Pieces, transform.position, Quaternion.identity, parEff);
+		GameObject go = Instantiate(ps_Pieces, transform.position, Quaternion.identity, parEff) as GameObject;
 		if (myType == UFOType.Pink) {
 			aud.PlaySoundVisible("explosionUFO1", transform);
 			sm.AddScore(pinkScore);
@@ -57,7 +59,17 @@ public class HypUFO : MonoBehaviour {
 			aud.PlaySoundVisible("explosionUFO2", transform);
 			sm.AddScore(grayScore);
 		}
+		Destroy(go, 1f);
 		Destroy(gameObject);
+	}
+
+	void MakeSmoke() {    //triggered when UFO leaves bounds of corridor
+		if (bOutOfBounds) { return; }
+		bOutOfBounds = true;
+		GameObject go;
+		go = Instantiate(ps_SmokeExplosion, transform.position + new Vector3(0f, 0f, -0.5f), Quaternion.identity, parEff) as GameObject;
+		Destroy(go, 1f);
+		Destroy(gameObject, 0.4f);
 	}
 
 	public void NowInCorridor(bool bCorr) {
@@ -65,8 +77,11 @@ public class HypUFO : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		if (OutOfBounds()) {
-			Destroy(gameObject);
+		if (bOutOfBounds) {  //already out of bounds
+			gameObject.transform.localScale -= new Vector3(1f/30f, 1f/30f, 1f/30f);
+		}
+		if (OutOfBounds()) {  //enters out of bounds
+			MakeSmoke();
 			return;
 		}
 		if (myType == UFOType.Gray && bNewlySpawned) {
@@ -83,6 +98,13 @@ public class HypUFO : MonoBehaviour {
 		velocity = velocity - gravity * Time.deltaTime;
 		//Debug.Log("vel=" + velocity);
 		rb.velocity = velocity;
+
+		// testing - remove this? =============
+		float x0 = Random.Range(-0.01f, 0.01f);
+		float y0 = Random.Range(-0.01f, 0.01f);
+		float z0 = Random.Range(-0.01f, 0.01f);
+		gravity = gravity - new Vector3(x0, y0, z0);  
+		// testing ends  ======================
 
 		//transform.position = Vector3.MoveTowards(transform.position, myTarget, Time.deltaTime);
 	}
@@ -133,10 +155,15 @@ public class HypUFO : MonoBehaviour {
 			y = Random.Range(-maxDistance, v3.y);
 		}
 		z = Random.Range(1f, 37f);
-		myTarget = new Vector3(x, y, z);
-		x = Random.Range(-5f, 5f);
-		y = Random.Range(-5f, 5f);
-		z = Random.Range(-5f, 5f);
+		myTarget = new Vector3(x, y, z);   //currently unused !!!!
+		float maxGrav = 5f;
+		x = Random.Range(-maxGrav, maxGrav);
+		y = Random.Range(-maxGrav, maxGrav);
+		z = Random.Range(-maxGrav, maxGrav);
+		if (v3.x > 0f && x > 0) { x = x/2; }
+		if (v3.x < 0f && x < 0) { x = x/2; }
+		if (v3.y > 0f && y > 0) { y = y/2; }
+		if (v3.y < 0f && y < 0) { y = y/2; }
 		myGravity = new Vector3(x, y, z);
 	}
 
