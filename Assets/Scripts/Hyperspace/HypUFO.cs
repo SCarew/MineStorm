@@ -21,6 +21,7 @@ public class HypUFO : MonoBehaviour {
 	private int pinkScore = 225, grayScore = 150;
 	private float weaponTime = 0.25f;
 	private float maxDistance = 25f;   //for remaining in play
+	private float rotateSpeed = 5f;
 
 	private Vector3 velocity, gravity;
 
@@ -43,6 +44,19 @@ public class HypUFO : MonoBehaviour {
 		velocity = InitialVelocity(2);
 		rb.velocity = velocity;
 		Debug.Log("init vel = " + velocity);
+
+		InitialRotation(2);
+
+		//***Testing - remove this function
+		StartCoroutine(TestLocation());
+	}
+
+	IEnumerator TestLocation() {
+		bool bLoop = true;
+		while(bLoop) {
+			Debug.Log(gameObject.name + ": " + gameObject.transform.position);
+			yield return new WaitForSeconds(1.0f);
+		}
 	}
 
 	void TakeHit() {
@@ -100,13 +114,33 @@ public class HypUFO : MonoBehaviour {
 		rb.velocity = velocity;
 
 		// testing - remove this? =============
-		float x0 = Random.Range(-0.01f, 0.01f);
-		float y0 = Random.Range(-0.01f, 0.01f);
-		float z0 = Random.Range(-0.01f, 0.01f);
+		float alterGrav = 0.01f;
+		float x0 = Random.Range(-alterGrav, alterGrav);
+		float y0 = Random.Range(-alterGrav, alterGrav);
+		float z0 = Random.Range(-alterGrav, alterGrav);
 		gravity = gravity - new Vector3(x0, y0, z0);  
 		// testing ends  ======================
 
 		//transform.position = Vector3.MoveTowards(transform.position, myTarget, Time.deltaTime);
+
+		rb.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.Euler(0f ,0f ,0f), Mathf.Abs(rb.velocity.x) * rotateSpeed * Time.deltaTime);
+
+	}
+
+	void InitialRotation(int spawner = 2) {
+		//rb.rotation = Quaternion.Euler(new Vector3(0f, 90f, 0f));
+		if (spawner == 1) {
+			rb.rotation = Quaternion.LookRotation(new Vector3(90f, 0f, 0f));
+		}
+		else if (spawner == 2) {
+			rb.rotation = Quaternion.LookRotation(new Vector3(-90f, 0f, 0f));
+		}
+		else if (spawner == 3) {
+			rb.rotation = Quaternion.LookRotation(new Vector3(0f, 90f, 0f));
+		}
+		else {  // (spawner == 4) 
+			rb.rotation = Quaternion.LookRotation(new Vector3(0f, -90f, 0f));
+		}
 	}
 
 	Vector3 InitialVelocity(int spawner = 2) {
@@ -117,7 +151,7 @@ public class HypUFO : MonoBehaviour {
 		v1.y += Random.Range(1, 5);
 		v1.z += Random.Range(1, 5);
 		Vector3 dir = v1 - v0;
-		float range = dir.magnitude;
+		//float range = dir.magnitude;
 		dir = dir.normalized;
 		Vector3 grav = dir * Random.Range(0.1f, 2.0f);
 		Debug.Log("grav=" + grav);

@@ -58,6 +58,7 @@
      <Compile Include="Assets\Scripts\Hyperspace\HypShipController.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypShipHealth.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypSpawner.cs" />
+     <Compile Include="Assets\Scripts\Hyperspace\HypTimer.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypUFO.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HyperSwirl.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\ScoreManager.cs" />

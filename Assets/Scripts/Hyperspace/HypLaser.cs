@@ -3,10 +3,10 @@ using UnityEngine;
 
 public class HypLaser : MonoBehaviour {
 
-	private float fireSpeed = 15.0f;
+	private float fireSpeed = 30.0f;   //was 15
 	private int damage = 100;
+	public float lifetime = 2.0f;      //was 3.0
 
-	public float lifetime = 3.0f;
 	[SerializeField] private GameObject pre_Explosion;
 	[SerializeField] private GameObject pre_LaserTimedExplosion;
 	private Rigidbody rb;
