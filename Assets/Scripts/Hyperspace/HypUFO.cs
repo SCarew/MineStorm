@@ -24,6 +24,7 @@ public class HypUFO : MonoBehaviour {
 	private float rotateSpeed = 5f;
 
 	private Vector3 velocity, gravity;
+	public  int startingSpawner = 1;   //set from HypSpawner.cs
 
 	void Start () {
 		if (myType == UFOType.Gray) { 
@@ -41,11 +42,13 @@ public class HypUFO : MonoBehaviour {
 
 		StartCoroutine(FireUpdate());
 
-		velocity = InitialVelocity(2);
+		velocity = InitialVelocity(startingSpawner);
 		rb.velocity = velocity;
-		Debug.Log("init vel = " + velocity);
+		Debug.Log("init vel = " + velocity + " [" + startingSpawner + "]");
+		rotateSpeed = Random.Range(1.5f, 2.5f);
 
-		InitialRotation(2);
+		InitialRotation(startingSpawner);
+		aud.PlaySoundConstant("UFOHum", gameObject.transform);
 
 		//***Testing - remove this function
 		StartCoroutine(TestLocation());
@@ -54,7 +57,7 @@ public class HypUFO : MonoBehaviour {
 	IEnumerator TestLocation() {
 		bool bLoop = true;
 		while(bLoop) {
-			Debug.Log(gameObject.name + ": " + gameObject.transform.position);
+			//Debug.Log(gameObject.name + ": " + gameObject.transform.position);
 			yield return new WaitForSeconds(1.0f);
 		}
 	}
@@ -81,9 +84,10 @@ public class HypUFO : MonoBehaviour {
 		if (bOutOfBounds) { return; }
 		bOutOfBounds = true;
 		GameObject go;
-		go = Instantiate(ps_SmokeExplosion, transform.position + new Vector3(0f, 0f, -0.5f), Quaternion.identity, parEff) as GameObject;
+		//go = Instantiate(ps_SmokeExplosion, transform.position + new Vector3(0f, 0f, -0.5f), Quaternion.identity, parEff) as GameObject;
+		go = Instantiate(ps_SmokeExplosion, transform.position + new Vector3(0f, 0f, -0.5f), Quaternion.identity, gameObject.transform) as GameObject;
 		Destroy(go, 1f);
-		Destroy(gameObject, 0.4f);
+		Destroy(gameObject, 1f);  //was 0.4f
 	}
 
 	public void NowInCorridor(bool bCorr) {
@@ -111,6 +115,12 @@ public class HypUFO : MonoBehaviour {
 //		rb.velocity += v * Time.deltaTime;
 		velocity = velocity - gravity * Time.deltaTime;
 		//Debug.Log("vel=" + velocity);
+		if (gameObject.transform.position.z >= 37) {  //keep in front of background
+			velocity = new Vector3(velocity.x, velocity.y, -velocity.z);
+		}
+		if (gameObject.transform.position.z <= 2) {   //keep in front of playership
+			velocity = new Vector3(velocity.x, velocity.y, -velocity.z);
+		}
 		rb.velocity = velocity;
 
 		// testing - remove this? =============
@@ -123,41 +133,88 @@ public class HypUFO : MonoBehaviour {
 
 		//transform.position = Vector3.MoveTowards(transform.position, myTarget, Time.deltaTime);
 
-		rb.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.Euler(0f ,0f ,0f), Mathf.Abs(rb.velocity.x) * rotateSpeed * Time.deltaTime);
+		if (startingSpawner < 2) {
+			//rb.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.Euler(0f ,0f ,0f), Mathf.Abs(rb.velocity.x) * rotateSpeed * Time.deltaTime);
+			rb.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.Euler(0f ,0f ,0f), rotateSpeed * 15 * Time.deltaTime);
+		} else {
+			//rb.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.Euler(0f ,0f ,0f), Mathf.Abs(rb.velocity.y) * rotateSpeed * Time.deltaTime);
+			rb.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.Euler(0f ,0f ,0f), rotateSpeed * 15 * Time.deltaTime);
+		}
 
 	}
 
-	void InitialRotation(int spawner = 2) {
+	void InitialRotation(int spawner = 1) {
 		//rb.rotation = Quaternion.Euler(new Vector3(0f, 90f, 0f));
-		if (spawner == 1) {
+		if (spawner == 0) {
 			rb.rotation = Quaternion.LookRotation(new Vector3(90f, 0f, 0f));
 		}
-		else if (spawner == 2) {
+		else if (spawner == 1) {
 			rb.rotation = Quaternion.LookRotation(new Vector3(-90f, 0f, 0f));
 		}
-		else if (spawner == 3) {
+		else if (spawner == 2) {
 			rb.rotation = Quaternion.LookRotation(new Vector3(0f, 90f, 0f));
 		}
-		else {  // (spawner == 4) 
+		else {  // (spawner == 3) 
 			rb.rotation = Quaternion.LookRotation(new Vector3(0f, -90f, 0f));
 		}
 	}
 
-	Vector3 InitialVelocity(int spawner = 2) {
+	Vector3 InitialVelocity(int spawner = 1) {
 		Vector3 v0;
 		v0 = transform.position;
 		Vector3 v1 = v0;
-		v1.x += Random.Range(1, 20);
+		v1.x += Random.Range(5, 20);
 		v1.y += Random.Range(1, 5);
 		v1.z += Random.Range(1, 5);
 		Vector3 dir = v1 - v0;
 		//float range = dir.magnitude;
 		dir = dir.normalized;
-		Vector3 grav = dir * Random.Range(0.1f, 2.0f);
-		Debug.Log("grav=" + grav);
-		gravity = grav;
+		Vector3 grav = dir * Random.Range(0.3f, 2.0f);
 		Vector3 newVel = new Vector3(Mathf.Sqrt(2f * grav.x * (v1.x - v0.x)), Mathf.Sqrt(2f * grav.y * (v1.y - v0.y)), Mathf.Sqrt(2f * grav.z * (v1.z - v0.z)));
 		newVel = new Vector3(newVel.x * 2, newVel.y * 2, newVel.z * 2);
+
+//		int rand = Random.Range(0, 4);
+//		if (rand == 0) {
+//			grav = new Vector3(grav.x, grav.y, grav.z);
+//		} else if (rand == 1) {
+//			grav = new Vector3(grav.x, -grav.y, grav.z);
+//		} else if (rand == 2) {
+//			grav = new Vector3(grav.x, grav.y, -grav.z);
+//		} else {  //( rand == 3)
+//			grav = new Vector3(grav.x, -grav.y, -grav.z);
+//		}
+		float offset = 2f, multiplier = 1.5f;
+		float ranXY = Random.Range(-1.5f, 1.5f);
+		float ranZ  = Random.Range(-0.5f, 0.5f);
+		if (spawner == 0) {   //right
+			newVel = new Vector3(-newVel.x, newVel.y, newVel.z);
+			grav = new Vector3(-grav.x*multiplier - offset, ranXY, ranZ);
+		} else if (spawner == 1) {    //left
+			newVel = new Vector3(newVel.x, newVel.y, newVel.z);
+			grav = new Vector3(grav.x*multiplier + offset, ranXY, ranZ);
+		} else if (spawner == 2) {    //top
+			newVel = new Vector3(newVel.y/4f, -newVel.x, newVel.z);
+			grav = new Vector3(ranXY, -grav.y*multiplier - offset, ranZ);
+		} else { //(spawner == 3)     //bottom
+			newVel = new Vector3(newVel.y/4f, newVel.x, newVel.z);
+			grav = new Vector3(ranXY, grav.y*multiplier + offset, ranZ);
+		}
+//		if (spawner == 0) {   //right
+//			newVel = new Vector3(-newVel.x, newVel.y, newVel.z);
+//			grav = new Vector3(-grav.x*multiplier - offset, grav.y, grav.z);
+//		} else if (spawner == 1) {    //left
+//			newVel = new Vector3(newVel.x, newVel.y, newVel.z);
+//			grav = new Vector3(grav.x*multiplier + offset, grav.y, grav.z);
+//		} else if (spawner == 2) {    //top
+//			newVel = new Vector3(newVel.y/4f, -newVel.x, newVel.z);
+//			grav = new Vector3(grav.x, -grav.y*multiplier - offset, grav.z);
+//		} else { //(spawner == 3)     //bottom
+//			newVel = new Vector3(newVel.y/4f, newVel.x, newVel.z);
+//			grav = new Vector3(grav.x, grav.y*multiplier + offset, grav.z);
+//		}
+
+		Debug.Log("grav=" + grav);
+		gravity = grav;
 		return newVel;
 	}
 

@@ -5,12 +5,12 @@ using UnityEngine;
 public class SoundEffectConstant : MonoBehaviour {
 
 	private AudioSource audio;
-	private Transform pShip;
+	//private Transform pShip;
 	private bool bLoop = true;
 
 	void Start () {
 		audio = GetComponent<AudioSource>();
-		pShip = GameObject.Find("PlayerShip").transform;
+		//pShip = GameObject.Find("PlayerShip").transform;
 		StartCoroutine(CheckDistance());
 	}
 	

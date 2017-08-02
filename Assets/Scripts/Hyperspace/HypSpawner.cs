@@ -43,10 +43,18 @@ public class HypSpawner : MonoBehaviour {
 	}
 
 	void SpawnUFO() {
-		//Transform spawn = UFOSpawners[Random.Range(0, UFOSpawners.Length)].transform;
-		Transform spawn = UFOSpawners[1].transform;
-		GameObject go = Instantiate(Ufos[1], spawn.position, Quaternion.identity, parMet) as GameObject;
+		int spawnNum = Random.Range(0, 4);   //spawners 0=right 1=left 2=top 3=bottom
+		int ufoNum = 1;   //Ufos 0=pink 1=gray
+		Vector3 min2, max2;
 
+		//Transform spawn = UFOSpawners[Random.Range(0, UFOSpawners.Length)].transform;
+		Transform spawn = UFOSpawners[spawnNum].transform;
+		min2 = spawn.GetComponent<BoxCollider>().bounds.min;
+		max2 = spawn.GetComponent<BoxCollider>().bounds.max;
+		Vector3 loc = new Vector3(Random.Range(min2.x, max2.x), Random.Range(min2.y, max2.y), Random.Range(min2.z, max2.z));
+//		GameObject go = Instantiate(Ufos[1], spawn.position, Quaternion.identity, parMet) as GameObject;
+		GameObject go = Instantiate(Ufos[ufoNum], loc, Quaternion.identity, parMet) as GameObject;
+		go.GetComponent<HypUFO>().startingSpawner = spawnNum;
 	}
 
 	void Update () {

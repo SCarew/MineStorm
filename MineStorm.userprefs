@@ -6,15 +6,15 @@
       <File FileName="Assets\Scripts\Main\ShipController.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Main\GameManager.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Main\PrefsControl.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Hyperspace\HypLaser.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Hyperspace\HypSpawner.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Hyperspace\HypLaser.cs" Line="19" Column="34" />
+      <File FileName="Assets\Scripts\Hyperspace\HypSpawner.cs" Line="53" Column="40" />
       <File FileName="Assets\Scripts\Hyperspace\HypMeteor.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Hyperspace\HypUFO.cs" Line="24" Column="31" />
+      <File FileName="Assets\Scripts\Hyperspace\HypUFO.cs" Line="51" Column="57" />
       <File FileName="Assets\Scripts\Hyperspace\HypShipController.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Hyperspace\HypShipHealth.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Hyperspace\CorridorControl.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Hyperspace\ScoreManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Hyperspace\HypTimer.cs" Line="18" Column="37" />
+      <File FileName="Assets\Scripts\Hyperspace\HypTimer.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

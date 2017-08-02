@@ -33,6 +33,7 @@ public class SoundManager : MonoBehaviour {
 	[SerializeField] private AudioClip explosionUFO21;
 	[SerializeField] private AudioClip explosionShip1;
 	[SerializeField] private AudioClip hypExplosionMeteor1;
+	[SerializeField] private AudioClip hypUFOHum;
 	[SerializeField] private AudioClip meteorCollide1;
 	[SerializeField] private AudioClip swirlLarge1;
 	[SerializeField] private AudioClip swirlSmall1;
@@ -156,6 +157,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = UFO11; }
 		else if (soundName == "ufo2") 
 			{ ac = UFO12; }
+		else if (soundName == "ufohum")
+			{ ac = hypUFOHum; }
 
 		PlaySound(ac, vol, parObj, true);
 	}
@@ -281,6 +284,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = UFO11; }
 		else if (soundName == "ufo2")  //***
 			{ ac = UFO12; }
+		else if (soundName == "ufohum")
+			{ ac = hypUFOHum; }
 
 		PlaySound(ac);
 	}
