@@ -26,6 +26,7 @@ public class ShipController : MonoBehaviour {
 	private bool bEscape = false;    //true when ship destroyed & escape pod launched
 	private bool bGameOver = false;  //true when in escape pod and no ships left
 	private bool bPaused = false;    //true when game is paused
+	private int currentLvl = -1;	 //for determining end of level
 
 	private float timeScaleIn = 1f;   //time for ship to warp in
 	private float timeScaleOut = 1.5f;  //time for ship to warp out 
@@ -95,6 +96,9 @@ public class ShipController : MonoBehaviour {
 		secCurrentCharge = secRechargeRate;
 		engCurrentCharge = engRechargeRate;
 		lifeCurrentCharge = lifeRechargeRate;
+
+		currentLvl = gm.currentLevel;
+		HyperSpaceJump();   //should only happen at start of scene
 	}
 	
 	void Update () {
@@ -287,6 +291,10 @@ public class ShipController : MonoBehaviour {
 			}
 		}
 
+		if (currentLvl != gm.currentLevel) {
+			currentLvl = gm.currentLevel;
+			HyperSpaceJump(true);			//for end of level jump
+		}
 	}
 
 	void Thrust(float power) {
@@ -517,4 +525,28 @@ public class ShipController : MonoBehaviour {
 		go.GetComponent<Swirl>().countdown = 1.4f;
 		adjustScaleOut = true;
 	}
+
+	/// <summary>
+	/// Start large hyperspace whirlpool (level start/end).
+	/// </summary>
+	/// <param name="jumpOut">If set to <c>true</c> jump out.</param>
+	public void HyperSpaceJump(bool jumpOut = false) {
+		GameObject go;
+		if (!jumpOut) {
+			go = Instantiate(pre_WarpExit, transform.position, Quaternion.identity) as GameObject;
+			go.GetComponent<Swirl>().countdown = 1.5f;
+			adjustScaleOut = true;
+		} else {
+			go = Instantiate(pre_WarpEnter, transform.position, Quaternion.identity) as GameObject;
+			adjustScaleIn = true;
+		}
+		go.transform.FindChild("Whirl 1").localScale = new Vector3(2.5f, 2.5f, 1f);
+		go.transform.FindChild("Whirl 2").localScale = new Vector3(2.5f, 2.5f, 1f);
+		//go.transform.FindChild("Whirl 3").localScale = new Vector3(3f, 3f, 1f);
+		FreezeMovement();
+		go.transform.SetParent(parEff);
+		timeSpent = 0f;
+
+	}
+
 }

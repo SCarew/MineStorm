@@ -53,6 +53,7 @@
      <Compile Include="Assets\Scripts\Hyperspace\CorridorControl.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypCrosshair.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypEnder.cs" />
+     <Compile Include="Assets\Scripts\Hyperspace\HypFader.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypLaser.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypMeteor.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypShipController.cs" />

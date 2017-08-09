@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour {
 	private GameOverMenu gameOverMenu;
 	public bool bGameOver = false;
 	public bool bArcadeMode = false;
+	[SerializeField] private GameObject panFadeIn;
 
 	public enum mine {Test, Meteor, Magnet, Electric, ElectroMagnet, Dense, BlackHole, UFO01, UFO02};
 
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Start() {
+		panFadeIn.SetActive(true);
 		parMeteor = GameObject.Find("Meteors").gameObject.transform;
 		parTextScores = GameObject.Find("txtScorePlus").gameObject.transform;
 		parEnemy = GameObject.Find("Enemies").gameObject.transform;
@@ -170,6 +172,8 @@ public class GameManager : MonoBehaviour {
 		if (currentLevel < 25) {  //final level = 25?
 			//message to player that level is clear
 			//open warp
+			panFadeIn.GetComponent<HypFader>().ResetTimer(true, 2.5f);
+
 			NextLevel();  //TODO instead, go to hyperspace scene
 		} else {
 			//game over

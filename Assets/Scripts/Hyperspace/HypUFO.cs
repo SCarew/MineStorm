@@ -8,19 +8,23 @@ public class HypUFO : MonoBehaviour {
 	[SerializeField] private GameObject ps_Pieces;
 	[SerializeField] private GameObject ps_SmokeExplosion;
 	[SerializeField] private GameObject pre_SmallMeteor;
+	[SerializeField] private GameObject pre_MediumMeteor;
+	[SerializeField] private GameObject pre_BigMeteor;
+	[SerializeField] private GameObject pre_PS_Launch;   //for meteor weapon launch
 	private Transform parEff, parMet;
 	private SoundManager aud;
 	private ScoreManager sm;
 	private HypShipHealth pShipHealth;
+	private Transform pShip;
 	private Rigidbody rb;
 	private Vector3 myTarget, myGravity;
 	private bool bInCorridor = false;
 	private bool bNewlySpawned = false;
 	private bool bOutOfBounds = false;
-	private int health = 4;
+	private int health = 3;
 	private int pinkScore = 225, grayScore = 150;
-	private float weaponTime = 0.25f;
-	private float maxDistance = 25f;   //for remaining in play
+	private float weaponTime = 0.8f;
+	private float maxDistance = 30f;   //for remaining in play
 	private float rotateSpeed = 5f;
 
 	private Vector3 velocity, gravity;
@@ -29,14 +33,15 @@ public class HypUFO : MonoBehaviour {
 	void Start () {
 		if (myType == UFOType.Gray) { 
 			health = 2; 
-			weaponTime = 0.5f;
+			weaponTime = 1.6f;
 		}
 				
 		parEff = GameObject.Find("Effects").transform;
 		parMet = GameObject.Find("Meteors").transform;
 		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		sm = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
-		pShipHealth = GameObject.Find("Hyp_PlayerShip").GetComponent<HypShipHealth>();
+		pShip = GameObject.Find("Hyp_PlayerShip").transform;
+		pShipHealth = pShip.GetComponent<HypShipHealth>();
 		rb = GetComponent<Rigidbody>();
 		bNewlySpawned = true;
 
@@ -44,16 +49,16 @@ public class HypUFO : MonoBehaviour {
 
 		velocity = InitialVelocity(startingSpawner);
 		rb.velocity = velocity;
-		Debug.Log("init vel = " + velocity + " [" + startingSpawner + "]");
+		//Debug.Log("init vel = " + velocity + " [" + startingSpawner + "]");
 		rotateSpeed = Random.Range(1.5f, 2.5f);
 
 		InitialRotation(startingSpawner);
 		aud.PlaySoundConstant("UFOHum", gameObject.transform);
 
-		//***Testing - remove this function
-		StartCoroutine(TestLocation());
+		//StartCoroutine(TestLocation());
 	}
 
+	//***Testing - remove this function		
 	IEnumerator TestLocation() {
 		bool bLoop = true;
 		while(bLoop) {
@@ -173,19 +178,14 @@ public class HypUFO : MonoBehaviour {
 		Vector3 newVel = new Vector3(Mathf.Sqrt(2f * grav.x * (v1.x - v0.x)), Mathf.Sqrt(2f * grav.y * (v1.y - v0.y)), Mathf.Sqrt(2f * grav.z * (v1.z - v0.z)));
 		newVel = new Vector3(newVel.x * 2, newVel.y * 2, newVel.z * 2);
 
-//		int rand = Random.Range(0, 4);
-//		if (rand == 0) {
-//			grav = new Vector3(grav.x, grav.y, grav.z);
-//		} else if (rand == 1) {
-//			grav = new Vector3(grav.x, -grav.y, grav.z);
-//		} else if (rand == 2) {
-//			grav = new Vector3(grav.x, grav.y, -grav.z);
-//		} else {  //( rand == 3)
-//			grav = new Vector3(grav.x, -grav.y, -grav.z);
-//		}
 		float offset = 2f, multiplier = 1.5f;
 		float ranXY = Random.Range(-1.5f, 1.5f);
 		float ranZ  = Random.Range(-0.5f, 0.5f);
+		if (myType == UFOType.Pink) {
+			offset = 1f;
+			multiplier = 1f;
+		}
+
 		if (spawner == 0) {   //right
 			newVel = new Vector3(-newVel.x, newVel.y, newVel.z);
 			grav = new Vector3(-grav.x*multiplier - offset, ranXY, ranZ);
@@ -199,21 +199,8 @@ public class HypUFO : MonoBehaviour {
 			newVel = new Vector3(newVel.y/4f, newVel.x, newVel.z);
 			grav = new Vector3(ranXY, grav.y*multiplier + offset, ranZ);
 		}
-//		if (spawner == 0) {   //right
-//			newVel = new Vector3(-newVel.x, newVel.y, newVel.z);
-//			grav = new Vector3(-grav.x*multiplier - offset, grav.y, grav.z);
-//		} else if (spawner == 1) {    //left
-//			newVel = new Vector3(newVel.x, newVel.y, newVel.z);
-//			grav = new Vector3(grav.x*multiplier + offset, grav.y, grav.z);
-//		} else if (spawner == 2) {    //top
-//			newVel = new Vector3(newVel.y/4f, -newVel.x, newVel.z);
-//			grav = new Vector3(grav.x, -grav.y*multiplier - offset, grav.z);
-//		} else { //(spawner == 3)     //bottom
-//			newVel = new Vector3(newVel.y/4f, newVel.x, newVel.z);
-//			grav = new Vector3(grav.x, grav.y*multiplier + offset, grav.z);
-//		}
 
-		Debug.Log("grav=" + grav);
+		//Debug.Log("grav=" + grav);
 		gravity = grav;
 		return newVel;
 	}
@@ -260,10 +247,55 @@ public class HypUFO : MonoBehaviour {
 
 	private IEnumerator FireUpdate() {
 		bool bLoop = true;
+		GameObject go0, go1, go2, go3, go4;
+		Vector3 v3 = new Vector3(0f, 0f, 0f);
+		Vector3 vl = new Vector3(0f, 0f, 0f); 
+		Transform launch = transform.FindChild("MLauncher").transform;
+		int rnd;
+		float r = 10f;   //range of random offset from ship for target
 		while (bLoop) {
 			if (bInCorridor) {
-				Instantiate(pre_SmallMeteor, transform.position, transform.rotation, parMet);
+				if (rb.rotation == Quaternion.Euler(0f, 0f, 0f)) {
+					v3 = pShip.position;
+					vl = launch.position;
+					go0 = Instantiate(pre_PS_Launch, vl, Quaternion.identity, parEff) as GameObject;
+					Destroy(go0, go0.GetComponent<ParticleSystem>().main.duration);
+					aud.PlaySoundImmediate("UfoMeteor");
+					if (myType == UFOType.Pink) {
+						rnd = Random.Range(0, 2);   //currently, small not used
+						if (rnd == 0) { 
+							go1 = Instantiate(pre_BigMeteor, vl, transform.rotation, parMet) as GameObject;
+							go1.name = "BigPinkMetA" + (int)(weaponTime * 100);
+						}
+						else if (rnd == 1) { 
+							go1 = Instantiate(pre_MediumMeteor, vl, transform.rotation, parMet) as GameObject; 
+							go1.name = "MedPinkMetA" + (int)(weaponTime * 100);
+						}
+						else { 
+							go1 = Instantiate(pre_SmallMeteor, vl, transform.rotation, parMet) as GameObject; 
+							go1.name = "SmaPinkMetA" + (int)(weaponTime * 100);
+						}
+						//go2 = Instantiate(pre_SmallMeteor, vl, transform.rotation, parMet) as GameObject;
+						//go3 = Instantiate(pre_SmallMeteor, vl, transform.rotation, parMet) as GameObject;
+						//go4 = Instantiate(pre_SmallMeteor, vl, transform.rotation, parMet) as GameObject;
+						go1.GetComponent<HypMeteor>().SetTarget(new Vector3 (v3.x + Random.Range(-r, r), v3.y + Random.Range(-r, r), -5f));
+						//go2.GetComponent<HypMeteor>().SetTarget(new Vector3 (v3.x + Random.Range(-r, r), v3.y + Random.Range(-r, r), -5f));
+						//go3.GetComponent<HypMeteor>().SetTarget(new Vector3 (v3.x + Random.Range(-r, r), v3.y + Random.Range(-r, r), -5f));
+						//go4.GetComponent<HypMeteor>().SetTarget(new Vector3 (v3.x + Random.Range(-r, r), v3.y + Random.Range(-r, r), -5f));
+						//go1.name = "SmaPinkMetA" + (int)(weaponTime * 100);
+						//go2.name = "SmaPinkMetB" + (int)(weaponTime * 100);
+						//go3.name = "SmaPinkMetC" + (int)(weaponTime * 100);
+						//go4.name = "SmaPinkMetD" + (int)(weaponTime * 100);
+					} else {   // UFOType.Gray
+						go1 = Instantiate(pre_SmallMeteor, vl, transform.rotation, parMet) as GameObject;
+						go1.GetComponent<HypMeteor>().SetTarget(new Vector3 (v3.x + Random.Range(-r, r), v3.y + Random.Range(-r, r), -5f));
+						go1.name = "SmaGrayMet" + (int)(weaponTime * 100);
+					}
+					weaponTime += Random.Range(-0.25f, 0.25f);
+				}
 			}
+			Debug.Log(bInCorridor + "/" + rb.rotation.eulerAngles + "/" + v3);
+			if (weaponTime < 0.25f) { weaponTime = 0.25f; }
 			yield return new WaitForSeconds(weaponTime);
 		}
 	}

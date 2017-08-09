@@ -71,7 +71,7 @@ public class HypLaser : MonoBehaviour {
 	    //pos.z = cross.GetZDistance();
     	Vector3 aimingDirection = pos - transform.position;
      	transform.rotation = Quaternion.LookRotation(aimingDirection);
-     	Debug.Log("pos = " + pos);
+     	//Debug.Log("pos = " + pos);
 	}
 
 	void OnDestroy() {

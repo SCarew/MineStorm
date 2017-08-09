@@ -44,7 +44,7 @@ public class HypSpawner : MonoBehaviour {
 
 	void SpawnUFO() {
 		int spawnNum = Random.Range(0, 4);   //spawners 0=right 1=left 2=top 3=bottom
-		int ufoNum = 1;   //Ufos 0=pink 1=gray
+		int ufoNum = 0; //Random.Range(0, 2);     //Ufos 0=pink 1=gray
 		Vector3 min2, max2;
 
 		//Transform spawn = UFOSpawners[Random.Range(0, UFOSpawners.Length)].transform;

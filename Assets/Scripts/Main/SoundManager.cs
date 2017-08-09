@@ -34,6 +34,7 @@ public class SoundManager : MonoBehaviour {
 	[SerializeField] private AudioClip explosionShip1;
 	[SerializeField] private AudioClip hypExplosionMeteor1;
 	[SerializeField] private AudioClip hypUFOHum;
+	[SerializeField] private AudioClip hypUFOTorp;
 	[SerializeField] private AudioClip meteorCollide1;
 	[SerializeField] private AudioClip swirlLarge1;
 	[SerializeField] private AudioClip swirlSmall1;
@@ -80,6 +81,7 @@ public class SoundManager : MonoBehaviour {
 			audio.loop = true;
 		}
 		if (bConstant) { go.AddComponent<SoundEffectConstant>(); }
+		if (ac == hypUFOHum) { go.transform.localPosition = Vector3.zero; } //fixes bug
 		audio.volume = mainVolume * volume;
 		audio.Play();
 	}
@@ -110,6 +112,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = explosionShip1; }
 		else if (soundName == "explosionhypmeteor") 
 			{ ac = hypExplosionMeteor1; }
+		else if (soundName == "ufometeor")
+			{ ac = hypUFOTorp; }
 		/* ----------------------------------- */
 		else if (soundName == "choicemove") 
 			{ ac = choiceButtons[0]; }
@@ -286,6 +290,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = UFO12; }
 		else if (soundName == "ufohum")
 			{ ac = hypUFOHum; }
+		else if (soundName == "ufometeor")
+			{ ac = hypUFOTorp; }
 
 		PlaySound(ac);
 	}

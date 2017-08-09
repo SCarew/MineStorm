@@ -3,11 +3,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class HypTimer : MonoBehaviour {
-	Text txtTime;
-	float fTime = 0f;
+	private Text txtTime;
+	private float fTime = 0f;
+	public  GameObject fadeinPanel;
+	private LevelManager lm;
 
 	void Start () {
 		txtTime = gameObject.GetComponent<Text>();
+		//fadeinPanel = GameObject.Find("Fadein Panel");
+		fadeinPanel.SetActive(true);
+		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		fTime = GetHypTime();
 		StartCoroutine(Countdown());
 	}
@@ -15,7 +20,10 @@ public class HypTimer : MonoBehaviour {
 	IEnumerator Countdown() {
 		bool bLoop = true;
 		while (bLoop) {
-			txtTime.text = ((int)fTime).ToString("00");
+			if (fTime < 100f) 
+				{ txtTime.text = ((int)fTime).ToString("00"); }
+			else
+				{ txtTime.text = "**"; }
 			yield return new WaitForSeconds(1.0f);
 			if (fTime <= 0f) { bLoop = false; }
 		}
@@ -28,7 +36,14 @@ public class HypTimer : MonoBehaviour {
 	}
 
 	void ExitHyperspace() {
-		//TODO add this
+		fadeinPanel.SetActive(true);
+		HypFader h = fadeinPanel.GetComponent<HypFader>();
+		h.ResetTimer(true);
+		Invoke("LoadMainScene", h.fadeTime + 0.5f );
+	}
+
+	void LoadMainScene() {
+		lm.LoadScene("Main");
 	}
 
 	void Update () {
