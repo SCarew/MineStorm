@@ -79,6 +79,7 @@
      <Compile Include="Assets\Scripts\Main\PanelController.cs" />
      <Compile Include="Assets\Scripts\Main\PauseMenu.cs" />
      <Compile Include="Assets\Scripts\Main\PrefsControl.cs" />
+     <Compile Include="Assets\Scripts\Main\SectorDisplay.cs" />
      <Compile Include="Assets\Scripts\Main\ShipController.cs" />
      <Compile Include="Assets\Scripts\Main\ShipHealth.cs" />
      <Compile Include="Assets\Scripts\Main\Shockwave.cs" />

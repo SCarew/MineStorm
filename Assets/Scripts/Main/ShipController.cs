@@ -540,8 +540,8 @@ public class ShipController : MonoBehaviour {
 			go = Instantiate(pre_WarpEnter, transform.position, Quaternion.identity) as GameObject;
 			adjustScaleIn = true;
 		}
-		go.transform.FindChild("Whirl 1").localScale = new Vector3(2.5f, 2.5f, 1f);
-		go.transform.FindChild("Whirl 2").localScale = new Vector3(2.5f, 2.5f, 1f);
+		go.transform.FindChild("Whirl 1").localScale = new Vector3(2.5f, 2.5f, 2.5f);
+		go.transform.FindChild("Whirl 2").localScale = new Vector3(2.5f, 2.5f, 2.5f);
 		//go.transform.FindChild("Whirl 3").localScale = new Vector3(3f, 3f, 1f);
 		FreezeMovement();
 		go.transform.SetParent(parEff);

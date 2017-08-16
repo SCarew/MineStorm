@@ -1,21 +1,20 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Main\ShipController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Hyperspace\HypSpawner.cs">
     <Files>
-      <File FileName="Assets\Scripts\Start\LevelManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Main\ShipController.cs" Line="543" Column="46" />
-      <File FileName="Assets\Scripts\Main\GameManager.cs" Line="176" Column="4" />
-      <File FileName="Assets\Scripts\Main\PrefsControl.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Hyperspace\HypLaser.cs" Line="74" Column="9" />
-      <File FileName="Assets\Scripts\Hyperspace\HypSpawner.cs" Line="49" Column="3" />
+      <File FileName="Assets\Scripts\Start\LevelManager.cs" Line="69" Column="44" />
+      <File FileName="Assets\Scripts\Main\ShipController.cs" Line="544" Column="43" />
+      <File FileName="Assets\Scripts\Main\GameManager.cs" Line="57" Column="72" />
+      <File FileName="Assets\Scripts\Main\PrefsControl.cs" Line="199" Column="37" />
+      <File FileName="Assets\Scripts\Hyperspace\HypLaser.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Hyperspace\HypSpawner.cs" Line="49" Column="40" />
       <File FileName="Assets\Scripts\Hyperspace\HypMeteor.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Hyperspace\HypUFO.cs" Line="35" Column="16" />
-      <File FileName="Assets\Scripts\Hyperspace\HypShipController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Hyperspace\HypShipController.cs" Line="85" Column="41" />
       <File FileName="Assets\Scripts\Hyperspace\HypShipHealth.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Hyperspace\CorridorControl.cs" Line="22" Column="54" />
-      <File FileName="Assets\Scripts\Hyperspace\HypTimer.cs" Line="41" Column="22" />
-      <File FileName="Assets\Scripts\Hyperspace\HypFader.cs" Line="30" Column="1" />
-      <File FileName="Assets\Scripts\Main\PanelController.cs" Line="13" Column="1" />
+      <File FileName="Assets\Scripts\Hyperspace\CorridorControl.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Hyperspace\HypTimer.cs" Line="57" Column="16" />
+      <File FileName="Assets\Scripts\Hyperspace\ScoreManager.cs" Line="11" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

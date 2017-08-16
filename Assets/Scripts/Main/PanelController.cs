@@ -10,6 +10,7 @@ public class PanelController : MonoBehaviour {
 	private ShipHealth sh;
 	[SerializeField] private Image fillPrimaryWeapon, fillSecondaryWeapon;
 	[SerializeField] private Image fillHealth, fillEngine, fillLifeSupport;
+	[SerializeField] private GameObject txtSector;
 	[SerializeField] private Material[] Gauges;
 	private Color level0, level1, levelminus;
 
@@ -27,6 +28,7 @@ public class PanelController : MonoBehaviour {
 		panGauges.SetActive(true);
 		panMapCam = GameObject.Find("panMapCam");
 		panMapCam.SetActive(true);
+		txtSector.SetActive(true);
 		level0 = new Color(255/255,  26/255,  26/255, 255/255);      //empty bar
 		level1 = new Color( 58/255, 255/255, 133/255, 255/255);      //full bar
 		levelminus = new Color(0, 0, 0, 0);                          //negative bar

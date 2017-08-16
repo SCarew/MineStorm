@@ -14,6 +14,7 @@ public class HypShipController : MonoBehaviour {
 	private Vector2 target = new Vector2(0f, 0f);
 	private bool bPaused = false;
 	private bool bInvertY = false;
+	private bool bFreeze = false;    //for end of turn
 	private float max_x, max_y;
 	private float original_x, original_y, original_z;
 
@@ -72,8 +73,20 @@ public class HypShipController : MonoBehaviour {
 		
 	}
 
+	public void EnterWarp() {
+		bFreeze = true;
+		gameObject.transform.FindChild("Main Camera").SetParent(pre_Effects);
+		gameObject.GetComponentInChildren<MeshCollider>().enabled = false;
+		GameObject.Find("Instruments").SetActive(false);
+		GameObject.Find("Crosshair").SetActive(false);
+		Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+		rb.constraints = RigidbodyConstraints.None;
+		rb.AddRelativeForce(0f, 0f, 100f, ForceMode.Impulse);
+		rb.AddRelativeTorque(0f, 0f, Random.Range(-0.5f, 0.5f), ForceMode.Impulse);
+	}
+
 	void Update () {
-		if (bPaused) { return; }
+		if (bPaused || bFreeze) { return; }
 
 		laserCurrentCharge += Time.deltaTime;
 		if (laserCurrentCharge > laserRechargeRate)  { laserCurrentCharge = laserRechargeRate; }
