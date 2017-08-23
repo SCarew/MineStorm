@@ -250,7 +250,7 @@ public class HypUFO : MonoBehaviour {
 		GameObject go0, go1, go2, go3, go4;
 		Vector3 v3 = new Vector3(0f, 0f, 0f);
 		Vector3 vl = new Vector3(0f, 0f, 0f); 
-		Transform launch = transform.FindChild("MLauncher").transform;
+		Transform launch = transform.Find("MLauncher").transform;
 		int rnd;
 		float r = 10f;   //range of random offset from ship for target
 		while (bLoop) {

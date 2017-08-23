@@ -35,6 +35,7 @@ public class SoundManager : MonoBehaviour {
 	[SerializeField] private AudioClip hypExplosionMeteor1;
 	[SerializeField] private AudioClip hypUFOHum;
 	[SerializeField] private AudioClip hypUFOTorp;
+	[SerializeField] private AudioClip hypEngineBurst;
 	[SerializeField] private AudioClip meteorCollide1;
 	[SerializeField] private AudioClip swirlLarge1;
 	[SerializeField] private AudioClip swirlSmall1;
@@ -114,6 +115,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = hypExplosionMeteor1; }
 		else if (soundName == "ufometeor")
 			{ ac = hypUFOTorp; }
+		else if (soundName == "engineburst")
+			{ ac = hypEngineBurst; }
 		/* ----------------------------------- */
 		else if (soundName == "choicemove") 
 			{ ac = choiceButtons[0]; }
@@ -292,6 +295,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = hypUFOHum; }
 		else if (soundName == "ufometeor")
 			{ ac = hypUFOTorp; }
+		else if (soundName == "engineburst")
+			{ ac = hypEngineBurst; }
 
 		PlaySound(ac);
 	}

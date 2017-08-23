@@ -7,16 +7,18 @@ public class HypTimer : MonoBehaviour {
 	private float fTime = 110f;   //should be set externally by SetHypTime() below
 	public  GameObject fadeinPanel;
 	private LevelManager lm;
+	private int round;
+	private PrefsControl prefs;
 
 	void Start () {
 		txtTime = gameObject.GetComponent<Text>();
 		//fadeinPanel = GameObject.Find("Fadein Panel");
 		fadeinPanel.SetActive(true);
 		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
-		PrefsControl prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
+		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 
 		Text txtNext = GameObject.Find("txtNext").GetComponent<Text>();
-		int round = prefs.GetGameStats(PrefsControl.stats.Level);
+		round = prefs.GetGameStats(PrefsControl.stats.Level);
 		txtNext.text = lm.SectorName(round);
 
 		StartCoroutine(Countdown());
@@ -47,7 +49,27 @@ public class HypTimer : MonoBehaviour {
 	}
 
 	void LoadMainScene() {
-		lm.LoadScene("Main");
+		if ((round/4f) == (int)(round/4f)) {    
+			ChooseUpgradeOptions();
+			lm.LoadScene("Choice", "Main");
+		} else {
+			lm.LoadScene("Main");
+		}
+	}
+
+	void ChooseUpgradeOptions() {
+		//TODO choose upgrades
+		int r;
+		int maxUpgrades = 30;
+		string s1 = "%/#/$/^";
+		string s2 = "000/001/002";
+		for (int i=1; i<4; i++) {
+			r = Random.Range(0, maxUpgrades) + 1;
+			if (r==1) { }
+		}
+
+		s1.Replace("%", "Upgrade Available");
+		prefs.SetChoice(s1, s2, 3);
 	}
 
 	void Update () {

@@ -75,10 +75,13 @@ public class HypShipController : MonoBehaviour {
 
 	public void EnterWarp() {
 		bFreeze = true;
-		gameObject.transform.FindChild("Main Camera").SetParent(pre_Effects);
+		GameObject.Find("SoundManager").GetComponent<SoundManager>().PlaySoundImmediate("EngineBurst");
+		gameObject.transform.Find("Main Camera").SetParent(pre_Effects);
 		gameObject.GetComponentInChildren<MeshCollider>().enabled = false;
 		GameObject.Find("Instruments").SetActive(false);
 		GameObject.Find("Crosshair").SetActive(false);
+		gameObject.transform.Find("PS_EngineFireL").GetComponent<ParticleSystem>().Play();
+		gameObject.transform.Find("PS_EngineFireR").GetComponent<ParticleSystem>().Play();
 		Rigidbody rb = gameObject.GetComponent<Rigidbody>();
 		rb.constraints = RigidbodyConstraints.None;
 		rb.AddRelativeForce(0f, 0f, 100f, ForceMode.Impulse);
