@@ -3,8 +3,8 @@ using System.Collections;
 
 public class TorpedoController : MonoBehaviour {
 
-	[SerializeField] private float fireSpeed = 10.0f;
-	[SerializeField] private int damage = 100;
+	public float fireSpeed = 10.0f;
+	public int damage = 100;
 	public float lifetime = 2.0f;
 	[SerializeField] private GameObject pre_Explosion;
 	[SerializeField] private GameObject pre_LaserTimedExplosion;

@@ -7,12 +7,14 @@ public class PrefsControl : MonoBehaviour {
 	public enum stats {Ships, Score, Level};
 	public enum option {Camera, Sound, Music};
 	private static List<string> lstUpgrade;
-	private static List<int>    lstUpgradeValue;
+	//private static List<int>    lstUpgradeValue;
 	private static List<string> lstUpgradeFormula;
 
 	private void Start() {
 		if (lstUpgrade == null || lstUpgrade.Count < 1) {
-			CreateListUpgrade();
+			lstUpgrade = new List<string>();
+			lstUpgradeFormula = new List<string>();
+			//CreateListUpgrade();
 		}
 	}
 
@@ -90,6 +92,7 @@ public class PrefsControl : MonoBehaviour {
 	}
 
 	public void SetChosenValue(int value, bool arcadeMode = false) {
+		bool bSG = false;   //starting new game
 		string sPrimary = "Primary";
 		string sSecondary = "Secondary";
 		if (GetGameType() == "Arcade") {
@@ -110,12 +113,29 @@ public class PrefsControl : MonoBehaviour {
 		if (value == 103)   //primary > missile
 			{ PlayerPrefs.SetInt(sPrimary, 2); }
 		if (value == 201)   //secondary > hyperjump
-			{ PlayerPrefs.SetInt(sSecondary, 0); }
+			{ PlayerPrefs.SetInt(sSecondary, 0); bSG = true; }
 		if (value == 202)   //secondary > forcefield
-			{ PlayerPrefs.SetInt(sSecondary, 1); }
+			{ PlayerPrefs.SetInt(sSecondary, 1); bSG = true; }
 		if (value == 203)   //secondary > shockwave
-			{ PlayerPrefs.SetInt(sSecondary, 2); }
+			{ PlayerPrefs.SetInt(sSecondary, 2); bSG = true; }
+
+		if (value == 291)   //upgrade > 1
+			{ SetUpgrade(PlayerPrefs.GetString("ChoiceFormula1", "")); }
+		if (value == 292)   //upgrade > 2
+			{ SetUpgrade(PlayerPrefs.GetString("ChoiceFormula2", "")); }
+		if (value == 293)   //upgrade > 3
+			{ SetUpgrade(PlayerPrefs.GetString("ChoiceFormula3", "")); }
+
+		if (bSG && !arcadeMode)   //new story mode game
+			{ PlayerPrefs.DeleteKey("Upgrades"); }
+
+		Debug.Log("Chosen: " + value + " --> " + PlayerPrefs.GetString("ChoiceFormula" + (value-290).ToString(), ""));
 	}
+
+//	public void SetChosenValue(string value) {
+//		SetUpgrade(value);
+//		ClearNextUpgrade();
+//	}
 
 	public int GetPrimaryWeapon(bool arcadeMode = false) {
 		if (arcadeMode) {
@@ -231,13 +251,68 @@ public class PrefsControl : MonoBehaviour {
 		return s;
 	}
 
-	public void SetUpgrade (string up) {
-		//if (up.Length % 3 != 0)  { up = ""; }
-		//PlayerPrefs.SetString("Upgrades", up);
-		if (up.Length != 3) { up = ""; }
-		string s = GetUpgrades() + up;
-		PlayerPrefs.SetString("Upgrades", s);
+	private void SetUpgrade (string up) {
+		if (up.Length % 3 != 0) { up = ""; }
+		if (up == "P=T") {
+			up = "";
+			PlayerPrefs.SetInt("Primary", 0);
+		}
+		if (up == "P=L") {
+			up = "";
+			PlayerPrefs.SetInt("Primary", 1);
+		}
+		if (up == "P=M") {
+			up = "";
+			PlayerPrefs.SetInt("Primary", 2);
+		}
+		if (up == "S=H") {
+			up = "";
+			PlayerPrefs.SetInt("Secondary", 0);
+		}
+		if (up == "S=F") {
+			up = "";
+			PlayerPrefs.SetInt("Secondary", 1);
+		}
+		if (up == "S=S") {
+			up = "";
+			PlayerPrefs.SetInt("Secondary", 2);
+		}
+
+		PlayerPrefs.SetString("Upgrades", GetUpgrades() + up);
 	}
+
+	public void ReplaceUpgrade(string upList) {
+		if (upList.Length % 3 != 0) { 
+			Debug.LogWarning("Incorrect call to ReplaceUpgrade(" + upList + ")");
+			return; 
+		}
+		PlayerPrefs.SetString("Upgrades", upList);
+	}
+
+	public string FindNextUpgrade() {
+		string s = "", sv = "";
+		CreateListUpgrade();
+		if (lstUpgradeFormula.Count < 3) { return s; }
+		int iNum;
+		for (int i=1; i<4; i++) {
+			iNum = Random.Range(0, lstUpgradeFormula.Count);
+			s = s + lstUpgrade[iNum] + "/";
+			sv = sv + lstUpgradeFormula[iNum] + "/";
+			lstUpgrade.RemoveAt(iNum);
+			lstUpgradeFormula.RemoveAt(iNum);
+		}
+		PlayerPrefs.SetString("NextUpgrade", s);
+		PlayerPrefs.SetString("NextUpgradeValue", sv);
+
+		PlayerPrefs.SetString("ChoiceFormula1", sv.Substring(0, 3));
+		PlayerPrefs.SetString("ChoiceFormula2", sv.Substring(4, 3));
+		PlayerPrefs.SetString("ChoiceFormula3", sv.Substring(8, 3));
+		return s;
+	}
+
+	//public string FindNextUpgradeValue() {
+	//	return PlayerPrefs.GetString("NextUpgradeValue", "");
+	//}
 
 //	private void SetNextUpgrade(string s1, string s2) {
 //		PlayerPrefs.SetString("NextUpgrade", s1);
@@ -252,19 +327,63 @@ public class PrefsControl : MonoBehaviour {
 //		return PlayerPrefs.GetString("NextUpgradeValue", "");
 //	}
 
-	private void AddAdditionalShip() {
-		lstUpgrade.Add("Additional Ship");
-		lstUpgradeValue.Add(999);
-		lstUpgradeFormula.Add("***");
+	public string UpgradeText(string formula) {
+		string s = "";
+		if (formula == "P=T") { s = "Set Primary Weapon to Torpedo"; }
+		if (formula == "P=L") { s = "Set Primary Weapon to Laser"; }
+		if (formula == "P=M") { s = "Set Primary Weapon to Missiles"; }
+		if (formula == "S=H") { s = "Set Secondary to Hyperjump"; }
+		if (formula == "S=F") { s = "Set Secondary to Forcefield"; }
+		if (formula == "S=S") { s = "Set Secondary to Shockwave"; }
+		if (formula == "M+A") { s = "Missile Launcher II: Increase Loadout by 25%"; }
+		if (formula == "M+B") { s = "Missile Launcher III: Increase Loadout by 20%"; }
+		if (formula == "M+1") { s = "Missile Mk2: Increase Damage 25%"; }
+		if (formula == "M+2") { s = "Missile Mk3: Increase Damage 25%"; }
+		if (formula == "M+S") { s = "Missile Rev.A: Increase Speed by 25%"; }
+		if (formula == "M+G") { s = "Missile Power Generation: Refresh Rate 25% Faster"; }
+		if (formula == "L+1") { s = "Laser Generator II: Increase Damage 35%"; }
+		if (formula == "L+2") { s = "Laser Generator III: Increase Damage 25%"; }
+		if (formula == "L+3") { s = "Laser Generator IV: Increase Damage 20%"; }
+		if (formula == "L+A") { s = "Laser Power Generation Rev.A: Refresh Rate 20% Faster"; }
+		if (formula == "L+B") { s = "Laser Power Generation Rev.B: Refresh Rate 20% Faster"; }
+		if (formula == "L+R") { s = "Laser Stabilizer Mk2: Increase Range 20%"; }
+		if (formula == "T+1") { s = "Torpedo Mk2: Increase Damage 25%"; }
+		if (formula == "T+2") { s = "Torpedo Mk3: Increase Damage 20%"; }
+		if (formula == "T+A") { s = "Torpedo Launcher II: Refresh Rate 25% Faster"; }
+		if (formula == "T+B") { s = "Torpedo Launcher III: Refresh Rate 20% Faster"; }
+		if (formula == "T+S") { s = "Torpedo Casing Rev.A: Increase Speed 20%"; }
+		if (formula == "H+1") { s = "Hyperwarp Mk2 Power Efficiency: 30% Lower Power Consumption"; }
+		if (formula == "H+2") { s = "Hyperwarp Mk3 Power Efficiency: 43% Lower Power Consumption"; }
+		if (formula == "H+A") { s = "Hyperwarp Power Generator A: 20% Faster Recharge"; }
+		if (formula == "H+B") { s = "Hyperwarp Power Generator B: 25% Faster Recharge"; }
+		if (formula == "F+1") { s = "Forcefield Mk2 Power Efficiency: 30% Lower Power Consumption"; }
+		if (formula == "F+2") { s = "Forcefield Mk3 Power Efficiency: 43% Lower Power Consumption"; }
+		if (formula == "F+A") { s = "Forcefield Power Generator A: 25% Longer Duration"; }
+		if (formula == "F+B") { s = "Forcefield Power Generator B: 20% Longer Duration"; }
+		if (formula == "S+1") { s = "Shockwave Null Point Emitter Mk1: Increase Damage 25%"; }
+		if (formula == "S+2") { s = "Shockwave Null Point Emitter Mk2: Increase Damage 20%"; }
+		if (formula == "S+A") { s = "Shockwave Power Generator A: 20% Faster Recharge"; }
+		if (formula == "S+B") { s = "Shockwave Power Generator B: 25% Faster Recharge"; }
+		if (formula == "U+1") { s = "Hull Fortification I: Increase Durability 20%"; }
+		if (formula == "U+2") { s = "Hull Fortification II: Increase Durability 25%"; }
+		if (formula == "U+3") { s = "Hull Fortification III: Increase Durability 20%"; }
+		if (formula == "***") { s = "Additional Ship"; }
+
+		return s;
 	}
 
-	private void CreateListUpgrade() {
+	private void AddAdditionalShip() {
+		lstUpgradeFormula.Add("***");
+		//lstUpgrade.Add("Additional Ship");
+	}
+
+	private void CreateListUpgrade() {   //compare with CheckUpgrades() in ShipController
 		string s = GetUpgrades();
-		// may not need all these booleans
-		bool bMisLau1 = s.Contains("M+1");
-		bool bMisLau2 = s.Contains("M+2");
-		bool bMisDam1 = s.Contains("M+A");
-		bool bMisDam2 = s.Contains("M+B");
+
+		bool bMisDam1 = s.Contains("M+1");
+		bool bMisDam2 = s.Contains("M+2");
+		bool bMisLau1 = s.Contains("M+A");
+		bool bMisLau2 = s.Contains("M+B");
 		bool bMisSpe1 = s.Contains("M+S");
 		bool bMisRef1 = s.Contains("M+G");
 		bool bLasDam1 = s.Contains("L+1");
@@ -290,176 +409,144 @@ public class PrefsControl : MonoBehaviour {
 		bool bShoDam2 = s.Contains("S+2");
 		bool bShoRec1 = s.Contains("S+A");
 		bool bShoRec2 = s.Contains("S+B");
+		bool bHull1 = s.Contains("U+1");
+		bool bHull2 = s.Contains("U+2");
+		bool bHull3 = s.Contains("U+3");
 		int pri = GetPrimaryWeapon();
 		int sec = GetSecondaryWeapon();
+
+		lstUpgrade.Clear();
+		lstUpgradeFormula.Clear();
 
 
 		AddAdditionalShip();
 		if (pri != 0) {
-			lstUpgrade.Add("Set Primary Weapon to Torpedo");
-			lstUpgradeValue.Add(910);
 			lstUpgradeFormula.Add("P=T");
 		}
 		if (pri != 1) {
-			lstUpgrade.Add("Set Primary Weapon to Laser");
-			lstUpgradeValue.Add(911);
 			lstUpgradeFormula.Add("P=L");
 		}
 		if (pri != 2) {
-			lstUpgrade.Add("Set Primary Weapon to Missiles");
-			lstUpgradeValue.Add(912);
 			lstUpgradeFormula.Add("P=M");
 		}
 		if (sec != 0) {
-			lstUpgrade.Add("Set Secondary to Hyperjump");
-			lstUpgradeValue.Add(920);
 			lstUpgradeFormula.Add("S=H");
 		}
 		if (sec != 1) {
-			lstUpgrade.Add("Set Secondary to Forcefield");
-			lstUpgradeValue.Add(921);
 			lstUpgradeFormula.Add("S=F");
 		}
 		if (sec != 2) {
-			lstUpgrade.Add("Set Secondary to Shockwave");
-			lstUpgradeValue.Add(922);
 			lstUpgradeFormula.Add("S=S");
 		}
-		if (!bMisLau1 && !bMisLau2) {
-			lstUpgrade.Add("Missile Launcher II: Increase Loadout by 25%");
-			lstUpgradeValue.Add(321);
-			lstUpgradeFormula.Add("M+1");
-		} else if (!bMisLau2) {
-			lstUpgrade.Add("Missile Launcher III: Increase Loadout by 20%");
-			lstUpgradeValue.Add(322);
-			lstUpgradeFormula.Add("M+2");
+		if (pri == 2) {
+			if (!bMisLau1 && !bMisLau2) {
+				lstUpgradeFormula.Add("M+A");
+			} else if (!bMisLau2) {
+				lstUpgradeFormula.Add("M+B");
+			} else { AddAdditionalShip(); }
+			if (!bMisDam1 && !bMisDam2) {
+				lstUpgradeFormula.Add("M+1");
+			} else if (!bMisDam2) {
+				lstUpgradeFormula.Add("M+2");
+			} else { AddAdditionalShip(); }
+			if (!bMisSpe1) {
+				lstUpgradeFormula.Add("M+S");
+			} else { AddAdditionalShip(); }
+			if (!bMisRef1) {
+				lstUpgradeFormula.Add("M+G");
+			} else { AddAdditionalShip(); }
+		}
+		if (pri == 1) {
+			if (!bLasDam1) {
+				lstUpgradeFormula.Add("L+1");
+			} else if (!bLasDam2) {
+				lstUpgradeFormula.Add("L+2");
+			} else if (!bLasDam3) {
+				lstUpgradeFormula.Add("L+3");
+			} else { AddAdditionalShip(); }
+			if (!bLasRef1) {
+				lstUpgradeFormula.Add("L+A");
+			} else if (!bLasRef2) {
+				lstUpgradeFormula.Add("L+B");
+			} else { AddAdditionalShip(); }
+			if (!bLasRng1) {
+				lstUpgradeFormula.Add("L+R");
+			} else { AddAdditionalShip(); }
+		}
+		if (pri == 0) {
+			if (!bTorDam1) {
+				lstUpgradeFormula.Add("T+1");
+			} else if (!bTorDam2) {
+				lstUpgradeFormula.Add("T+2");
+			} else { AddAdditionalShip(); }
+			if (!bTorRef1) {
+				lstUpgradeFormula.Add("T+A");
+			} else if (!bTorRef2) {
+				lstUpgradeFormula.Add("T+B");
+			} else { AddAdditionalShip(); }
+			if (!bTorSpe1) {
+				lstUpgradeFormula.Add("T+S");
+			} else { AddAdditionalShip(); }
+		}
+
+		if (sec == 0) {
+			if (!bHypEff1) {
+				lstUpgradeFormula.Add("H+1");
+			} else if (!bHypEff2) {
+				lstUpgradeFormula.Add("H+2");
+			} else { AddAdditionalShip(); }
+			if (!bHypRec1) {
+				lstUpgradeFormula.Add("H+A");
+			} else if (!bHypRec2) {
+				lstUpgradeFormula.Add("H+B");
+			} else { AddAdditionalShip(); }
+		}
+		if (sec == 1) {
+			if (!bForEff1) {
+				lstUpgradeFormula.Add("F+1");
+			} else if (!bForEff2) {
+				lstUpgradeFormula.Add("F+2");
+			} else { AddAdditionalShip(); }
+			if (!bForDur1) {
+				lstUpgradeFormula.Add("F+A");
+			} else if (!bForDur2) {
+				lstUpgradeFormula.Add("F+B");
+			} else { AddAdditionalShip(); }
+		}
+		if (sec == 2) {
+			if (!bShoRec1) {
+				lstUpgradeFormula.Add("S+A");
+			} else if (!bShoRec2) {
+				lstUpgradeFormula.Add("S+B");
+			} else { AddAdditionalShip(); }
+			if (!bShoDam1) {
+				lstUpgradeFormula.Add("S+1");
+			} else if (!bShoDam2) {
+				lstUpgradeFormula.Add("S+2");
+			} else { AddAdditionalShip(); }
+		}
+		if (!bHull1) {
+			lstUpgradeFormula.Add("U+1");
+		} else if (!bHull2) {
+			lstUpgradeFormula.Add("U+2");
+		} else if (!bHull3) {
+			lstUpgradeFormula.Add("U+3");
 		} else { AddAdditionalShip(); }
-		if (!bMisDam1 && !bMisDam2) {
-			lstUpgrade.Add("Missile Mk2: Increase Damage 25%");
-			lstUpgradeValue.Add(325);
-			lstUpgradeFormula.Add("M+A");
-		} else if (!bMisDam2) {
-			lstUpgrade.Add("Missile Mk3: Increase Damage 25%");
-			lstUpgradeValue.Add(326);
-			lstUpgradeFormula.Add("M+B");
-		} else { AddAdditionalShip(); }
-		if (!bMisSpe1) {
-			lstUpgrade.Add("Missile Rev.A: Increase Speed by 25%");
-			lstUpgradeValue.Add(328);
-			lstUpgradeFormula.Add("M+S");
-		} else { AddAdditionalShip(); }
-		if (!bMisRef1) {
-			lstUpgrade.Add("Missile Power Generation: Refresh Rate 25% Faster");
-			lstUpgradeValue.Add(330);
-			lstUpgradeFormula.Add("M+G");
-		} else { AddAdditionalShip(); }
-		if (!bLasDam1) {
-			lstUpgrade.Add("Laser Generator II: Increase Damage 25%");
-			lstUpgradeValue.Add(310);
-			lstUpgradeFormula.Add("L+1");
-		} else if (!bLasDam2) {
-			lstUpgrade.Add("Laser Generator III: Increase Damage 20%");
-			lstUpgradeValue.Add(311);
-			lstUpgradeFormula.Add("L+2");
-		} else if (!bLasDam3) {
-			lstUpgrade.Add("Laser Generator IV: Increase Damage 25%");
-			lstUpgradeValue.Add(312);
-			lstUpgradeFormula.Add("L+3");
-		} else { AddAdditionalShip(); }
-		if (!bLasRef1) {
-			lstUpgrade.Add("Laser Power Generation Rev.A: Refresh Rate 20% Faster");
-			lstUpgradeValue.Add(315);
-			lstUpgradeFormula.Add("L+A");
-		} else if (!bLasRef2) {
-			lstUpgrade.Add("Laser Power Generation Rev.B: Refresh Rate 20% Faster");
-			lstUpgradeValue.Add(316);
-			lstUpgradeFormula.Add("L+B");
-		} else { AddAdditionalShip(); }
-		if (!bLasRng1) {
-			lstUpgrade.Add("Laser Stabilizer Mk2: Increase Range 25%");
-			lstUpgradeValue.Add(318);
-			lstUpgradeFormula.Add("L+R");
-		} else { AddAdditionalShip(); }
-		if (!bTorDam1) {
-			lstUpgrade.Add("Torpedo Mk2: Increase Damage 25%");
-			lstUpgradeValue.Add(300);
-			lstUpgradeFormula.Add("T+1");
-		} else if (!bTorDam2) {
-			lstUpgrade.Add("Torpedo Mk3: Increase Damage 20%");
-			lstUpgradeValue.Add(301);
-			lstUpgradeFormula.Add("T+2");
-		} else { AddAdditionalShip(); }
-		if (!bTorRef1) {
-			lstUpgrade.Add("Torpedo Launcher II: Refresh Rate 25% Faster");
-			lstUpgradeValue.Add(304);
-			lstUpgradeFormula.Add("T+A");
-		} else if (!bTorRef2) {
-			lstUpgrade.Add("Torpedo Launcher III: Refresh Rate 20% Faster");
-			lstUpgradeValue.Add(305);
-			lstUpgradeFormula.Add("T+B");
-		} else { AddAdditionalShip(); }
-		if (!bTorSpe1) {
-			lstUpgrade.Add("Torpedo Casing Rev.A: Increase Speed 20%");
-			lstUpgradeValue.Add(308);
-			lstUpgradeFormula.Add("T+S");
-		} else { AddAdditionalShip(); }
-		if (!bHypEff1) {
-			lstUpgrade.Add("Hyperwarp Mk2 Power Efficiency: 30% Lower Power Consumption");
-			lstUpgradeValue.Add(400);
-			lstUpgradeFormula.Add("H+1");
-		} else if (!bHypEff2) {
-			lstUpgrade.Add("Hyperwarp Mk3 Power Efficiency: 43% Lower Power Consumption");
-			lstUpgradeValue.Add(401);
-			lstUpgradeFormula.Add("H+2");
-		} else { AddAdditionalShip(); }
-		if (!bHypRec1) {
-			lstUpgrade.Add("Hyperwarp Power Generator A: 25% Faster Recharge");
-			lstUpgradeValue.Add(405);
-			lstUpgradeFormula.Add("H+A");
-		} else if (!bHypRec2) {
-			lstUpgrade.Add("Hyperwarp Power Generator B: 25% Faster Recharge");
-			lstUpgradeValue.Add(406);
-			lstUpgradeFormula.Add("H+B");
-		} else { AddAdditionalShip(); }
-		if (!bForEff1) {
-			lstUpgrade.Add("Forcefield Mk2 Power Efficiency: 30% Lower Power Consumption");
-			lstUpgradeValue.Add(410);
-			lstUpgradeFormula.Add("F+1");
-		} else if (!bForEff2) {
-			lstUpgrade.Add("Forcefield Mk3 Power Efficiency: 43% Lower Power Consumption");
-			lstUpgradeValue.Add(411);
-			lstUpgradeFormula.Add("F+2");
-		} else { AddAdditionalShip(); }
-		if (!bForDur1) {
-			lstUpgrade.Add("Forcefield Power Generator A: 25% Longer Duration");
-			lstUpgradeValue.Add(415);
-			lstUpgradeFormula.Add("F+A");
-		} else if (!bForDur2) {
-			lstUpgrade.Add("Forcefield Power Generator B: 20% Longer Duration");
-			lstUpgradeValue.Add(416);
-			lstUpgradeFormula.Add("F+B");
-		} else { AddAdditionalShip(); }
-		if (!bShoRec1) {
-			lstUpgrade.Add("Shockwave Power Generator A: 20% Faster Recharge");
-			lstUpgradeValue.Add(420);
-			lstUpgradeFormula.Add("S+A");
-		} else if (!bShoRec2) {
-			lstUpgrade.Add("Shockwave Power Generator B: 25% Faster Recharge");
-			lstUpgradeValue.Add(421);
-			lstUpgradeFormula.Add("S+B");
-		} else { AddAdditionalShip(); }
-		if (!bShoDam1) {
-			lstUpgrade.Add("Shockwave Null Point Emitter Mk1: Increase Damage 25%");
-			lstUpgradeValue.Add(425);
-			lstUpgradeFormula.Add("S+1");
-		} else if (!bShoDam2) {
-			lstUpgrade.Add("Shockwave Null Point Emitter Mk2: Increase Damage 20%");
-			lstUpgradeValue.Add(426);
-			lstUpgradeFormula.Add("S+2");
-		} else { AddAdditionalShip(); }
+
 //		lstUpgrade.Add("");
 //		lstUpgradeValue.Add();
 //		lstUpgradeFormula.Add("");
+
+		for (int i=0; i<lstUpgradeFormula.Count; i++) {
+			lstUpgrade.Add(UpgradeText(lstUpgradeFormula[i]));
+		}
+
+		//*********Testing*********
+//		Debug.Log("Total items in Upgrade List: " + lstUpgrade.Count);
+//		for (int i=0; i<lstUpgrade.Count; i++) {
+//			Debug.Log((i+1) + ": " + lstUpgrade[i] + " >>> " + lstUpgradeFormula[i]);
+//		}
+		//**************************
 
 	}
 

@@ -12,16 +12,12 @@ public class ShipController : MonoBehaviour {
 	private int conLayout;   //controller layout set somewhere else
 	private int primaryWeapon, secondaryWeapon;   //set somewhere else
 	private Rigidbody rb;
-	private float thrustVelocity = 12f;
 	//private float currentThrust = 0f;
-	private float maxThrust = 15f;
 	//private float inertia = 0.05f;
 	//private Vector3 thrustDirection;
-	private float rotationSpeed = 4.0f;
 	private float deadZone = 0.25f;
 	//private Vector3 velVector = new Vector3(0, 0, 0);
 	private bool bUseThrust = false;
-	private int missileNumber = 8;
 	private Text txtVelocity;  //for testing
 	private bool bEscape = false;    //true when ship destroyed & escape pod launched
 	private bool bGameOver = false;  //true when in escape pod and no ships left
@@ -43,16 +39,36 @@ public class ShipController : MonoBehaviour {
 	private Transform parEff;   //for empty parent container
 	private ParticleSystem[] ps;
 
-	public float priRechargeRate = 2f;   //for weapons; set in Start()
-	public float priCurrentCharge = 0f;  
+	//======= Ship Stats =======
+	private float thrustVelocity = 12f;
+	private float maxThrust = 15f;
+	private float rotationSpeed = 4.0f;
+	private int   missileNumber = 8;
+	public  float priRechargeRate = 2f;   //for weapons; set in Start()
+	public  float priCurrentCharge = 0f;  
 	private float chargeTorp = 1.75f, chargeLaser = 0.25f, chargeMissile = 1.5f;
-	public float secRechargeRate = 4f;   //for secondary device
-	public float secCurrentCharge = 0f;
+	public  float secRechargeRate = 4f;   //for secondary device
+	public  float secCurrentCharge = 0f;
 	private float chargeHyperjump = 6f, chargeForcefield = 8f, chargeShockwave = 60f;
-	public float engRechargeRate = 2.5f;
-	public float engCurrentCharge = 0f;
-	public float lifeRechargeRate = 6f;   //for escape pod life support
-	public float lifeCurrentCharge = 0f;
+	public  float engRechargeRate = 2.5f;
+	public  float engCurrentCharge = 0f;
+	public  float lifeRechargeRate = 6f;   //for escape pod life support
+	public  float lifeCurrentCharge = 0f;
+	//==========================
+
+	//======== Upgrades ========
+	public  float upTorpDam = 1f; 
+	public  float upTorpVel = 1f;   //torpedo velocity
+	public  float upLasDam  = 1f;
+	public  float upLasRan  = 1f;   //laser range
+	public  float upMissDam = 1f;
+	public  float upMissVel = 1f;   //missile velocity
+	public  float upHypCon  = 1f;   //hyperwarp power consumption
+	public  float upForCon  = 1f;   //forcefield power consumption
+	public  float upForDur  = 1f;   //forcefield duration
+	public  float upShoDam  = 1f;   //shockwave damage +
+	public  float upHullFor = 1f;   //hull fortification
+	//==========================
 
 	void Start () {
 		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
@@ -98,6 +114,7 @@ public class ShipController : MonoBehaviour {
 		lifeCurrentCharge = lifeRechargeRate;
 
 		currentLvl = gm.currentLevel;
+		CheckUpgrades();
 		HyperSpaceJump();   //should only happen at start of scene
 	}
 	
@@ -459,6 +476,9 @@ public class ShipController : MonoBehaviour {
 			go.transform.rotation = transform.rotation;
 			go.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up + Vector3.up * Random.Range(-0.2f, 0.2f));
 			go.name = "Missile";
+			TorpedoController tc = go.GetComponent<TorpedoController>();
+			tc.damage *= (int) (tc.damage * upMissDam);
+			tc.fireSpeed *= upMissVel;
 		}
 	}
 
@@ -467,7 +487,14 @@ public class ShipController : MonoBehaviour {
 		go.transform.SetParent(parEff);
 		go.transform.rotation = transform.rotation;
 		go.name = primaryName;
-
+		TorpedoController tc = go.GetComponent<TorpedoController>();
+		if (primaryName == "Laser") {
+			tc.lifetime *= upLasRan;
+			tc.damage = (int) (tc.damage * upLasDam);
+		} else if (primaryName == "Torpedo") {
+			tc.damage = (int) (tc.damage * upTorpDam);
+			tc.fireSpeed *= upTorpVel;
+		}
 	}
 
 	void LaunchShockwave() {
@@ -477,11 +504,14 @@ public class ShipController : MonoBehaviour {
 		GameObject go = Instantiate(pre_Shockwave, transform.position, transform.rotation) as GameObject;
 		go.transform.SetParent(parEff);
 		go.name = "Shockwave";
+		go.GetComponent<Shockwave>().SetDamageMult(upShoDam);
 		Destroy(go, go.GetComponent<ParticleSystem>().main.duration);
 	}
 
 	void RaiseForcefield() {
 		priCurrentCharge = -2.5f;   //also done in ForceField.cs when shield ends
+		//priCurrentCharge = priRechargeRate - ((priRechargeRate + 2.5f) * upForCon);
+					//also done in ForceField.cs when shield ends
 
 		GameObject go = Instantiate(pre_Forcefield, transform.position, Quaternion.identity) as GameObject;
 		go.transform.SetParent(parEff);
@@ -503,7 +533,7 @@ public class ShipController : MonoBehaviour {
 	void HyperJump() {
 		if (pre_WarpEnter == null) { return; }
 		secCurrentCharge = 0f;
-		engCurrentCharge = -3f;
+		engCurrentCharge = -3f * upHypCon;
 
 		mc.enabled = false;  //make invulnerable
 		GameObject go = Instantiate(pre_WarpEnter, transform.position, Quaternion.identity) as GameObject;
@@ -540,12 +570,67 @@ public class ShipController : MonoBehaviour {
 			go = Instantiate(pre_WarpEnter, transform.position, Quaternion.identity) as GameObject;
 			adjustScaleIn = true;
 		}
-		go.transform.Find("Whirl 1").localScale = new Vector3(2.5f, 2.5f, 2.5f);
-		go.transform.Find("Whirl 2").localScale = new Vector3(2.5f, 2.5f, 2.5f);
+		go.transform.Find("Whirl 1").localScale = new Vector3(1.5f, 1.5f, 1.5f);
+		go.transform.Find("Whirl 2").localScale = new Vector3(1.5f, 1.5f, 1.5f);
 		//go.transform.FindChild("Whirl 3").localScale = new Vector3(3f, 3f, 1f);
 		FreezeMovement();
 		go.transform.SetParent(parEff);
 		timeSpent = 0f;
+
+	}
+
+	void CheckUpgrades() {    //compare with CreateListUpgrade() in PrefsControl
+
+		string s = prefs.GetUpgrades();
+		//*********Testing - Remove**********
+		for (int i=0; i<(s.Length/3); i++) {
+			Debug.Log(s.Substring(i*3, 3) + " => " + prefs.UpgradeText(s.Substring(i*3, 3)));
+		}
+		//***********************************
+
+		if (s.Contains("***")) {   //additional ship
+			s = s.Replace("***", "");
+			prefs.ReplaceUpgrade(s);
+			gm.shipsRemaining += 1;
+		}
+		if (s.Contains("T+1")) { upTorpDam = 1.25f; }
+		if (s.Contains("T+2")) { upTorpDam = 1.5f; }
+		if (s.Contains("T+A")) { chargeTorp *= 0.75f; priRechargeRate = chargeTorp; }
+		if (s.Contains("T+B")) { chargeTorp *= 0.80f; priRechargeRate = chargeTorp; }
+		if (s.Contains("T+S")) { upTorpVel = 1.2f; }
+
+		if (s.Contains("L+1")) { upLasDam = 1.36f; }
+		if (s.Contains("L+2")) { upLasDam = 1.68f; }
+		if (s.Contains("L+3")) { upLasDam = 2.0f; }
+		if (s.Contains("L+A")) { chargeLaser *= 0.80f; priRechargeRate = chargeLaser; }
+		if (s.Contains("L+B")) { chargeLaser *= 0.80f; priRechargeRate = chargeLaser; }
+		if (s.Contains("L+R")) { upLasRan = 1.2f; }
+
+		if (s.Contains("M+1")) { upMissDam = 1.25f; }
+		if (s.Contains("M+2")) { upMissDam = 1.56f; }
+		if (s.Contains("M+A")) { missileNumber += 2; }
+		if (s.Contains("M+B")) { missileNumber += 2; }
+		if (s.Contains("M+S")) { upMissVel = 1.25f; }
+		if (s.Contains("M+G")) { chargeMissile *= 0.75f; priRechargeRate = chargeMissile; }
+
+		if (s.Contains("H+1")) { upHypCon = 0.70f; }
+		if (s.Contains("H+2")) { upHypCon = 0.40f; }
+		if (s.Contains("H+A")) { chargeHyperjump *= 0.80f; secRechargeRate = chargeHyperjump; }
+		if (s.Contains("H+B")) { chargeHyperjump *= 0.75f; secRechargeRate = chargeHyperjump; }
+
+		if (s.Contains("F+1")) { upForCon = 0.70f; }
+		if (s.Contains("F+2")) { upForCon = 0.40f; }
+		if (s.Contains("F+A")) { upForDur = 1.25f; }
+		if (s.Contains("F+B")) { upForDur = 1.50f; }
+
+		if (s.Contains("S+1")) { upShoDam = 1.25f; }
+		if (s.Contains("S+2")) { upShoDam = 1.50f; }
+		if (s.Contains("S+A")) { chargeShockwave *= 0.80f; secRechargeRate = chargeShockwave; }
+		if (s.Contains("S+B")) { chargeShockwave *= 0.75f; secRechargeRate = chargeShockwave; }
+
+		if (s.Contains("U+1")) { upHullFor = 1.20f; }
+		if (s.Contains("U+2")) { upHullFor = 1.50f; }
+		if (s.Contains("U+3")) { upHullFor = 1.80f; }
 
 	}
 

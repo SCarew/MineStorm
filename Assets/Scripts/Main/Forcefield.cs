@@ -53,9 +53,10 @@ public class Forcefield : MonoBehaviour {
 			GetComponentInChildren<MeshRenderer>(true).enabled = false;
 			GetComponentInChildren<ParticleSystem>().Play();
 			Destroy(gameObject, 0.7f);
-			sc.priCurrentCharge = -2.5f;
+			//sc.priCurrentCharge = -2.5f;
+			sc.priCurrentCharge = sc.priRechargeRate - ((sc.priRechargeRate + 2.5f) * sc.upForCon);
 		} else {
-			sc.secCurrentCharge -= Time.deltaTime * (sc.secRechargeRate / 1.5f);
+			sc.secCurrentCharge -= Time.deltaTime * (sc.secRechargeRate / 1.5f) / sc.upForDur;
 			//TODO start damage if sc.secCurrentCharge < 0
 		}
 	}

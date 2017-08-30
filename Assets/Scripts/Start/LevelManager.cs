@@ -38,6 +38,7 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public string SectorName(int round) {
+		// Compare with SectorDisplay.Start(), GameManager.NextLevel()
 		if (round > 26 || round < 0) { return ""; }
 
 		int alpha = 6, beta = 14, delta = 21, omega = 27;

@@ -49,6 +49,12 @@ public class HypTimer : MonoBehaviour {
 	}
 
 	void LoadMainScene() {
+		//*****Testing - remove*****
+		ChooseUpgradeOptions();
+		lm.LoadScene("Choice", "Main");
+		return;
+		//**************************
+
 		if ((round/4f) == (int)(round/4f)) {    
 			ChooseUpgradeOptions();
 			lm.LoadScene("Choice", "Main");
@@ -58,18 +64,13 @@ public class HypTimer : MonoBehaviour {
 	}
 
 	void ChooseUpgradeOptions() {
-		//TODO choose upgrades
-		int r;
-		int maxUpgrades = 30;
-		string s1 = "%/#/$/^";
-		string s2 = "000/001/002";
-		for (int i=1; i<4; i++) {
-			r = Random.Range(0, maxUpgrades) + 1;
-			if (r==1) { }
-		}
+		string s1;
 
-		s1.Replace("%", "Upgrade Available");
-		prefs.SetChoice(s1, s2, 3);
+		s1 = prefs.FindNextUpgrade();
+		//s2 = prefs.FindNextUpgradeValue();
+		s1 = "Upgrade Available/" + s1;
+		Debug.Log(s1);
+		prefs.SetChoice(s1, "291/292/293", 3);
 	}
 
 	void Update () {

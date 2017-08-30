@@ -46,7 +46,7 @@ public class HypSpawner : MonoBehaviour {
 
 	void LevelSort() {
 		if (level < 2) {
-			LevelSortHelper(5.5f, 0f, 0f, 30f); 
+			LevelSortHelper(5.5f, 0f, 0f, 10f); //TODO change back to 30s
 		} else if (level == 2 || level == 3) {
 			LevelSortHelper(5f, 0f, 0f, 45f);
 		} else if (level == 4 || level == 5) {

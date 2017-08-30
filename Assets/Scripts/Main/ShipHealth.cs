@@ -10,6 +10,12 @@ public class ShipHealth : MonoBehaviour {
 	void Start() {
 		health = maxHealth;
 		sc = GetComponent<ShipController>();
+		Invoke("CheckUpgrade", 0.1f);
+	}
+
+	void CheckUpgrade() {
+		health = (int)(health * sc.upHullFor);
+		maxHealth = (int)(maxHealth * sc.upHullFor);
 	}
 
 	public int GetHealth() {

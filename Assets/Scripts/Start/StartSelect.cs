@@ -7,13 +7,13 @@ public class StartSelect : MonoBehaviour {
 	private int currentButton = -1;
 	private bool disableContinue = false;
 	private Color colorUnselected, colorSelected, colorFinal, colorDisabled;
-	public GameObject startPanel, optionPanel, controlsPanel;
+	public GameObject startPanel, optionPanel, controlsPanel, creditsPanel;
 	public Text[] textOptions;
 	public Text[] textMini;
 	public Slider[] sldMini;
 	public GameObject[] panelLayout;
 	public Text txtLayout, txtMiniLayout;
-	private int sliderSound = 8, sliderMusic = 9;   //locations of sliders
+	private int sliderSound = 9, sliderMusic = 10;   //locations of sliders
 	private PrefsControl prefs;
 	private LevelManager lm;
 	private SoundManager aud;
@@ -21,7 +21,7 @@ public class StartSelect : MonoBehaviour {
 	private float offset = 0.2f;
 	private float fChange = 0f;   //check for delaying input
 	private bool menuStart = true;  //on Start(t) or Option(f) menu
-	public int startMenuOptions = 5;  
+	public int startMenuOptions = 6;  
 	public int optionMenuOptions = 6;
 
 	void Start () {
@@ -36,6 +36,7 @@ public class StartSelect : MonoBehaviour {
 
 		optionPanel.SetActive(false);
 		controlsPanel.SetActive(false);
+		creditsPanel.SetActive(false);
 		startPanel.SetActive(true);
 		LoadOptions();
 
@@ -68,6 +69,10 @@ public class StartSelect : MonoBehaviour {
 				aud.PlaySoundImmediate("startSelect");
 				Invoke("LayoutSelected", 0.4f);
 				return;
+			} else if (creditsPanel.activeSelf) {
+				aud.PlaySoundImmediate("startSelect");
+				CloseCredits();
+				return;
 			}
 			textOptions[currentButton].color = colorFinal;
 			aud.PlaySoundImmediate("startSelect");
@@ -79,9 +84,12 @@ public class StartSelect : MonoBehaviour {
 			if (optionPanel.activeSelf) {
 				startPanel.SetActive(true);
 				optionPanel.SetActive(false);
-				currentButton = -1;
+				currentButton = 3;
 				menuStart = true;
 				LoadOptions();   //reset changed options to previously saved
+				return;
+			} else if (creditsPanel.activeSelf) {  //cancel Credits
+				CloseCredits();
 				return;
 			} else {    //cancel Controls menu
 				optionPanel.SetActive(true);
@@ -156,6 +164,13 @@ public class StartSelect : MonoBehaviour {
 
 	}
 
+	void CloseCredits() {    //cancel or select should similarly go here
+		startPanel.SetActive(true);
+		creditsPanel.SetActive(false);
+		currentButton = 4;
+		menuStart = true;
+	}
+
 	void StartGame() {
 		//TODO launch Choice and game here
 		if (textOptions[currentButton].name == "txtStory") {
@@ -185,6 +200,7 @@ public class StartSelect : MonoBehaviour {
 		} else {   //Layout 3
 			panelLayout[2].SetActive(true);
 		}
+		//TODO Layout 2 
 	}
 
 	void LayoutSelected() {
@@ -215,6 +231,13 @@ public class StartSelect : MonoBehaviour {
 			optionPanel.SetActive(true);
 			startPanel.SetActive(false);
 			currentButton = -1;
+			menuStart = false;
+			return;
+		}
+		if (textOptions[currentButton].name == "txtCredit") {
+			creditsPanel.SetActive(true);
+			startPanel.SetActive(false);
+			currentButton = 99;
 			menuStart = false;
 			return;
 		}
@@ -323,5 +346,6 @@ public class StartSelect : MonoBehaviour {
 			}
 		}
 		prefs.SetControlLayout(int.Parse(txtMiniLayout.text.Substring(txtMiniLayout.text.Length - 1, 1)) - 1);
+		GameObject.Find("MusicManager").GetComponent<MusicManager>().UpdateVolume();
 	}
 }

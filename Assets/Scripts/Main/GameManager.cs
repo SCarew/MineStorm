@@ -90,36 +90,197 @@ public class GameManager : MonoBehaviour {
 		spawnRateUfo2 = 0f;    //gray ship
 		//int i = 0;
 
-		currentLevel++;
+		//currentLevel++;
+		if (currentLevel < 1) { currentLevel = 1; }
 		UpdateForContinueMode();
 		if (currentLevel==1) {
 			numMeteors = 8;
-			spawnRateUfo2 = 60f;
+			spawnRateUfo2 = 65f;
 		}
 		if (currentLevel==2) {
 			numMeteors = 6;
 			numElecMines = 2;
-			spawnRateUfo2 = 60f;
+			spawnRateUfo2 = 65f;
 		}
 		if (currentLevel==3) {
 			numMeteors = 7;
 			numElecMines = 4;
 			spawnRateUfo2 = 60f;
 		}
-		//TODO add other levels
+		if (currentLevel==4) {
+			numMeteors = 6;
+			numElecMines = 3;
+			numMagMines = 1;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==5) {
+			numMeteors = 4;
+			numMagMines = 4;
+			spawnRateUfo1 = 115f;
+		}
+		if (currentLevel==6) {     //beta starts
+			numMeteors = 3;
+			numElecMines = 3;
+			numMagMines = 3;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==7) {
+			numMeteors = 3;
+			numElecMines = 4;
+			numMagMines = 4;
+			spawnRateUfo1 = 120f;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==8) {
+			numMeteors = 3;
+			numElecMines = 5;
+			numMagMines = 5;
+			spawnRateUfo1 = 110f;
+			spawnRateUfo2 = 55f;
+		}
+		if (currentLevel==9) {
+			numMeteors = 7;
+			numElecMagMines = 2;
+			spawnRateUfo2 = 50f;
+		}
+		if (currentLevel==10) {
+			numMeteors = 3;
+			numElecMagMines = 3;
+			numMagMines = 3;
+			spawnRateUfo1 = 120f;
+		}
+		if (currentLevel==11) {
+			numMeteors = 4;
+			numElecMines = 3;
+			numElecMagMines = 3;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==12) {
+			numMeteors = 5;
+			numElecMagMines = 5;
+			spawnRateUfo1 = 120f;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==13) {
+			numMeteors = 3;
+			numElecMines = 3;
+			numMagMines = 3;
+			numElecMagMines = 3;
+			spawnRateUfo1 = 110f;
+		}
+		if (currentLevel==14) {     //delta begins
+			numMeteors = 3;
+			numDenseMines = 5;
+			spawnRateUfo2 = 50f;
+		}
+		if (currentLevel==15) {
+			numMeteors = 1;
+			numElecMines = 1;
+			numMagMines = 1;
+			numElecMagMines = 1;
+			numDenseMines = 7;
+			spawnRateUfo1 = 100f;
+			spawnRateUfo2 = 50f;
+		}
+		if (currentLevel==16) {
+			numMeteors = 2;
+			numElecMines = 2;
+			numMagMines = 3;
+			numElecMagMines = 3;
+			numDenseMines = 4;
+			spawnRateUfo1 = 100f;
+			spawnRateUfo2 = 50f;
+		}
+		if (currentLevel==17) {
+			numMeteors = 1;
+			numElecMines = 3;
+			numMagMines = 3;
+			numElecMagMines = 3;
+			numDenseMines = 6;
+			spawnRateUfo1 = 115f;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==18) {
+			numMeteors = 5;
+			numDenseMines = 5;
+			numBHMines = 2;
+			spawnRateUfo1 = 120f;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==19) {
+			numDenseMines = 6;
+			numBHMines = 4;
+			spawnRateUfo1 = 100f;
+			spawnRateUfo2 = 50f;
+		}
+		if (currentLevel==20) {
+			numMeteors = 4;
+			numElecMines = 4;
+			numMagMines = 2;
+			numElecMagMines = 2;
+			numDenseMines = 2;
+			numBHMines = 2;
+			spawnRateUfo1 = 80f;
+			spawnRateUfo2 = 45f;
+		}
+		if (currentLevel==21) {   //omega starts
+			numMeteors = 3;
+			numElecMines = 3;
+			numMagMines = 3;
+			numElecMagMines = 3;
+			numDenseMines = 3;
+			numBHMines = 3;
+			spawnRateUfo1 = 100f;
+			spawnRateUfo2 = 50f;
+		}
+		if (currentLevel==22) {
+			numMagMines = 4;
+			numElecMagMines = 4;
+			numBHMines = 6;
+			spawnRateUfo1 = 150f;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==23) {
+			numMagMines = 4;
+			numElecMagMines = 3;
+			numDenseMines = 5;
+			numBHMines = 4;
+			spawnRateUfo1 = 120f;
+			spawnRateUfo2 = 60f;
+		}
+		if (currentLevel==24) {
+			numMeteors = 3;
+			numElecMines = 3;
+			numMagMines = 3;
+			numElecMagMines = 4;
+			numDenseMines = 4;
+			numBHMines = 5;
+			spawnRateUfo1 = 110f;
+			spawnRateUfo2 = 75f;
+		}
+		if (currentLevel==25) {
+			numMeteors = 1;
+			numElecMines = 6;
+			numMagMines = 4;
+			numElecMagMines = 4;
+			numDenseMines = 4;
+			numBHMines = 4;
+			spawnRateUfo1 = 100f;
+			spawnRateUfo2 = 50f;
+		}
+		if (currentLevel==26) {
+			numElecMines = 5;
+			numMagMines = 5;
+			numElecMagMines = 5;
+			numDenseMines = 3;
+			numBHMines = 6;
+			spawnRateUfo1 = 80f;
+			spawnRateUfo2 = 40f;
+		}
 
-		//---------------------------------------------------------------
+		//TODO add arcade levels
 
-		//start music   TODO: decide on sectors
-		int n = 0;
-		MusicManager music = GameObject.Find("MusicManager").GetComponent<MusicManager>();
-		if (currentLevel >=  1 && currentLevel <=  6)  { n = 1; }  //sector alpha
-		if (currentLevel >=  7 && currentLevel <= 11)  { n = 2; }  //sector beta
-		if (currentLevel >= 12 && currentLevel <= 16)  { n = 3; }  //sector delta
-		if (currentLevel >= 17 && currentLevel <= 24)  { n = 4; }  //sector omega
-		music.PlayMusic(n);
 
-		//---------------------------------------------------------------
 
 		if (numMeteors > 0) {
 			SpawnMeteor(mine.Meteor, 3, numMeteors);
@@ -169,14 +330,15 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void LevelClear() {
-		if (currentLevel < 25) {  //final level = 25?
-			//message to player that level is clear
-			//open warp
+		if (currentLevel < 27) {  //final level = 26?
+			currentLevel++;
+			//TODO message to player that level is clear
+			//TODO open warp
 			panFadeIn.GetComponent<HypFader>().ResetTimer(true, 2.5f);
 
 			NextLevel();  //TODO instead, go to hyperspace scene
 		} else {
-			//game over
+			//TODO game over
 		}
 	}
 

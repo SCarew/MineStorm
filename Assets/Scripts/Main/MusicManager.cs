@@ -113,6 +113,15 @@ public class MusicManager : MonoBehaviour {
 		Destroy(go, audio.clip.length + 0.2f);
 	}
 
+	public void UpdateVolume() {
+		musicVolume = GetComponentInParent<PrefsControl>().GetMusicVolume();
+		foreach (Transform child in parAudio) {
+			if (child.name.StartsWith("Insert") || child.name.StartsWith("Theme")) {
+				child.GetComponent<AudioSource>().volume = musicVolume;
+			}
+		}
+	}
+
 	void Update () {
 		if (insertTimer > 0) {
 			insertTimer -= Time.deltaTime;
