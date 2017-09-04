@@ -12,8 +12,15 @@ public class Background : MonoBehaviour {
 		MeshRenderer mr = GetComponent<MeshRenderer>();
 		mat = mr.material;
 		trans = transform.parent.transform;   //camera transform
+
+		Invoke("ResetMaterial", 0.5f);
 	}
-	
+
+	void ResetMaterial() {    //fixes bug with SectorDisplay.Start()
+		MeshRenderer mr = GetComponent<MeshRenderer>();
+		mat = mr.material;
+	}
+
 	void Update () {
 		Vector2 offset = mat.mainTextureOffset;
 		offset.x = trans.position.x / transform.localScale.x / parallax;

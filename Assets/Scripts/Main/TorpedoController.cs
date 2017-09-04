@@ -117,6 +117,7 @@ public class TorpedoController : MonoBehaviour {
 //	}
 
 	public int GetDamage() {
+		//Debug.Log("Damage=" + damage + " firespeed=" + fireSpeed + " lifetime=" + lifetime + " missVel=" + missVel);
 		return damage;
 	}
 

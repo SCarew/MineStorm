@@ -16,6 +16,7 @@ public class ShipController : MonoBehaviour {
 	//private float inertia = 0.05f;
 	//private Vector3 thrustDirection;
 	private float deadZone = 0.25f;
+	private int dev = 0;
 	//private Vector3 velVector = new Vector3(0, 0, 0);
 	private bool bUseThrust = false;
 	private Text txtVelocity;  //for testing
@@ -141,34 +142,45 @@ public class ShipController : MonoBehaviour {
 		if (bEscape) { lifeCurrentCharge -= Time.deltaTime; }
 
 		// **** Testing Start ****    //TODO remove this section
-		if (Input.GetKeyDown(KeyCode.X)) {   
-			if (bEscape == false) { BlowUpShip(); }
-			else { bEscape = false; lifeCurrentCharge = lifeRechargeRate; }
+		if (prefs.GetDevMode()) {
+			if (Input.GetKeyDown(KeyCode.X)) {   
+				if (bEscape == false) { BlowUpShip(); }
+				else { bEscape = false; lifeCurrentCharge = lifeRechargeRate; }
+			}
+			if (Input.GetKeyDown(KeyCode.Alpha1)) { 
+				primaryWeapon = 0; priRechargeRate = chargeTorp;
+				Debug.Log("* Primary weapon: Torpedo");
+			} 
+			if (Input.GetKeyDown(KeyCode.Alpha2)) {
+				primaryWeapon = 1; priRechargeRate = chargeLaser;
+				Debug.Log("* Primary weapon: Laser");
+			} 
+			if (Input.GetKeyDown(KeyCode.Alpha3)) {
+				primaryWeapon = 2; priRechargeRate = chargeMissile;
+				Debug.Log("* Primary weapon: Missile");
+			} 
+			if (Input.GetKeyDown(KeyCode.Alpha4)) { 
+				secondaryWeapon = 0; secRechargeRate = chargeHyperjump; secCurrentCharge = secRechargeRate;
+				Debug.Log("* Secondary weapon: Hyperjump");
+			} 
+			if (Input.GetKeyDown(KeyCode.Alpha5)) { 
+				secondaryWeapon = 1; secRechargeRate = chargeForcefield; secCurrentCharge = secRechargeRate;
+				Debug.Log("* Secondary weapon: Forcefield");
+			} 
+			if (Input.GetKeyDown(KeyCode.Alpha6)) { 
+				secondaryWeapon = 2; secRechargeRate = chargeShockwave; secCurrentCharge = secRechargeRate;
+				Debug.Log("* Secondary weapon: Shockwave");
+			} 
+		} else {
+			if (Input.GetKey("left ctrl") || Input.GetKey("right ctrl")) {
+				if (Input.GetKeyDown("d"))
+					{ dev = 1; }
+				if (Input.GetKeyDown("e") && dev == 1)
+					{ dev = 2; }
+				if (Input.GetKeyDown("v") && dev == 2)
+					{ prefs.SetDevMode(true); dev = 3; }
+			}
 		}
-		if (Input.GetKeyDown(KeyCode.Alpha1)) { 
-			primaryWeapon = 0; priRechargeRate = chargeTorp;
-			Debug.Log("* Primary weapon: Torpedo");
-		} 
-		if (Input.GetKeyDown(KeyCode.Alpha2)) {
-			primaryWeapon = 1; priRechargeRate = chargeLaser;
-			Debug.Log("* Primary weapon: Laser");
-		} 
-		if (Input.GetKeyDown(KeyCode.Alpha3)) {
-			primaryWeapon = 2; priRechargeRate = chargeMissile;
-			Debug.Log("* Primary weapon: Missile");
-		} 
-		if (Input.GetKeyDown(KeyCode.Alpha4)) { 
-			secondaryWeapon = 0; secRechargeRate = chargeHyperjump; secCurrentCharge = secRechargeRate;
-			Debug.Log("* Secondary weapon: Hyperjump");
-		} 
-		if (Input.GetKeyDown(KeyCode.Alpha5)) { 
-			secondaryWeapon = 1; secRechargeRate = chargeForcefield; secCurrentCharge = secRechargeRate;
-			Debug.Log("* Secondary weapon: Forcefield");
-		} 
-		if (Input.GetKeyDown(KeyCode.Alpha6)) { 
-			secondaryWeapon = 2; secRechargeRate = chargeShockwave; secCurrentCharge = secRechargeRate;
-			Debug.Log("* Secondary weapon: Shockwave");
-		} 
 		// **** Testing End ****
 
 		if (adjustScaleIn) {   //entering hyperjump
@@ -477,7 +489,7 @@ public class ShipController : MonoBehaviour {
 			go.transform.rotation = Quaternion.LookRotation(transform.forward, transform.up + Vector3.up * Random.Range(-0.2f, 0.2f));
 			go.name = "Missile";
 			TorpedoController tc = go.GetComponent<TorpedoController>();
-			tc.damage *= (int) (tc.damage * upMissDam);
+			tc.damage = (int) (tc.damage * upMissDam);
 			tc.fireSpeed *= upMissVel;
 		}
 	}
@@ -584,7 +596,7 @@ public class ShipController : MonoBehaviour {
 		string s = prefs.GetUpgrades();
 		//*********Testing - Remove**********
 		for (int i=0; i<(s.Length/3); i++) {
-			Debug.Log(s.Substring(i*3, 3) + " => " + prefs.UpgradeText(s.Substring(i*3, 3)));
+			Debug.Log(s.Substring(i*3, 3) + " => " + prefs.UpgradeText(s.Substring(i*3, 3), true));
 		}
 		//***********************************
 

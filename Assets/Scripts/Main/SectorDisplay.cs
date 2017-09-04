@@ -8,6 +8,9 @@ public class SectorDisplay : MonoBehaviour {
 	private LevelManager lm;
 	private Color col;
 
+	[SerializeField] private Material[] starfields_bg;
+	[SerializeField] private Material[] starfields_fg;
+
 	private float timeToFade = 3f;
 	private float timer;
 
@@ -20,7 +23,11 @@ public class SectorDisplay : MonoBehaviour {
 
 		int round = gm.currentLevel;
 		string sec = lm.SectorName(round);
-		txtSector.text = sec;
+		if (gm.bArcadeMode) { 
+			txtSector.text = "Level " + round; 
+		} else {   //story mode
+			txtSector.text = sec;
+		}
 		Debug.Log("Round = " + round);
 
 		//---------------------------------------------------------------
@@ -41,7 +48,26 @@ public class SectorDisplay : MonoBehaviour {
 		//---------------------------------------------------------------
 
 		//---------------------------------------------------------------
-		// TODO Change starfield
+		// Starfield select
+		MeshRenderer mr   = GameObject.Find("Starfield").GetComponent<MeshRenderer>();
+		MeshRenderer mr_2 = GameObject.Find("Starfield FG").GetComponent<MeshRenderer>();
+		if (sec.StartsWith("Alph")) {
+			mr.material   = starfields_bg[0];
+			mr_2.material = starfields_fg[0];
+		} else if (sec.StartsWith("Beta")) {
+			mr.materials[0]   = starfields_bg[1];
+			mr_2.materials[0] = starfields_fg[1];
+		} else if (sec.StartsWith("Delt")) {
+			mr.materials[0]   = starfields_bg[2];
+			mr_2.materials[0] = starfields_fg[2];
+		} else if (sec.StartsWith("Omeg")) {
+			mr.materials[0]   = starfields_bg[3];
+			mr_2.materials[0] = starfields_fg[3];
+		} else {
+			mr.materials[0]   = starfields_bg[0];
+			mr_2.materials[0] = starfields_fg[0];
+			Debug.Log("Sector: " + sec);
+		}
 		//---------------------------------------------------------------
 
 		timer = timeToFade;

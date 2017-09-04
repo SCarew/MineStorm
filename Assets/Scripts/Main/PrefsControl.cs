@@ -9,6 +9,7 @@ public class PrefsControl : MonoBehaviour {
 	private static List<string> lstUpgrade;
 	//private static List<int>    lstUpgradeValue;
 	private static List<string> lstUpgradeFormula;
+	private static bool bDeveloperMode = true;  //TODO change to false
 
 	private void Start() {
 		if (lstUpgrade == null || lstUpgrade.Count < 1) {
@@ -16,6 +17,15 @@ public class PrefsControl : MonoBehaviour {
 			lstUpgradeFormula = new List<string>();
 			//CreateListUpgrade();
 		}
+	}
+
+	public bool GetDevMode() {
+		return bDeveloperMode;
+	}
+
+	public void SetDevMode(bool b) {
+		bDeveloperMode = b;
+		Debug.Log("Dev reached!!!"); 
 	}
 
 	public string GetChoices() {
@@ -327,7 +337,7 @@ public class PrefsControl : MonoBehaviour {
 //		return PlayerPrefs.GetString("NextUpgradeValue", "");
 //	}
 
-	public string UpgradeText(string formula) {
+	public string UpgradeText(string formula, bool bMultiLine = false) {
 		string s = "";
 		if (formula == "P=T") { s = "Set Primary Weapon to Torpedo"; }
 		if (formula == "P=L") { s = "Set Primary Weapon to Laser"; }
@@ -368,6 +378,8 @@ public class PrefsControl : MonoBehaviour {
 		if (formula == "U+2") { s = "Hull Fortification II: Increase Durability 25%"; }
 		if (formula == "U+3") { s = "Hull Fortification III: Increase Durability 20%"; }
 		if (formula == "***") { s = "Additional Ship"; }
+
+		if (bMultiLine)  { s = s.Replace(": ", ":\r\n"); }
 
 		return s;
 	}
@@ -538,7 +550,7 @@ public class PrefsControl : MonoBehaviour {
 //		lstUpgradeFormula.Add("");
 
 		for (int i=0; i<lstUpgradeFormula.Count; i++) {
-			lstUpgrade.Add(UpgradeText(lstUpgradeFormula[i]));
+			lstUpgrade.Add(UpgradeText(lstUpgradeFormula[i], true));
 		}
 
 		//*********Testing*********

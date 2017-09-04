@@ -26,6 +26,12 @@ public class HypMeteor : MonoBehaviour {
 		sm = GameObject.Find("ScoreManager").GetComponent<ScoreManager>();
 		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		pShipHealth = GameObject.Find("Hyp_PlayerShip").GetComponent<HypShipHealth>();
+		if (mySize == mineSize.big) 			{ moveSpeed += 1f; }
+		else if (mySize == mineSize.medium) 	{ moveSpeed += 0.5f; }
+		else if (mySize == mineSize.small)		{ moveSpeed += 0.1f; }
+		int round = GameObject.Find("LevelManager").GetComponent<PrefsControl>().GetGameStats(PrefsControl.stats.Level);
+		moveSpeed += ((float)round / 10f);
+		//Debug.Log("HyperMeteor move speed = " + moveSpeed + " (" + mySize + ")");
 	}
 
 	public void SetTarget (Vector3 location, float speed = 0f) {

@@ -19,6 +19,8 @@ public class HypSpawner : MonoBehaviour {
 	private float timeToWarp = 100f;
 	private float meteorSpawnTime, graySpawnTime, pinkSpawnTime;
 
+	private int dev = 0; //testing
+
 	void Start () {
 		ender = GameObject.Find("Ender").transform;
 		spawner = gameObject.transform;
@@ -46,7 +48,7 @@ public class HypSpawner : MonoBehaviour {
 
 	void LevelSort() {
 		if (level < 2) {
-			LevelSortHelper(5.5f, 0f, 0f, 10f); //TODO change back to 30s
+			LevelSortHelper(5.5f, 0f, 0f, 100f); //TODO change back to 30s
 		} else if (level == 2 || level == 3) {
 			LevelSortHelper(5f, 0f, 0f, 45f);
 		} else if (level == 4 || level == 5) {
@@ -117,11 +119,25 @@ public class HypSpawner : MonoBehaviour {
 
 	void Update () {
 		//*** testing ***
-		if (Input.GetKeyDown(KeyCode.Space) && (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))) {
-			SpawnMeteor();
-		}
-		if (Input.GetKeyDown(KeyCode.U) && (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))) {
-			SpawnUFO(0);
+		if (prefs.GetDevMode()) {
+			if (Input.GetKeyDown(KeyCode.Space)) {
+				SpawnMeteor();
+			}
+			if (Input.GetKeyDown(KeyCode.U)) {
+				SpawnUFO(0);
+			} 
+			if (Input.GetKeyDown(KeyCode.Y)) {
+				SpawnUFO(1);
+			}
+		} else {
+			if (Input.GetKey("left ctrl") || Input.GetKey("right ctrl")) {
+				if (Input.GetKeyDown("d"))
+					{ dev = 1; }
+				if (Input.GetKeyDown("e") && dev == 1)
+					{ dev = 2; }
+				if (Input.GetKeyDown("v") && dev == 2)
+					{ prefs.SetDevMode(true); dev = 3; }
+			}
 		}
 		//***************
 

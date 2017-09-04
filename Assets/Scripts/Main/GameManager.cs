@@ -26,13 +26,13 @@ public class GameManager : MonoBehaviour {
 	public GameObject[] pre_UFO;
 	private int metBig = 0, metMed = 0, metSma = 0;
 	private int denBig = 0, denMed = 0, denSma = 0;
-		// add additional mines prefabs (array?)
+
 	private Transform parMeteor, parTextScores, parEnemy;
 	private int score = 0;
-	private Text txtScore, txtScorePlus; 
-	//private Text txtScorePlus;
-	private string scoreFormat; //sets leading zeroes, set in Start()
-	public GameObject pre_ScorePlus;
+	private Text txtScore; //, txtScorePlus; 
+	private Text[] txtPlus;
+	private string scoreFormat;   //sets leading zeroes, set in Start()
+	//public GameObject pre_ScorePlus;
 	private LayerMask myLayerMask;
 	private float spawnRateUfo1 = 0f, spawnRateUfo2 = 0f;
 	private float spawnTimeUfo1 = 0f, spawnTimeUfo2 = 0f;
@@ -52,14 +52,17 @@ public class GameManager : MonoBehaviour {
 	void Start() {
 		panFadeIn.SetActive(true);
 		parMeteor = GameObject.Find("Meteors").gameObject.transform;
-		parTextScores = GameObject.Find("txtScorePlus").gameObject.transform;
+		parTextScores = GameObject.Find("parScorePlus").gameObject.transform;
 		parEnemy = GameObject.Find("Enemies").gameObject.transform;
 		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
-		txtScorePlus = parTextScores.GetComponent<Text>();
-		//txtScorePlus = GameObject.Find("txtScorePlus").GetComponent<Text>();
+		//txtScorePlus = parTextScores.GetComponent<Text>();
 		scoreFormat = txtScore.text;
+		txtPlus = new Text[3];
+		txtPlus[0] = parTextScores.Find("txtScorePlus0").GetComponent<Text>();
+		txtPlus[1] = parTextScores.Find("txtScorePlus1").GetComponent<Text>();
+		txtPlus[2] = parTextScores.Find("txtScorePlus2").GetComponent<Text>();
 
 		myLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Meteor")) | (1 << LayerMask.NameToLayer("Enemy"));
 		//Debug.Log(myLayerMask + "=" + myLayerMask.value);
@@ -278,8 +281,56 @@ public class GameManager : MonoBehaviour {
 			spawnRateUfo2 = 40f;
 		}
 
-		//TODO add arcade levels
+		//============ Redo Arcade Level ============
+		if (bArcadeMode) {
+			int numTotal = 6 + (int)(currentLevel/5) + Random.Range(0, 1 + (int)(currentLevel / 2));
+			float maxType = 1f, minType = 0f;
+			int thisMeteor = 0;
+			numMeteors = 0;
+			numElecMines = 0;
+			numMagMines = 0;
+			numElecMagMines = 0;
+			numDenseMines = 0;
+			numBHMines = 0;
+			spawnRateUfo1 = 0f;
+			spawnRateUfo2 = 0f;	
+			if (currentLevel < 2)   { maxType = 0.99f; }
+			if (currentLevel == 2)  { maxType = 1.34f; }
+			if (currentLevel == 3)  { maxType = 1.75f; }
+			if (currentLevel == 4)  { maxType = 2.00f; }
+			if (currentLevel == 5)  { maxType = 2.40f; }
+			if (currentLevel == 6)  { maxType = 2.80f; }
+			if (currentLevel == 7)  { maxType = 3.00f; }
+			if (currentLevel == 8)  { maxType = 3.40f; }
+			if (currentLevel == 9)  { maxType = 3.75f; }
+			if (currentLevel == 10) { maxType = 3.99f; }
+			if (currentLevel > 10)  { maxType = 4.00f + (currentLevel / 3); }
+			if (currentLevel == 14) { maxType = 4.99f; }
+			if (currentLevel > 14)  { maxType = 5.00f + (currentLevel / 3); }
+			if (currentLevel >= 18) { maxType = 5.99f; }
+			minType = maxType / 5f;
+			for (int i=0; i<numTotal; i++) {
+				thisMeteor = (int)(1 + Random.Range(minType, maxType));
+				if      (thisMeteor == 1) { numMeteors++; }
+				else if (thisMeteor == 2) { numElecMines++; }
+				else if (thisMeteor == 3) { numMagMines++; }
+				else if (thisMeteor == 4) { numElecMagMines++; }
+				else if (thisMeteor == 5) { numDenseMines++; }
+				else if (thisMeteor == 6) { numBHMines++; }
+			}
+			if      (currentLevel < 6)  { spawnRateUfo1 = 250f;  spawnRateUfo2 = 65f; }
+			else if (currentLevel < 11) { spawnRateUfo1 = 200f;  spawnRateUfo2 = 60f; }
+			else if (currentLevel < 16) { spawnRateUfo1 = 160f;  spawnRateUfo2 = 55f; }
+			else if (currentLevel < 21) { spawnRateUfo1 = 130f;  spawnRateUfo2 = 50f; }
+			else                        { spawnRateUfo1 = 100f;  spawnRateUfo2 = 50f; }
 
+			//*******Testing - remove********
+			Debug.Log("Level:" + currentLevel + "  UFO1:" + spawnRateUfo1 + "  UFO2:" + spawnRateUfo2);
+			Debug.Log("Meteors:" + numTotal + "  minType:" + minType + "  maxType:" + maxType);
+			Debug.Log("Met/Ele/Mag/ElM/Den/BHM: " + numMeteors + "/" + numElecMines + "/" + numMagMines + "/" + numElecMagMines + "/" + numDenseMines + "/" + numBHMines);
+			//*******************************
+		}
+		//===========================================
 
 
 		if (numMeteors > 0) {
@@ -541,35 +592,22 @@ public class GameManager : MonoBehaviour {
 //		Invoke (ClearScore(), 2f);
 //	}
 
-	private void ShowPoints(int pts) {
-		//int num = 2 * parTextScores.childCount + 1;
-		float num = parTextScores.childCount * 1.25f;
-		float base_x = txtScorePlus.rectTransform.position.x;
-		float base_y = txtScorePlus.rectTransform.position.y;
-		float base_z = txtScorePlus.rectTransform.position.z;
-		float base_w = txtScorePlus.rectTransform.rect.width;
-
-		GameObject go;
-		go = Instantiate (pre_ScorePlus, new Vector3(0f, 0f, 0f), Quaternion.identity, parTextScores) as GameObject;
-		//go.GetComponent<RectTransform>().position = new Vector3(base_x + 75f - (35f * num), base_y - 30f, base_z);
-		go.GetComponent<RectTransform>().position = new Vector3(base_x - (num * base_w), base_y, base_z);
-		go.GetComponent<Text>().text = "+" + pts.ToString();
-		StartCoroutine (DestroyText(go));
+	private void ShowPoints(int pts) {		
+		txtPlus[2].text = txtPlus[1].text;
+		txtPlus[1].text = txtPlus[0].text;
+		txtPlus[0].text = "+" + pts.ToString(); 
+		Invoke ("DestroyText", 2.5f);
 	}
 
-	private IEnumerator DestroyText(GameObject obj) {
-		yield return new WaitForSeconds(2.5f);
-		Destroy(obj);
-		if (parTextScores.childCount > 0) {
-			foreach (Transform t in parTextScores) {
-				t.transform.position = new Vector3(t.transform.position.x + (txtScorePlus.rectTransform.rect.width * 1.25f), t.transform.position.y, t.transform.position.z);
-			}
+	private void DestroyText() {
+		if (txtPlus[2].text != "") {
+			txtPlus[2].text = "";
+		} else if (txtPlus[1].text != "") {
+			txtPlus[1].text = "";
+		} else {
+			txtPlus[0].text = "";
 		}
 	}
-
-//	void ClearScore() {
-//		txtScorePlus.text = "";
-//	}
 
 	private IEnumerator CheckForLevelEnd() {
 		bool bEnd = false;

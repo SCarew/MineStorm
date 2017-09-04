@@ -1,20 +1,20 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Main\GameManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Main\TorpedoController.cs">
     <Files>
       <File FileName="Assets\Scripts\Start\LevelManager.cs" Line="41" Column="65" />
-      <File FileName="Assets\Scripts\Main\ShipController.cs" Line="593" Column="28" />
-      <File FileName="Assets\Scripts\Main\GameManager.cs" Line="281" Column="27" />
-      <File FileName="Assets\Scripts\Main\PrefsControl.cs" Line="549" Column="1" />
+      <File FileName="Assets\Scripts\Main\ShipController.cs" Line="493" Column="30" />
+      <File FileName="Assets\Scripts\Main\GameManager.cs" Line="611" Column="2" />
+      <File FileName="Assets\Scripts\Main\PrefsControl.cs" Line="28" Column="32" />
       <File FileName="Assets\Scripts\Hyperspace\HypLaser.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Hyperspace\HypSpawner.cs" Line="49" Column="65" />
-      <File FileName="Assets\Scripts\Hyperspace\HypMeteor.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Hyperspace\HypUFO.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Hyperspace\HypSpawner.cs" Line="140" Column="5" />
+      <File FileName="Assets\Scripts\Hyperspace\HypMeteor.cs" Line="34" Column="5" />
+      <File FileName="Assets\Scripts\Hyperspace\HypUFO.cs" Line="281" Column="98" />
       <File FileName="Assets\Scripts\Hyperspace\HypShipController.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Hyperspace\HypShipHealth.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Hyperspace\CorridorControl.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Hyperspace\HypTimer.cs" Line="70" Column="39" />
-      <File FileName="Assets\Scripts\Main\SectorDisplay.cs" Line="44" Column="12" />
+      <File FileName="Assets\Scripts\Hyperspace\HypTimer.cs" Line="21" Column="16" />
+      <File FileName="Assets\Scripts\Main\TorpedoController.cs" Line="120" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
