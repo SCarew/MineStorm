@@ -24,7 +24,10 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	void OnDestroy() {
-		prefs.SetGameStats(PrefsControl.stats.Score, score);
+		//if (GameObject.Find("Hyp_PlayerShip").GetComponent<HypShipHealth>().isDead == false) {
+		if (!prefs.isHypDead) {   //only save score if player not dead
+			prefs.SetGameStats(PrefsControl.stats.Score, score);
+		}
 	}
 
 }

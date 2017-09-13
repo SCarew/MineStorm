@@ -56,8 +56,10 @@
      <Compile Include="Assets\Scripts\Hyperspace\HypCrosshair.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypEnder.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypFader.cs" />
+     <Compile Include="Assets\Scripts\Hyperspace\HypGameOverMenu.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypLaser.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypMeteor.cs" />
+     <Compile Include="Assets\Scripts\Hyperspace\HypPauseMenu.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypShipController.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypShipHealth.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypSpawner.cs" />

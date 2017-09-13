@@ -129,6 +129,9 @@ public class HypSpawner : MonoBehaviour {
 			if (Input.GetKeyDown(KeyCode.Y)) {
 				SpawnUFO(1);
 			}
+			if (Input.GetKeyDown(KeyCode.X)) {
+				GameObject.Find("Hyp_PlayerShip").GetComponent<HypShipHealth>().TakeDamage();
+			}
 		} else {
 			if (Input.GetKey("left ctrl") || Input.GetKey("right ctrl")) {
 				if (Input.GetKeyDown("d"))

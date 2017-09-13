@@ -11,6 +11,9 @@ public class PrefsControl : MonoBehaviour {
 	private static List<string> lstUpgradeFormula;
 	private static bool bDeveloperMode = true;  //TODO change to false
 
+	public bool isHypDead = false;  //flag for Hyperspace death
+	public bool bHypGameOver = false;  //flag for Hyperspace end of game
+
 	private void Start() {
 		if (lstUpgrade == null || lstUpgrade.Count < 1) {
 			lstUpgrade = new List<string>();

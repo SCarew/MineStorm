@@ -41,6 +41,8 @@ public class HypTimer : MonoBehaviour {
 	}
 
 	void ExitHyperspace() {
+		if (prefs.isHypDead)  { return; }
+
 		fadeinPanel.SetActive(true);
 		HypFader h = fadeinPanel.GetComponent<HypFader>();
 		h.ResetTimer(true);

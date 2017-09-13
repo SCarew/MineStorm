@@ -26,13 +26,24 @@ public class HypShipHealth : MonoBehaviour {
 	}
 
 	void Explode() {
-		//TODO blow up ship
+		timeReset = 99999f;
+		invulnerableTime = 1f;
+		bTakeHit = true;
+		GameObject.Find("LevelManager").GetComponent<PrefsControl>().isHypDead = true;
+		GameObject.Find("Instruments").SetActive(false);
+		//GameObject.Find("PSParent").transform.Find("PSChild2").gameObject.SetActive(true);
+		GetComponent<HypShipController>().enabled = false;  
+		transform.GetComponentInChildren<MeshCollider>(true).enabled = false;
+		transform.Find("Ship.B").GetComponent<MeshRenderer>().enabled = false;
+		GameObject.Find("SoundManager").GetComponent<SoundManager>().PlaySoundImmediate("explosionship");
+		GameObject.Find("GameOverMenu").GetComponent<HypGameOverMenu>().LaunchGameOver();
+
 	}
 
 	public void TakeDamage() {
 		if (invulnerableTime > 0) { return; }
 		shields -= 1;
-		Debug.Log("Shields = " + shields);
+		//Debug.Log("Shields = " + shields);
 		if (shields < 0) {
 			Explode();
 			return;

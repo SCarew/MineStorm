@@ -4,12 +4,15 @@ using UnityEngine;
 public class HyperSwirl : MonoBehaviour {
 
 	public Vector3 euler = new Vector3(0f, 0f, 1f);
+	private bool isPaused = false;
 
-	void Start () {
-		
+	public void pauseSwirl(bool bPaused) {
+		isPaused = bPaused;
 	}
-	
+
 	void Update () {
-		transform.Rotate(euler);
+		if (!isPaused) {
+			transform.Rotate(euler);
+		}
 	}
 }

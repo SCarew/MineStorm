@@ -257,10 +257,11 @@ public class ShipController : MonoBehaviour {
 			if ((v > deadZone) && (engCurrentCharge > 0)) {
 				engCurrentCharge -= Time.deltaTime * 1.5f;
 				Thrust(v);
-				aud.PlaySoundLimited("engine", 2); 
+				if (!bUseThrust) { aud.PlaySoundLimited("engine", 2); }
 				bUseThrust = true;
 			} else {
 				//Thrust(0);
+				if (bUseThrust) { aud.PlaySoundLimited("engine", 0); }
 				bUseThrust = false;
 			}
 
@@ -303,10 +304,11 @@ public class ShipController : MonoBehaviour {
 
 			if (bT && (engCurrentCharge > 0)) {
 				engCurrentCharge -= Time.deltaTime * 1.5f;
-				aud.PlaySoundLimited("engine", 2); 
+				if (!bUseThrust) { aud.PlaySoundLimited("engine", 2); }
 				Thrust(0.75f);
 				bUseThrust = true;
 			} else {
+				if (bUseThrust) { aud.PlaySoundLimited("engine", 0); }
 				bUseThrust = false;
 			}
 
@@ -589,10 +591,18 @@ public class ShipController : MonoBehaviour {
 		go.transform.SetParent(parEff);
 		timeSpent = 0f;
 
+		if (jumpOut) {
+			Invoke("GotoNextLevel", 2f);
+		}
+	}
+
+	void GotoNextLevel() {
+		gm.GotoNextScene();
 	}
 
 	void CheckUpgrades() {    //compare with CreateListUpgrade() in PrefsControl
 
+		if (gm.bArcadeMode) { return; }
 		string s = prefs.GetUpgrades();
 		//*********Testing - Remove**********
 		for (int i=0; i<(s.Length/3); i++) {

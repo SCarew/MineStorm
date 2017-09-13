@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
 	public int mineSHit = 35;  //from hitting a mine/meteor
 
 	private PrefsControl prefs;
+	private LevelManager lm;
 	public int currentLevel = 0;
 	public int shipsRemaining = 0;
 	public float level_width, level_height;
@@ -55,6 +56,7 @@ public class GameManager : MonoBehaviour {
 		parTextScores = GameObject.Find("parScorePlus").gameObject.transform;
 		parEnemy = GameObject.Find("Enemies").gameObject.transform;
 		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
+		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
 		//txtScorePlus = parTextScores.GetComponent<Text>();
@@ -381,6 +383,12 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void LevelClear() {
+		if (bArcadeMode) {
+			//TODO message to player that level is clear
+			currentLevel++;
+			panFadeIn.GetComponent<HypFader>().ResetTimer(true, 2.5f);
+			return;
+		}
 		if (currentLevel < 27) {  //final level = 26?
 			currentLevel++;
 			//TODO message to player that level is clear
@@ -390,6 +398,14 @@ public class GameManager : MonoBehaviour {
 			NextLevel();  //TODO instead, go to hyperspace scene
 		} else {
 			//TODO game over
+		}
+	}
+
+	public void GotoNextScene() {
+		if (bArcadeMode) {
+			lm.LoadScene("Main");
+		} else {
+			lm.LoadScene("Hyperspace");
 		}
 	}
 

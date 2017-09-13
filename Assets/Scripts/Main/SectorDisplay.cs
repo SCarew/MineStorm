@@ -10,6 +10,7 @@ public class SectorDisplay : MonoBehaviour {
 
 	[SerializeField] private Material[] starfields_bg;
 	[SerializeField] private Material[] starfields_fg;
+	[SerializeField] private GameObject[] lights;  //0-3 Alpha-Omega  4 Headlight  5 Spotlight
 
 	private float timeToFade = 3f;
 	private float timer;
@@ -48,24 +49,37 @@ public class SectorDisplay : MonoBehaviour {
 		//---------------------------------------------------------------
 
 		//---------------------------------------------------------------
-		// Starfield select
+		// Starfield & Light select
 		MeshRenderer mr   = GameObject.Find("Starfield").GetComponent<MeshRenderer>();
 		MeshRenderer mr_2 = GameObject.Find("Starfield FG").GetComponent<MeshRenderer>();
+		for (int i=0; i<lights.Length; i++) 
+			{ lights[i].SetActive(false); }
+
+		//sec = "Delta";  //Testing - remove
 		if (sec.StartsWith("Alph")) {
-			mr.material   = starfields_bg[0];
-			mr_2.material = starfields_fg[0];
+			mr.material       = starfields_bg[0];
+			mr_2.material     = starfields_fg[0];
+			lights[0].SetActive(true);
 		} else if (sec.StartsWith("Beta")) {
-			mr.materials[0]   = starfields_bg[1];
-			mr_2.materials[0] = starfields_fg[1];
+			mr.material       = starfields_bg[1];
+			mr_2.material     = starfields_fg[1];
+			lights[1].SetActive(true);
 		} else if (sec.StartsWith("Delt")) {
-			mr.materials[0]   = starfields_bg[2];
-			mr_2.materials[0] = starfields_fg[2];
+			mr.material       = starfields_bg[2];
+			mr_2.material     = starfields_fg[2];
+			lights[2].SetActive(true);
+			lights[4].SetActive(true);
+			lights[5].SetActive(true);
 		} else if (sec.StartsWith("Omeg")) {
-			mr.materials[0]   = starfields_bg[3];
-			mr_2.materials[0] = starfields_fg[3];
+			mr.material       = starfields_bg[3];
+			mr_2.material     = starfields_fg[3];
+			lights[3].SetActive(true);
+			lights[5].SetActive(true);
 		} else {
-			mr.materials[0]   = starfields_bg[0];
-			mr_2.materials[0] = starfields_fg[0];
+			mr.material       = starfields_bg[0];
+			mr_2.material     = starfields_fg[0];
+			lights[0].SetActive(true);
+			lights[5].SetActive(true);
 			Debug.Log("Sector: " + sec);
 		}
 		//---------------------------------------------------------------

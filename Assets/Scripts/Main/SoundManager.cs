@@ -63,18 +63,18 @@ public class SoundManager : MonoBehaviour {
 		}
 		go = Instantiate(pre_SoundEffect, parAttach) as GameObject;
 
-		if (num > 1) {     //for PlaySoundLimited() only
-			int n = 0;
-			foreach (Transform t in parAudio.transform) {
-				if (t.name == ac.name) { n++; }
-			}
-			if (n < num) {
-				go.name = ac.name;
-			} else {
-				Destroy(go);
-				return;
-			}
-		}
+//		if (num > 1) {     //for PlaySoundLimited() only
+//			int n = 0;
+//			foreach (Transform t in parAudio.transform) {
+//				if (t.name == ac.name) { n++; }
+//			}
+//			if (n < num) {
+//				go.name = ac.name;
+//			} else {
+//				Destroy(go);
+//				return;
+//			}
+//		}
 
 		audio = go.GetComponent<AudioSource>();
 		audio.clip = ac;
@@ -85,6 +85,7 @@ public class SoundManager : MonoBehaviour {
 		if (ac == hypUFOHum) { go.transform.localPosition = Vector3.zero; } //fixes bug
 		audio.volume = mainVolume * volume;
 		audio.Play();
+		go.name = ac.name;
 	}
 
 	/// <summary>
@@ -141,8 +142,17 @@ public class SoundManager : MonoBehaviour {
 
 		if (soundName == "engine") 
 			{ ac = engine1; }
-
-		PlaySound(ac, 1f, null, false, number);
+		if ((number == 0) && (ac != null) && (parAudio.childCount > 0)) {    //turn off engine
+			foreach (Transform t in parAudio.transform) {
+				if (t.gameObject.name == ac.name) { 
+					t.GetComponent<AudioSource>().volume = 0f;
+					Destroy(t.gameObject, 0.1f); 
+				}
+			}
+		} else {
+			//PlaySound(ac, 0.7f, null, false, number);
+			PlaySound(ac, 0.7f, null, true, 1);
+		}
 	}
 
 	/// <summary>
