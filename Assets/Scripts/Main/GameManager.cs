@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
 	private PrefsControl prefs;
 	private LevelManager lm;
 	public int currentLevel = 0;
+	public int finalLevel = 26;
 	public int shipsRemaining = 0;
 	public float level_width, level_height;
 	public GameObject[] pre_Meteor;  
@@ -288,6 +289,8 @@ public class GameManager : MonoBehaviour {
 			int numTotal = 6 + (int)(currentLevel/5) + Random.Range(0, 1 + (int)(currentLevel / 2));
 			float maxType = 1f, minType = 0f;
 			int thisMeteor = 0;
+			level_width = 100f;
+			level_height = 100f;
 			numMeteors = 0;
 			numElecMines = 0;
 			numMagMines = 0;
@@ -306,9 +309,9 @@ public class GameManager : MonoBehaviour {
 			if (currentLevel == 8)  { maxType = 3.40f; }
 			if (currentLevel == 9)  { maxType = 3.75f; }
 			if (currentLevel == 10) { maxType = 3.99f; }
-			if (currentLevel > 10)  { maxType = 4.00f + (currentLevel / 3); }
-			if (currentLevel == 14) { maxType = 4.99f; }
-			if (currentLevel > 14)  { maxType = 5.00f + (currentLevel / 3); }
+			if (currentLevel > 10)  { maxType = 4.00f + ((currentLevel-10) / 3f); }
+			if (currentLevel == 14) { maxType = 5.00f; }
+			if (currentLevel > 14)  { maxType = 5.00f + ((currentLevel-14) / 4f); }
 			if (currentLevel >= 18) { maxType = 5.99f; }
 			minType = maxType / 5f;
 			for (int i=0; i<numTotal; i++) {
@@ -318,7 +321,7 @@ public class GameManager : MonoBehaviour {
 				else if (thisMeteor == 3) { numMagMines++; }
 				else if (thisMeteor == 4) { numElecMagMines++; }
 				else if (thisMeteor == 5) { numDenseMines++; }
-				else if (thisMeteor == 6) { numBHMines++; }
+				else if (thisMeteor >= 6) { numBHMines++; }
 			}
 			if      (currentLevel < 6)  { spawnRateUfo1 = 250f;  spawnRateUfo2 = 65f; }
 			else if (currentLevel < 11) { spawnRateUfo1 = 200f;  spawnRateUfo2 = 60f; }
@@ -389,7 +392,7 @@ public class GameManager : MonoBehaviour {
 			panFadeIn.GetComponent<HypFader>().ResetTimer(true, 2.5f);
 			return;
 		}
-		if (currentLevel < 27) {  //final level = 26?
+		if (currentLevel < (finalLevel+1)) {  //final level = 26?
 			currentLevel++;
 			//TODO message to player that level is clear
 			//TODO open warp
@@ -493,7 +496,13 @@ public class GameManager : MonoBehaviour {
 				{ Debug.LogError("Spawn Unknown Meteor"); }
 		}
 
-		//Vector3 loc1 = new Vector3(0, 0, 0);
+		if (child) {   //chance to spawn 3 children rather than 2
+			float chance = 0.05f;
+			if (bArcadeMode) { chance = chance * 2f; }
+			if (type == mine.Meteor || type == mine.Dense || type == mine.Test) 
+				{ chance = chance * 2f; }
+			if (chance > Random.Range(0f, 1f)) { num++; }
+		}
 		for (i = 0; i < num; i++) {
 			if (type == mine.Meteor || type == mine.Dense) 
 				{ s_Meteor = PickMeteor(type, size); }  //refresh for each iteration
@@ -632,6 +641,11 @@ public class GameManager : MonoBehaviour {
 		while (!bEnd) {
 			if (t1.childCount + t2.childCount < 1) { bEnd = true; }
 			yield return new WaitForSeconds(0.5f);
+
+			if (bEnd) {    //make sure all spawning child mines have spawned
+				yield return new WaitForSeconds(0.15f);
+				if (t1.childCount + t2.childCount > 0) { bEnd = false; }
+			}
 		}
 		LevelClear();
 	}

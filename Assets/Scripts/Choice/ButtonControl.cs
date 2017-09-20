@@ -20,9 +20,6 @@ public class ButtonControl : MonoBehaviour {
 		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		img = new RawImage[3];
-//		img[0] = GameObject.Find("Choice0").GetComponent<Image>();
-//		img[1] = GameObject.Find("Choice1").GetComponent<Image>();
-//		img[2] = GameObject.Find("Choice2").GetComponent<Image>();
 		img[0] = GameObject.Find("ChoiceImage0").GetComponent<RawImage>();
 		img[1] = GameObject.Find("ChoiceImage1").GetComponent<RawImage>();
 		img[2] = GameObject.Find("ChoiceImage2").GetComponent<RawImage>();
@@ -73,7 +70,7 @@ public class ButtonControl : MonoBehaviour {
 			aud.PlaySoundImmediate("choiceMove");
 			for (int i=0; i<3; i++) {
 				img[i].color = colUnselected;
-				txt[i].fontStyle = FontStyle.Bold;
+				txt[i].fontStyle = FontStyle.Normal;
 			}
 			img[numSelected - 1].color = colMouseover;
 			//txt[numSelected - 1].fontStyle = FontStyle.Italic;

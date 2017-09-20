@@ -14,6 +14,8 @@ public class PrefsControl : MonoBehaviour {
 	public bool isHypDead = false;  //flag for Hyperspace death
 	public bool bHypGameOver = false;  //flag for Hyperspace end of game
 
+	private int maxScores = 5;  //# of top scores for arcade mode
+
 	private void Start() {
 		if (lstUpgrade == null || lstUpgrade.Count < 1) {
 			lstUpgrade = new List<string>();
@@ -251,6 +253,54 @@ public class PrefsControl : MonoBehaviour {
 		if (type == stats.Score) { PlayerPrefs.SetInt("StoryScore", value); }
 		if (type == stats.Level) { PlayerPrefs.SetInt("CurrentLevel", value); }
 
+	}
+
+	/// <summary>
+	/// Gets the top score at num.  Get # in top if num = -1.
+	/// </summary>
+	/// <returns>The top score at num.</returns>
+	/// <param name="num">Number.</param>
+	public int GetTopScore(int num) {
+		if (num < 1 || num > maxScores) { 
+			if (num == -1) { return maxScores; }
+			return 0;
+		}
+		int returnValue = PlayerPrefs.GetInt("TopScore" + num.ToString(), 0);
+		if (returnValue <= 0) {
+			returnValue = (maxScores + 1 - num) * 2000;
+			PlayerPrefs.SetInt("TopScore" + num.ToString(), returnValue);
+			PlayerPrefs.SetString("TopScoreName" + num.ToString(), "SC" + num.ToString());
+		}
+		return returnValue;
+	}
+
+	public string GetTopScoreName(int num) {
+		if (num < 1 || num > maxScores) { return ""; }
+		return PlayerPrefs.GetString("TopScoreName" + num.ToString(), "---");
+	}
+
+	public void SetTopScore(int score, string name = "---") {
+		string oldName;
+		int oldScore = PlayerPrefs.GetInt("TopScore" + maxScores.ToString(), 0);
+		if (score < oldScore) { return; }
+		int i, j = 1;
+		for (i=maxScores-1; i>0; i--) {
+			oldScore = PlayerPrefs.GetInt("TopScore" + i.ToString(), 0);
+			if (oldScore > score) {
+				j = i + 1;
+				break;
+			}
+		}
+		i = maxScores;
+		while (i > j) {
+			i--;
+			oldScore = PlayerPrefs.GetInt("TopScore" + i.ToString(), 0);
+			oldName = PlayerPrefs.GetString("TopScoreName" + i.ToString(), "---");
+			PlayerPrefs.SetInt("TopScore" + (i+1).ToString(), oldScore);
+			PlayerPrefs.SetString("TopScoreName" + (i+1).ToString(), oldName);
+		} 
+		PlayerPrefs.SetInt("TopScore" + j.ToString(), score);
+		PlayerPrefs.SetString("TopScoreName" + j.ToString(), name);
 	}
 
 	private void ClearNextUpgrade() {         //used only in Story Mode

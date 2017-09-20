@@ -1,16 +1,25 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour {
-	public GameObject pauseMenuCanvas;
+	[SerializeField] private GameObject pauseMenuCanvas;
+	[SerializeField] private Text txtInfo;
+	[SerializeField] private GameObject panNext, panPrev;
+
 	public bool isPaused = false;
 	private bool wasPaused = false;  //true on first frame after paused
 	private GameManager gm;
 	private ShipController sc;
+	private InfoControl info;
+	private bool bSettledArcadeMode = false;
+	private int infoValue = 0;
+	private string[] st;
 
 	void Start () {
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 		sc = GameObject.Find("PlayerShip").GetComponent<ShipController>();
+		info = GameObject.Find("LevelManager").GetComponent<InfoControl>();
 		pauseMenuCanvas.SetActive(false);
 	}
 	
@@ -24,6 +33,12 @@ public class PauseMenu : MonoBehaviour {
 			pauseMenuCanvas.SetActive(true);
 			Time.timeScale = 0f;
 			if (wasPaused) {
+				if (!bSettledArcadeMode && gm.bArcadeMode) {
+					bSettledArcadeMode = true;
+					GameObject.Find("imgInfo").SetActive(false);
+					Transform tPause = GameObject.Find("txtPaused").transform;
+					tPause.GetComponent<RectTransform>().localPosition = new Vector3(-200f, 0f, 0f);
+				}
 				ParticleSystem[] ps = GameObject.FindObjectsOfType<ParticleSystem>();
 				foreach (ParticleSystem ps1 in ps) {
 					if (ps1.gameObject.name == "PS_EngineFireR" || ps1.gameObject.name == "PS_EngineFireL") {
@@ -36,9 +51,11 @@ public class PauseMenu : MonoBehaviour {
 					}
 				}
 				sc.FreezeRotation(true);
+				KillSounds(true);
+				DisplayInfo();
 			}
 			wasPaused = false;
-		} else {
+		} else {   //not paused
 			pauseMenuCanvas.SetActive(false);
 			Time.timeScale = 1f;
 			if (wasPaused) {
@@ -52,12 +69,76 @@ public class PauseMenu : MonoBehaviour {
 					}
 				}
 				sc.FreezeRotation(false);
+				KillSounds(false);
 			}
 			wasPaused = false;
 		}
 		if (Input.GetButtonDown("Pause") || Input.GetKeyDown(KeyCode.P)) {
 			isPaused = !isPaused;
 			wasPaused = true;
+		}
+		if (isPaused) {
+			if (Input.GetButtonDown("Secondary")) {
+				infoValue++;
+				if (infoValue >= st.Length) { infoValue = st.Length - 1; }
+				ShowInfoMessage(st[infoValue]);
+			}
+			if (Input.GetButtonDown("Primary")) {
+				infoValue--;
+				if (infoValue < 0) { infoValue = 0; }
+				ShowInfoMessage(st[infoValue]);
+			}
+		}
+	}
+
+	void ShowInfoMessage(string s) {
+		if 		(s.Length < 250) { txtInfo.fontSize = 40; }
+		else if (s.Length < 325) { txtInfo.fontSize = 38; }
+		else if (s.Length < 400) { txtInfo.fontSize = 36; } 
+		else 					 { txtInfo.fontSize = 34; }
+
+		if (infoValue <= 0) 			{ panNext.SetActive(false); }
+		else 							{ panNext.SetActive(true); }
+		if (infoValue >= st.Length - 1) { panPrev.SetActive(false); }
+		else 							{ panPrev.SetActive(true); }
+
+		txtInfo.text = s;
+	}
+
+	void DisplayInfo() {
+		if (gm.bArcadeMode) { return; }
+
+		Transform tMeteors = GameObject.Find("Meteors").transform;
+		string i1, i2;
+		string s = "";
+		int big = 0;
+		foreach ( Transform t in tMeteors ) {
+			if (t.name.Contains(".B."))  { big++; }
+		}
+		if (big > 0) {
+			st = info.GetInfoArray(gm.currentLevel, false);
+			//st = info.GetInfoArray(gm.currentLevel);
+		} else {
+			st = info.GetInfoArray(gm.currentLevel, true);
+			//st = info.GetInfoArray(gm.currentLevel, true);
+		}
+		infoValue = 0;
+		ShowInfoMessage(st[infoValue]);
+	}
+
+	void KillSounds(bool bPause) {
+		AudioSource[] aud = GameObject.FindObjectsOfType<AudioSource>();
+		foreach (AudioSource a in aud) {
+			//Debug.Log(a.name + " < " + a.gameObject.transform.parent.name);
+			if (bPause) {
+				if (!a.name.StartsWith("Theme") && !a.name.StartsWith("Insert")) {
+					a.Pause();
+				}
+			} else {
+				if (!a.name.StartsWith("Theme") && !a.name.StartsWith("Insert")) {
+					a.UnPause();
+				}
+			}
 		}
 	}
 }

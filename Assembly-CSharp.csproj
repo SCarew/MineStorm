@@ -70,6 +70,7 @@
      <Compile Include="Assets\Scripts\Main\Background.cs" />
      <Compile Include="Assets\Scripts\Main\CameraController.cs" />
      <Compile Include="Assets\Scripts\Main\CameraControllerOld.cs" />
+     <Compile Include="Assets\Scripts\Main\DataPanel.cs" />
      <Compile Include="Assets\Scripts\Main\EnemyHealth.cs" />
      <Compile Include="Assets\Scripts\Main\ExplodeShip.cs" />
      <Compile Include="Assets\Scripts\Main\ExplodeUFO.cs" />
@@ -77,6 +78,7 @@
      <Compile Include="Assets\Scripts\Main\Forcefield.cs" />
      <Compile Include="Assets\Scripts\Main\GameManager.cs" />
      <Compile Include="Assets\Scripts\Main\GameOverMenu.cs" />
+     <Compile Include="Assets\Scripts\Main\InfoControl.cs" />
      <Compile Include="Assets\Scripts\Main\MeteorControl.cs" />
      <Compile Include="Assets\Scripts\Main\MeteorControlOld.cs" />
      <Compile Include="Assets\Scripts\Main\MusicManager.cs" />
