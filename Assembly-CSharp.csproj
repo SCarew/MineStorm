@@ -52,6 +52,9 @@
      <Compile Include="Assets\Scripts\Choice\ButtonControl.cs" />
      <Compile Include="Assets\Scripts\Choice\Detection.cs" />
      <Compile Include="Assets\Scripts\FadeIn\Fader.cs" />
+     <Compile Include="Assets\Scripts\Finish\FinCameraController.cs" />
+     <Compile Include="Assets\Scripts\Finish\FinMeteorControl.cs" />
+     <Compile Include="Assets\Scripts\Finish\FinShipController.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\CorridorControl.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypCrosshair.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypEnder.cs" />

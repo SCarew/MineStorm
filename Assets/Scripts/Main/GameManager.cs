@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour {
 	private int metBig = 0, metMed = 0, metSma = 0;
 	private int denBig = 0, denMed = 0, denSma = 0;
 
-	private Transform parMeteor, parTextScores, parEnemy;
+	private Transform parMeteor, parTextScores, parEnemy;  //parents for children
 	private int score = 0;
 	private Text txtScore; //, txtScorePlus; 
 	private Text[] txtPlus;
@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour {
 			numElecMagMines = 3;
 			spawnRateUfo2 = 60f;
 		}
-		if (currentLevel==12) {
+		if (currentLevel==12) {     //delta begins
 			numMeteors = 5;
 			numElecMagMines = 5;
 			spawnRateUfo1 = 120f;
@@ -174,7 +174,7 @@ public class GameManager : MonoBehaviour {
 			numElecMagMines = 3;
 			spawnRateUfo1 = 110f;
 		}
-		if (currentLevel==14) {     //delta begins
+		if (currentLevel==14) {
 			numMeteors = 3;
 			numDenseMines = 5;
 			spawnRateUfo2 = 50f;
@@ -188,7 +188,7 @@ public class GameManager : MonoBehaviour {
 			spawnRateUfo1 = 100f;
 			spawnRateUfo2 = 50f;
 		}
-		if (currentLevel==16) {
+		if (currentLevel==16) {     //gamma begins
 			numMeteors = 2;
 			numElecMines = 2;
 			numMagMines = 3;
@@ -229,7 +229,7 @@ public class GameManager : MonoBehaviour {
 			spawnRateUfo1 = 80f;
 			spawnRateUfo2 = 45f;
 		}
-		if (currentLevel==21) {   //omega starts
+		if (currentLevel==21) {
 			numMeteors = 3;
 			numElecMines = 3;
 			numMagMines = 3;
@@ -239,7 +239,7 @@ public class GameManager : MonoBehaviour {
 			spawnRateUfo1 = 100f;
 			spawnRateUfo2 = 50f;
 		}
-		if (currentLevel==22) {
+		if (currentLevel==22) {     //omega begins
 			numMagMines = 4;
 			numElecMagMines = 4;
 			numBHMines = 6;

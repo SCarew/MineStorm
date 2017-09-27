@@ -93,8 +93,8 @@ public class InfoControl : MonoBehaviour {
 		info = info + "These incorporate the attraction properties of magnetic mines while maintaining the firing charges of electric mines.  ";
 	}
 
-	void Level13() {
-		info = "Meteor Buster pilots entering the Delta cluster for the first time should be aware of poor light conditions.  ";
+	void Level16() {
+		info = "Meteor Buster pilots entering the Gamma cluster for the first time should be aware of poor light conditions.  ";
 		info = info + "The distance and low intensity of nearby stars can make asteroid clearing even more treacherous.  ";
 		info = info + "Attention should be paid to radar instruments for assistance.";
 	}

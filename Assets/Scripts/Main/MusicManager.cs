@@ -12,14 +12,16 @@ public class MusicManager : MonoBehaviour {
 	private int lastInsertNum = -1;    //to keep from duplicating inserts consecutively
 
 	[SerializeField] private AudioClip mainTheme;
-	[SerializeField] private AudioClip S1_bg_theme;
-	[SerializeField] private AudioClip[] S1_insert;
-	[SerializeField] private AudioClip S2_bg_theme;
-	[SerializeField] private AudioClip[] S2_insert;
-	[SerializeField] private AudioClip S3_bg_theme;
-	[SerializeField] private AudioClip[] S3_insert;
-	[SerializeField] private AudioClip S4_bg_theme;
-	[SerializeField] private AudioClip[] S4_insert;
+	[SerializeField] private AudioClip Sa_bg_theme;
+	[SerializeField] private AudioClip[] Sa_insert;
+	[SerializeField] private AudioClip Sb_bg_theme;
+	[SerializeField] private AudioClip[] Sb_insert;
+	[SerializeField] private AudioClip Sd_bg_theme;
+	[SerializeField] private AudioClip[] Sd_insert;
+	[SerializeField] private AudioClip Sg_bg_theme;
+	[SerializeField] private AudioClip[] Sg_insert;
+	[SerializeField] private AudioClip So_bg_theme;
+	[SerializeField] private AudioClip[] So_insert;
 	[SerializeField] private AudioClip SH_bg_theme;
 	[SerializeField] private AudioClip[] SH_insert;
 
@@ -37,7 +39,7 @@ public class MusicManager : MonoBehaviour {
 		insertTimer = (insertTimerRange / 2) + Random.Range(0, insertTimerRange);
 	}
 
-	public void PlayMusic(int sceneNum) {
+	public void PlayMusic(int clusterNum) {
 		GameObject go;
 		AudioSource audio;
 		AudioClip ac;
@@ -47,15 +49,16 @@ public class MusicManager : MonoBehaviour {
 		audio = go.GetComponent<AudioSource>();
 
 		ac = mainTheme;
-		if (sceneNum == 0) { ac = mainTheme; }
-		else if (sceneNum == 1) { ac = S1_bg_theme; }
-		else if (sceneNum == 2) { ac = S2_bg_theme; }
-		else if (sceneNum == 3) { ac = S3_bg_theme; }
-		else if (sceneNum == 4) { ac = S4_bg_theme; }
-		else if (sceneNum == 5) { ac = SH_bg_theme; }   //hyperspace
-		currentSceneNum = sceneNum;
+		if (clusterNum == 0) 	  { ac = mainTheme; }
+		else if (clusterNum == 1) { ac = Sa_bg_theme; }
+		else if (clusterNum == 2) { ac = Sb_bg_theme; }
+		else if (clusterNum == 3) { ac = Sd_bg_theme; }  //TODO fix/add music for delta
+		else if (clusterNum == 4) { ac = Sg_bg_theme; }
+		else if (clusterNum == 5) { ac = So_bg_theme; }
+		else if (clusterNum == 6) { ac = SH_bg_theme; }   //hyperspace
+		currentSceneNum = clusterNum;
 
-		go.name = "Theme " + sceneNum.ToString();
+		go.name = "Theme " + clusterNum.ToString();
 		audio.loop = true;
 		audio.clip = ac;
 		audio.volume = musicVolume;
@@ -76,29 +79,35 @@ public class MusicManager : MonoBehaviour {
 		int insertNum = 0;
 		if (currentSceneNum == 1) {
 			do { 
-				insertNum = Random.Range(0, S1_insert.Length);
+				insertNum = Random.Range(0, Sa_insert.Length);
 			} while (lastInsertNum == insertNum);
-			ac = S1_insert[insertNum];
+			ac = Sa_insert[insertNum];
 		}
 		if (currentSceneNum == 2) {
 			do { 
-				insertNum = Random.Range(0, S2_insert.Length);
+				insertNum = Random.Range(0, Sb_insert.Length);
 			} while (lastInsertNum == insertNum);
-			ac = S2_insert[insertNum];
+			ac = Sb_insert[insertNum];
 		}
 		if (currentSceneNum == 3) {
 			do { 
-				insertNum = Random.Range(0, S3_insert.Length);
+				insertNum = Random.Range(0, Sd_insert.Length);
 			} while (lastInsertNum == insertNum);
-			ac = S3_insert[insertNum];
+			ac = Sd_insert[insertNum];
 		}
 		if (currentSceneNum == 4) {
 			do { 
-				insertNum = Random.Range(0, S4_insert.Length);
+				insertNum = Random.Range(0, Sg_insert.Length);
 			} while (lastInsertNum == insertNum);
-			ac = S4_insert[insertNum];
+			ac = Sg_insert[insertNum];
 		}
 		if (currentSceneNum == 5) {
+			do { 
+				insertNum = Random.Range(0, So_insert.Length);
+			} while (lastInsertNum == insertNum);
+			ac = So_insert[insertNum];
+		}
+		if (currentSceneNum == 6) {
 			do { 
 				insertNum = Random.Range(0, SH_insert.Length);
 			} while (lastInsertNum == insertNum);

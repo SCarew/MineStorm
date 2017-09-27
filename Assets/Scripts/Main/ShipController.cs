@@ -171,6 +171,19 @@ public class ShipController : MonoBehaviour {
 				secondaryWeapon = 2; secRechargeRate = chargeShockwave; secCurrentCharge = secRechargeRate;
 				Debug.Log("* Secondary weapon: Shockwave");
 			} 
+			if (Input.GetKeyDown(KeyCode.C)) {
+				Debug.Log("Clearing enemies");
+				Transform met = GameObject.Find("Meteors").transform;
+				foreach (Transform t in met) {
+					//t.GetComponent<EnemyHealth>().DamageHealth(1000);
+					Destroy(t.gameObject);
+				}
+				met = GameObject.Find("Enemies").transform;
+				foreach (Transform t in met) {
+					//t.GetComponent<EnemyHealth>().DamageHealth(1000);
+					Destroy(t.gameObject);
+				}
+			}
 		} else {
 			if (Input.GetKey("left ctrl") || Input.GetKey("right ctrl")) {
 				if (Input.GetKeyDown("d"))

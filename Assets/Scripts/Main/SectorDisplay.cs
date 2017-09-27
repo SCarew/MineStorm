@@ -39,7 +39,8 @@ public class SectorDisplay : MonoBehaviour {
 		if (sec.StartsWith("Alph"))  	  { n = 1; }  //sector alpha
 		else if (sec.StartsWith("Beta"))  { n = 2; }  //sector beta
 		else if (sec.StartsWith("Delt"))  { n = 3; }  //sector delta
-		else if (sec.StartsWith("Omeg"))  { n = 4; }  //sector omega
+		else if (sec.StartsWith("Gamm"))  { n = 4; }  //sector gamma
+		else if (sec.StartsWith("Omeg"))  { n = 5; }  //sector omega
 		else { n = 1; }   //just in case
 //		if (currentLevel >=  1 && currentLevel <=  5)  { n = 1; }  //sector alpha
 //		if (currentLevel >=  6 && currentLevel <= 13)  { n = 2; }  //sector beta
@@ -68,18 +69,22 @@ public class SectorDisplay : MonoBehaviour {
 			mr.material       = starfields_bg[2];
 			mr_2.material     = starfields_fg[2];
 			lights[2].SetActive(true);
-			lights[4].SetActive(true);
-			lights[5].SetActive(true);
-		} else if (sec.StartsWith("Omeg")) {
+		} else if (sec.StartsWith("Gamm")) {
 			mr.material       = starfields_bg[3];
 			mr_2.material     = starfields_fg[3];
 			lights[3].SetActive(true);
 			lights[5].SetActive(true);
+			lights[6].SetActive(true);
+		} else if (sec.StartsWith("Omeg")) {
+			mr.material       = starfields_bg[4];
+			mr_2.material     = starfields_fg[4];
+			lights[4].SetActive(true);
+			lights[6].SetActive(true);
 		} else {
 			mr.material       = starfields_bg[0];
 			mr_2.material     = starfields_fg[0];
 			lights[0].SetActive(true);
-			lights[5].SetActive(true);
+			lights[6].SetActive(true);
 			Debug.Log("Sector: " + sec);
 		}
 		//---------------------------------------------------------------

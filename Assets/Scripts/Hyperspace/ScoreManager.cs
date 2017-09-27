@@ -12,7 +12,7 @@ public class ScoreManager : MonoBehaviour {
 
 		//play music 
 		MusicManager music = GameObject.Find("MusicManager").GetComponent<MusicManager>();
-		music.PlayMusic(5);
+		music.PlayMusic(6);  //hyperspace music
 	}
 
 	public void AddScore(int amount) {

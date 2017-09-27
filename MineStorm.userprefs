@@ -1,11 +1,11 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Main\DataPanel.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Finish\FinCameraController.cs">
     <Files>
       <File FileName="Assets\Scripts\Start\LevelManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Main\ShipController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Main\GameManager.cs" Line="321" Column="49" />
-      <File FileName="Assets\Scripts\Main\PrefsControl.cs" Line="281" Column="2" />
+      <File FileName="Assets\Scripts\Main\ShipController.cs" Line="273" Column="58" />
+      <File FileName="Assets\Scripts\Main\GameManager.cs" Line="70" Column="1" />
+      <File FileName="Assets\Scripts\Main\PrefsControl.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Hyperspace\HypSpawner.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Hyperspace\HypMeteor.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Hyperspace\HypUFO.cs" Line="1" Column="1" />
@@ -14,9 +14,9 @@
       <File FileName="Assets\Scripts\Hyperspace\HypTimer.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Boss\Boss_Wedge.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\Boss\Boss_Movement.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Main\DataPanel.cs" Line="201" Column="1" />
-      <File FileName="Assets\Scripts\Main\InfoControl.cs" Line="37" Column="40" />
-      <File FileName="Assets\Scripts\Main\PauseMenu.cs" Line="23" Column="1" />
+      <File FileName="Assets\Scripts\Finish\FinShipController.cs" Line="32" Column="25" />
+      <File FileName="Assets\Scripts\Finish\FinCameraController.cs" Line="55" Column="41" />
+      <File FileName="Assets\Scripts\Finish\FinMeteorControl.cs" Line="52" Column="64" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
