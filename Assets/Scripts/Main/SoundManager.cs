@@ -41,6 +41,7 @@ public class SoundManager : MonoBehaviour {
 	[SerializeField] private AudioClip swirlSmall1;
 	[SerializeField] private AudioClip[] choiceButtons;
 	[SerializeField] private AudioClip[] startButtons;
+	[SerializeField] private AudioClip[] fireworks1;
 
 	void Start () {
 		FindAudioParent();
@@ -127,6 +128,7 @@ public class SoundManager : MonoBehaviour {
 			{ ac = startButtons[0]; }
 		else if (soundName == "startselect") 
 			{ ac = startButtons[1]; }
+		/* ----------------------------------- */
 
 		PlaySound(ac);
 	}
@@ -228,7 +230,9 @@ public class SoundManager : MonoBehaviour {
 			{ ac = meteorCollide1; vol = vol * 0.25f; }
 		else if (soundName == "swirlsmall") 
 			{ ac = swirlSmall1; }
-
+		else if (soundName == "fireworks")
+			{ ac = fireworks1[Random.Range(0, fireworks1.Length)]; }
+		
 		PlaySound(ac, vol);
 	}
 
@@ -307,6 +311,8 @@ public class SoundManager : MonoBehaviour {
 			{ ac = hypUFOTorp; }
 		else if (soundName == "engineburst")
 			{ ac = hypEngineBurst; }
+		else if (soundName == "fireworks")
+			{ ac = fireworks1[Random.Range(0, fireworks1.Length)]; }
 
 		PlaySound(ac);
 	}

@@ -24,6 +24,7 @@ public class MusicManager : MonoBehaviour {
 	[SerializeField] private AudioClip[] So_insert;
 	[SerializeField] private AudioClip SH_bg_theme;
 	[SerializeField] private AudioClip[] SH_insert;
+	[SerializeField] private AudioClip SF_bg_theme;
 
 	void Start () {
 		FindAudioParent();
@@ -52,14 +53,16 @@ public class MusicManager : MonoBehaviour {
 		if (clusterNum == 0) 	  { ac = mainTheme; }
 		else if (clusterNum == 1) { ac = Sa_bg_theme; }
 		else if (clusterNum == 2) { ac = Sb_bg_theme; }
-		else if (clusterNum == 3) { ac = Sd_bg_theme; }  //TODO fix/add music for delta
+		else if (clusterNum == 3) { ac = Sd_bg_theme; }  
 		else if (clusterNum == 4) { ac = Sg_bg_theme; }
 		else if (clusterNum == 5) { ac = So_bg_theme; }
 		else if (clusterNum == 6) { ac = SH_bg_theme; }   //hyperspace
+		else if (clusterNum == 9) { ac = SF_bg_theme; }   //finish
 		currentSceneNum = clusterNum;
 
 		go.name = "Theme " + clusterNum.ToString();
 		audio.loop = true;
+		if (currentSceneNum == 9) { audio.loop = false; }  //no loop for finish
 		audio.clip = ac;
 		audio.volume = musicVolume;
 		audio.Play();
@@ -67,6 +70,7 @@ public class MusicManager : MonoBehaviour {
 
 	void PlayInsert() {
 		if (currentSceneNum == 0) { return; }  //no inserts for title theme
+		if (currentSceneNum == 9) { return; }  //no inserts for finish theme
 
 		GameObject go;
 		AudioSource audio;

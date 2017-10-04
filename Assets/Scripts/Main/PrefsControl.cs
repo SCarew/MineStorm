@@ -241,18 +241,29 @@ public class PrefsControl : MonoBehaviour {
 
 	public int GetGameStats(stats type) {
 		int returnValue = 0;
-		if (type == stats.Ships) { returnValue = PlayerPrefs.GetInt("ShipsRemaining", 0); }
-		if (type == stats.Score) { returnValue = PlayerPrefs.GetInt("StoryScore", 0); }
-		if (type == stats.Level) { returnValue = PlayerPrefs.GetInt("CurrentLevel", 0); }
+		if (GetGameType() != "Arcade") {
+			if (type == stats.Ships) { returnValue = PlayerPrefs.GetInt("ShipsRemaining", 0); }
+			if (type == stats.Score) { returnValue = PlayerPrefs.GetInt("StoryScore", 0); }
+			if (type == stats.Level) { returnValue = PlayerPrefs.GetInt("CurrentLevel", 0); }
+		} else {
+			if (type == stats.Ships) { returnValue = PlayerPrefs.GetInt("Arc_ShipsRemaining", 0); }
+			if (type == stats.Score) { returnValue = PlayerPrefs.GetInt("ArcadeScore", 0); }
+			if (type == stats.Level) { returnValue = PlayerPrefs.GetInt("Arc_CurrentLevel", 0); }
+		}
 
 		return returnValue;
 	}
 
 	public void SetGameStats(stats type, int value) {
-		if (type == stats.Ships) { PlayerPrefs.SetInt("ShipsRemaining", value); }
-		if (type == stats.Score) { PlayerPrefs.SetInt("StoryScore", value); }
-		if (type == stats.Level) { PlayerPrefs.SetInt("CurrentLevel", value); }
-
+		if (GetGameType() != "Arcade") {
+			if (type == stats.Ships) { PlayerPrefs.SetInt("ShipsRemaining", value); }
+			if (type == stats.Score) { PlayerPrefs.SetInt("StoryScore", value); }
+			if (type == stats.Level) { PlayerPrefs.SetInt("CurrentLevel", value); }
+		} else {
+			if (type == stats.Ships) { PlayerPrefs.SetInt("Arc_ShipsRemaining", value); }
+			if (type == stats.Score) { PlayerPrefs.SetInt("ArcadeScore", value); }
+			if (type == stats.Level) { PlayerPrefs.SetInt("Arc_CurrentLevel", value); }
+		}
 	}
 
 	/// <summary>

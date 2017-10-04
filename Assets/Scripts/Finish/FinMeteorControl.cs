@@ -70,18 +70,6 @@ public class FinMeteorControl : MonoBehaviour {
 		//Debug.Log(gameObject.name + "+2 secs vel = " + rb.velocity.magnitude);
 	}
 
-	//void Update () {
-		/*
-		float h0 = h * 360f * Time.deltaTime * rotTime;
-		float v0 = v * 360f * Time.deltaTime * rotTime;
-		float w0 = w * 360f * Time.deltaTime * rotTime;
-		float h1 = h * Time.deltaTime * moveSpeed;
-		float v1 = v * Time.deltaTime * moveSpeed;
-
-		parObj.Rotate(h0, v0, w0, Space.Self);
-		parObj.Translate(v1, h1, 0f, Space.World);
-		*/
-	//}
 	void Update() {
 		if (adjustScale) {  //for warping in
 			timeSpent += Time.deltaTime;
@@ -116,7 +104,7 @@ public class FinMeteorControl : MonoBehaviour {
 	
 		if (coll.gameObject.tag == "MeteorParent") {
 			//Debug.Log("!!! Meteor Collision detected for " + coll.gameObject.tag);
-			aud.PlaySoundVisible("meteorHit", gameObject.transform, iSize);
+			aud.PlaySoundVisible("meteorHit", gameObject.transform, 1);
 		}
 	}
 

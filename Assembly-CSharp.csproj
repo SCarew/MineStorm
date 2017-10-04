@@ -55,6 +55,8 @@
      <Compile Include="Assets\Scripts\Finish\FinCameraController.cs" />
      <Compile Include="Assets\Scripts\Finish\FinMeteorControl.cs" />
      <Compile Include="Assets\Scripts\Finish\FinShipController.cs" />
+     <Compile Include="Assets\Scripts\Finish\FinTextFadein.cs" />
+     <Compile Include="Assets\Scripts\Finish\FinishArcadeControl.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\CorridorControl.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypCrosshair.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypEnder.cs" />

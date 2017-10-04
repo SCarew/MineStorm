@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class FinCameraController : MonoBehaviour {
 
@@ -18,8 +19,11 @@ public class FinCameraController : MonoBehaviour {
 	private bool bDense = true;    //one-time flag for spawn dense coroutine
 	private bool bFloat = false;   //true to float camera back
 	private bool bShipDestroyed = false;   //true when ship is destroyed()
+	private bool bExit = false;  //true when scene can be exited
 	private float timeScroll = 2f;
+	private float maxTimeScroll = 10f;
 	private LayerMask myLayerMask;
+	private Text txtQ, txtE;
 
 	void Start () {
 		ship = GameObject.Find("Fin_PlayerShip").transform;	
@@ -32,6 +36,8 @@ public class FinCameraController : MonoBehaviour {
 		}
 		myLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Meteor")) | (1 << LayerMask.NameToLayer("Enemy"));
 		myLayerMask = myLayerMask | (1 << LayerMask.NameToLayer("MapPlayer")) | (1 << LayerMask.NameToLayer("MapMeteor")) | (1 << LayerMask.NameToLayer("MapEnemy"));
+		txtQ = GameObject.Find("txtQuestion").GetComponent<Text>();
+		txtE = GameObject.Find("txtExclamation").GetComponent<Text>();
 	}
 
 	void SpawnDense() {
@@ -67,7 +73,9 @@ public class FinCameraController : MonoBehaviour {
 		Destroy(ship.gameObject);
 		bShipDestroyed = true;
 		bFloat = true;
-		timeScroll = 5f;
+		timeScroll = 10f;
+		maxTimeScroll = timeScroll;
+		//GameObject.Find("txtQuestion").GetComponent<Text>().text = "?";
 	}
 
 	private bool FreeLocation (Vector3 coords, float fSize) {
@@ -112,16 +120,26 @@ public class FinCameraController : MonoBehaviour {
 
 		if (bFloat) {
 			Vector3 dist = new Vector3(0f, -1f, 0f);
-			float delta = 0.1f;
-			cam.orthographicSize = 5f + ((5f - timeScroll) * 9f / 5f);
+			cam.orthographicSize = 5f + ((maxTimeScroll - timeScroll) * 9f / maxTimeScroll);
 			timeScroll -= Time.deltaTime;
-//			transform.position = Vector3.MoveTowards(transform.position, transform.position + dist, delta);
-//			foreach (Transform t in transform) {
-//				t.localPosition = Vector3.MoveTowards(t.localPosition, t.localPosition - dist, delta);
-//			}
-			if (timeScroll < 0) { bFloat = false; }
+			if (timeScroll < 0) { 
+				bFloat = false; 
+				timeScroll = 0; 
+				bExit = true;
+			}
+			Color c = txtE.color;
+			c.a = timeScroll/maxTimeScroll;
+			txtE.color = c;
+			c.a = (maxTimeScroll - timeScroll)/maxTimeScroll;
+			txtQ.color = c;
 		}
 
+		if (bExit || Input.GetKeyDown(KeyCode.Escape)) {
+			if (Input.GetButtonDown("Primary") || Input.GetButtonDown("Secondary") || Input.GetKeyDown(KeyCode.Escape)) {
+				GameObject.Find("LevelManager").GetComponent<LevelManager>().LoadScene("Title");
+				return;
+			}
+		}
 	}
 
 	public void ScrollCamera() {

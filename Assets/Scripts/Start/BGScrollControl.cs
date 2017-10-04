@@ -1,11 +1,12 @@
-﻿//used on Start screen only 
+﻿//used on Start screen & Finish[Arcade] only 
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BGScrollControl : MonoBehaviour {
 
-	public  float parallax = 16.0f; //(higher = slower)
+	public  float parallaxX = 16.0f; //(higher = slower)
+	public  float parallaxY = 0.0f;
 	private Material mat;
 
 	void Start () {
@@ -15,7 +16,10 @@ public class BGScrollControl : MonoBehaviour {
 	
 	void Update () {
 		Vector2 off0 = mat.mainTextureOffset;
-		off0.x += Time.deltaTime / parallax;
+		if (parallaxX > 0f)
+			{ off0.x += Time.deltaTime / parallaxX; }
+		if (parallaxY > 0f)
+			{ off0.y += Time.deltaTime / parallaxY; }
 		mat.mainTextureOffset = off0;
 	}
 }
