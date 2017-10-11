@@ -19,7 +19,7 @@ public class HypSpawner : MonoBehaviour {
 	private float timeToWarp = 100f;
 	private float meteorSpawnTime, graySpawnTime, pinkSpawnTime;
 
-	private int dev = 0; //testing
+	private int dev = 0; //used for dev mode
 
 	void Start () {
 		ender = GameObject.Find("Ender").transform;
@@ -48,7 +48,7 @@ public class HypSpawner : MonoBehaviour {
 
 	void LevelSort() {
 		if (level < 2) {
-			LevelSortHelper(5.5f, 0f, 0f, 100f); //TODO change back to 30s
+			LevelSortHelper(5.5f, 0f, 0f, 30f); 
 		} else if (level == 2 || level == 3) {
 			LevelSortHelper(5f, 0f, 0f, 45f);
 		} else if (level == 4 || level == 5) {
@@ -95,7 +95,7 @@ public class HypSpawner : MonoBehaviour {
 		int num = Random.Range(0, mines.Length);
 //		Debug.Log("rnd0: " + rnd0);
 //		Debug.Log("rnd1: " + rnd1);
-		Debug.DrawLine(rnd0, rnd1);
+//		Debug.DrawLine(rnd0, rnd1);
 		iMeteor++;
 		GameObject go = Instantiate(mines[num], rnd0, Quaternion.identity, parMet) as GameObject;
 		go.name = "Meteor" + iMeteor.ToString("000");
@@ -118,7 +118,7 @@ public class HypSpawner : MonoBehaviour {
 	}
 
 	void Update () {
-		//*** testing ***
+		//*** Developer Mode ***
 		if (prefs.GetDevMode()) {
 			if (Input.GetKeyDown(KeyCode.Space)) {
 				SpawnMeteor();
@@ -142,7 +142,7 @@ public class HypSpawner : MonoBehaviour {
 					{ prefs.SetDevMode(true); dev = 3; }
 			}
 		}
-		//***************
+		//**********************
 
 		float t = Time.deltaTime;
 		meteorSpawnTime -= t;

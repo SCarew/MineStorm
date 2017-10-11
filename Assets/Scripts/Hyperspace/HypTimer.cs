@@ -12,7 +12,6 @@ public class HypTimer : MonoBehaviour {
 
 	void Start () {
 		txtTime = gameObject.GetComponent<Text>();
-		//fadeinPanel = GameObject.Find("Fadein Panel");
 		fadeinPanel.SetActive(true);
 		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
@@ -51,11 +50,6 @@ public class HypTimer : MonoBehaviour {
 	}
 
 	void LoadMainScene() {
-		//*****Testing - remove*****
-		ChooseUpgradeOptions();
-		lm.LoadScene("Choice", "Main");
-		return;
-		//**************************
 
 		if ((round/4f) == (int)(round/4f)) {    
 			ChooseUpgradeOptions();
@@ -69,9 +63,8 @@ public class HypTimer : MonoBehaviour {
 		string s1;
 
 		s1 = prefs.FindNextUpgrade();
-		//s2 = prefs.FindNextUpgradeValue();
 		s1 = "Upgrade Available/" + s1;
-		Debug.Log(s1);
+		//Debug.Log(s1);
 		prefs.SetChoice(s1, "291/292/293", 3);
 	}
 

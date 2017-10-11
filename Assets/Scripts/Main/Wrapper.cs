@@ -14,10 +14,6 @@ public class Wrapper : MonoBehaviour {
 		playerShip = GameObject.Find("PlayerShip").transform;
 
 		StartCoroutine(FindDistance());
-		/*//Testing begins
-		if (go == null || playerShip == null)
-			{ Debug.LogError("Null object found"); }
-		//Testing ends*/
 	}
 
 	IEnumerator FindDistance() {

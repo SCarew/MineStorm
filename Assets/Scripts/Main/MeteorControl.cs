@@ -3,14 +3,14 @@ using System.Collections;
 
 public class MeteorControl : MonoBehaviour {
 
-	private GameManager gm;
+	private static GameManager gm;
 	private Rigidbody rb;
 	private EnemyHealth eh;
-	private Transform parObj;
-	private Transform pShip;
+	private static Transform parObj;
+	private static Transform pShip;
 	private Transform parWarp;
-	private Rigidbody pShipRB;
-	private SoundManager aud;
+	private static Rigidbody pShipRB;
+	private static SoundManager aud;
 	private ParticleSystem ps;   //for Black Hole part system
 
 	[SerializeField] private GameObject pre_Warp;   //whirlpool effect
@@ -30,15 +30,19 @@ public class MeteorControl : MonoBehaviour {
 	private float bholeDistance = 12f;  //distance from ship BHole mines attract
 
 	void Start () {
-		// TODO possibly make some of these static for efficiency
-		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+		if (!gm) 
+			{ gm = GameObject.Find("GameManager").GetComponent<GameManager>(); }
+		if (!aud) 
+			{ aud = GameObject.Find("SoundManager").GetComponent<SoundManager>(); }
+		if (!pShip)
+			{ pShip = GameObject.Find ("PlayerShip").transform; }
+		if (!pShipRB)
+			{ pShipRB = pShip.GetComponent<Rigidbody>(); }
+		if (!parWarp)
+			{ parWarp = GameObject.Find("Effects").transform; }
+		parObj = transform; //transform.parent.transform;
 		rb = transform.GetComponentInParent<Rigidbody>();
 		eh = gameObject.GetComponentInParent<EnemyHealth>();
-		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
-		pShip = GameObject.Find ("PlayerShip").transform;
-		pShipRB = pShip.GetComponent<Rigidbody>();
-		parObj = transform; //transform.parent.transform;
-		parWarp = GameObject.Find("Effects").transform;
 
 		SetSize ();
 

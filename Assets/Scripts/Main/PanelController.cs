@@ -13,6 +13,7 @@ public class PanelController : MonoBehaviour {
 	[SerializeField] private GameObject txtSector;
 	[SerializeField] private Material[] Gauges;
 	private Color level0, level1, levelminus;
+	private float fadeinTime = 0f, totalTime = 0f;
 
 	void Start () {
 		sc = GameObject.Find("PlayerShip").GetComponent<ShipController>();
@@ -58,6 +59,14 @@ public class PanelController : MonoBehaviour {
 			panMapCam.SetActive(true);
 		}
 
+		if (fadeinTime > 0f) {   //used with ShowMessage()
+			fadeinTime -= Time.deltaTime;
+			if (fadeinTime < 0f) { fadeinTime = 0f; }
+			Color c = txtSector.transform.Find("txtSector").GetComponent<Text>().color;
+			c.a = (totalTime - fadeinTime) / totalTime;
+			//Debug.Log("Color alpha = " + c.a);
+			txtSector.transform.Find("txtSector").GetComponent<Text>().color = c;
+		}
 	}
 
 	private void FixOverlay() {
@@ -71,4 +80,12 @@ public class PanelController : MonoBehaviour {
 		img2.material = Gauges[weap2 + 3];
 	}
 
+	public void ShowMessage(string s) {   //called from GameManager
+		txtSector.SetActive(true);
+		//Debug.Log("Name=" + txtSector.name + " Active=" + txtSector.activeInHierarchy);
+		txtSector.transform.Find("txtStaticSector").GetComponent<Text>().text = "";
+		txtSector.transform.Find("txtSector").GetComponent<Text>().text = s;
+		fadeinTime = 1.25f;
+		totalTime = fadeinTime;
+	}
 }

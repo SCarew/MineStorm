@@ -6,12 +6,13 @@ using UnityEngine.SceneManagement;
 
 public class Fader : MonoBehaviour {
 
-	public  float fadeTime = 3f;  //secs to fade in
-	public  float advanceTime = 3f;  //secs to leave screen automatically (-1 = don't)
+	[Tooltip ("Seconds to fade in")]
+	public  float fadeTime = 3f;
+	[Tooltip ("Seconds until leaving screen automatically after fade in (-1 = don't)")]
+	public  float advanceTime = 3f;  
 	private Image fadeImage;
 	private Color currentColor;
 
-	//TODO put SCEC image on FadeIn screen
 	void Start () {
 		fadeImage = GetComponent<Image>();
 		currentColor = fadeImage.color;
@@ -36,7 +37,6 @@ public class Fader : MonoBehaviour {
 	}
 
 	void LoadNextScene() {
-		//Debug.Log("Loading Start scene");
 		advanceTime = -1f;
 		//SceneManager.LoadScene("Start");
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);

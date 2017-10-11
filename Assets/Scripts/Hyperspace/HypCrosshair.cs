@@ -8,16 +8,15 @@ public class HypCrosshair : MonoBehaviour {
 	[SerializeField] private GameObject target;
 	private float zDistance = 50f;
 
-	//testing
-	public Text txtX, txtY;
+	//public Text txtX, txtY;
 
 	public float GetZDistance () {
 		return zDistance;
 	}
 	
 	void Update () {
-		txtX.text = target.transform.position.x.ToString();
-		txtY.text = target.transform.position.y.ToString();
+		//txtX.text = target.transform.position.x.ToString();
+		//txtY.text = target.transform.position.y.ToString();
 		Ray ray = Camera.main.ScreenPointToRay(target.transform.position);
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit, 50f) == true) {
@@ -27,6 +26,6 @@ public class HypCrosshair : MonoBehaviour {
 			target.GetComponent<RawImage>().texture = crosshairG;
 			zDistance = 50f;
 		}
-		txtY.text = zDistance.ToString();
+		//txtY.text = zDistance.ToString();
 	}
 }

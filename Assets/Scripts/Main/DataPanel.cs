@@ -31,12 +31,10 @@ public class DataPanel : MonoBehaviour {
 		txtData.text = "";
 		StartCoroutine(ChooseData());
 
-		//*******Testing********
-		string[] st = info.GetInfoArray(13, false);
-		for (int i=0; i<st.Length; i++) {
-			Debug.Log((i+1) + "===[" + st[i] + "]<" + st[i].Length + ">");
-		}
-		//**********************
+//		string[] st = info.GetInfoArray(13, false);
+//		for (int i=0; i<st.Length; i++) {
+//			Debug.Log((i+1) + "===[" + st[i] + "]<" + st[i].Length + ">");
+//		}
 	}
 
 	IEnumerator ChooseData() {
@@ -140,8 +138,8 @@ public class DataPanel : MonoBehaviour {
 		int a = sh.GetHealth();
 		int b = sh.maxHealth;
 		ShipController sc = sh.GetComponent<ShipController>();
-		int pri = prefs.GetPrimaryWeapon();
-		int sec = prefs.GetSecondaryWeapon();
+		int pri = prefs.GetPrimaryWeapon(gm.bArcadeMode);
+		int sec = prefs.GetSecondaryWeapon(gm.bArcadeMode);
 		s = s + "Hull Integrity: " + a + "/" + b + sCRLF;
 		if      (pri == 0) { s = s + "Torpedoes: Functional" + sCRLF; } 
 		else if (pri == 1) { s = s + "Lasers: Functional" + sCRLF; } 

@@ -17,7 +17,8 @@ public class HypUFO : MonoBehaviour {
 	private HypShipHealth pShipHealth;
 	private Transform pShip;
 	private Rigidbody rb;
-	private Vector3 myTarget, myGravity;
+	//private Vector3 myTarget;
+	private Vector3 myGravity;
 	private bool bInCorridor = false;
 	private bool bNewlySpawned = false;
 	private bool bOutOfBounds = false;
@@ -54,17 +55,6 @@ public class HypUFO : MonoBehaviour {
 
 		InitialRotation(startingSpawner);
 		aud.PlaySoundConstant("UFOHum", gameObject.transform);
-
-		//StartCoroutine(TestLocation());
-	}
-
-	//***Testing - remove this function		
-	IEnumerator TestLocation() {
-		bool bLoop = true;
-		while(bLoop) {
-			//Debug.Log(gameObject.name + ": " + gameObject.transform.position);
-			yield return new WaitForSeconds(1.0f);
-		}
 	}
 
 	void TakeHit() {
@@ -128,13 +118,11 @@ public class HypUFO : MonoBehaviour {
 		}
 		rb.velocity = velocity;
 
-		// testing - remove this? =============
 		float alterGrav = 0.01f;
 		float x0 = Random.Range(-alterGrav, alterGrav);
 		float y0 = Random.Range(-alterGrav, alterGrav);
 		float z0 = Random.Range(-alterGrav, alterGrav);
 		gravity = gravity - new Vector3(x0, y0, z0);  
-		// testing ends  ======================
 
 		//transform.position = Vector3.MoveTowards(transform.position, myTarget, Time.deltaTime);
 
@@ -186,7 +174,7 @@ public class HypUFO : MonoBehaviour {
 			multiplier = 1f;
 		}
 
-		if (spawner == 0) {   //right
+		if (spawner == 0) {   		  //right
 			newVel = new Vector3(-newVel.x, newVel.y, newVel.z);
 			grav = new Vector3(-grav.x*multiplier - offset, ranXY, ranZ);
 		} else if (spawner == 1) {    //left
@@ -200,7 +188,6 @@ public class HypUFO : MonoBehaviour {
 			grav = new Vector3(ranXY, grav.y*multiplier + offset, ranZ);
 		}
 
-		//Debug.Log("grav=" + grav);
 		gravity = grav;
 		return newVel;
 	}
@@ -216,6 +203,7 @@ public class HypUFO : MonoBehaviour {
 		bNewlySpawned = false;
 		Vector3 v3 = transform.position;
 		float x, y, z;
+		/*   //seems this section is now unused
 		if (v3.x <= 0f && v3.y <= 0f) {
 			x = Random.Range(v3.x, maxDistance);
 			y = Random.Range(v3.y, maxDistance);
@@ -232,8 +220,9 @@ public class HypUFO : MonoBehaviour {
 			x = Random.Range(-maxDistance, v3.x);
 			y = Random.Range(-maxDistance, v3.y);
 		}
-		z = Random.Range(1f, 37f);
-		myTarget = new Vector3(x, y, z);   //currently unused !!!!
+		z = Random.Range(1f, 37f); 
+		myTarget = new Vector3(x, y, z); 
+		*/
 		float maxGrav = 5f;
 		x = Random.Range(-maxGrav, maxGrav);
 		y = Random.Range(-maxGrav, maxGrav);

@@ -45,7 +45,7 @@ public class HypGameOverMenu : MonoBehaviour {
 
 			if (bFinished) {
 				//TODO add panel w/button and text here and activate?
-				if (Input.GetButtonDown("Primary")) {
+				if (Input.GetButtonDown("Primary") || Input.GetButtonDown("Cancel")) {
 					Time.timeScale = 1f;
 					GameObject.Find("LevelManager").GetComponent<LevelManager>().LoadScene("Title");
 				}

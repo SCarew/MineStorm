@@ -49,11 +49,9 @@ public class EnemyHealth : MonoBehaviour {
 		for (int i=0; i<mesh.Length; i++)
 			{ mesh[i].gameObject.SetActive(false); }  //disable for FreeLocation check
 		int size;
-		//TODO this if statement must be removed or adapted for UFOs
-		if (GetComponentInChildren<MeteorControl>() == null) {
+		if (GetComponentInChildren<MeteorControl>() == null) {   //for UFOs
 			size = 1;
-		}
-		else {
+		} else {
 			size = GetComponentInChildren<MeteorControl>().GetSize();
 		}
 
@@ -73,7 +71,6 @@ public class EnemyHealth : MonoBehaviour {
 			{ FireElecTorpedo(); }
 		Destroy(gameObject, 0.1f);
 
-		//TODO Play Sound
 		if (myType == GameManager.mine.Meteor) 
 			{ aud.PlaySoundVisible("explosionMeteor", gameObject.transform, size); }
 		else if (myType == GameManager.mine.Electric || myType == GameManager.mine.ElectroMagnet) 

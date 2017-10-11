@@ -23,9 +23,6 @@ public class HypShipController : MonoBehaviour {
 	private float laserCurrentCharge = 0f;  
 	private float return_x = 0.9f, return_y = 0.6f;
 
-	//testing
-	//public Text txtX, txtY;
-
 	void Start () {
 		quad = GameObject.Find("Background").transform;
 		pre_Effects = GameObject.Find("Effects").transform;
@@ -119,8 +116,6 @@ public class HypShipController : MonoBehaviour {
 		targetObj.anchoredPosition = target;
 		float x = target.x / max_x;
 		float y = target.y / max_y;
-		//txtX.text = x.ToString();
-		//txtY.text = y.ToString();
 		transform.rotation = Quaternion.Euler(y * -7f, x * 30f, 0f);
 		//cam.transform.rotation = Quaternion.Euler(y * 2f, x * -6f, 0f);
 		cam.transform.rotation = Quaternion.Euler(0f, 0f, 0f);

@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour {
 		spawnRateUfo2 = 0f;    //gray ship
 		//int i = 0;
 
-		//currentLevel++;
+		UpdateForSceneReload();
 		if (currentLevel < 1) { currentLevel = 1; }
 		UpdateForContinueMode();
 		if (currentLevel==1) {
@@ -329,11 +329,9 @@ public class GameManager : MonoBehaviour {
 			else if (currentLevel < 21) { spawnRateUfo1 = 130f;  spawnRateUfo2 = 50f; }
 			else                        { spawnRateUfo1 = 100f;  spawnRateUfo2 = 50f; }
 
-			//*******Testing - remove********
-			Debug.Log("Level:" + currentLevel + "  UFO1:" + spawnRateUfo1 + "  UFO2:" + spawnRateUfo2);
-			Debug.Log("Meteors:" + numTotal + "  minType:" + minType + "  maxType:" + maxType);
-			Debug.Log("Met/Ele/Mag/ElM/Den/BHM: " + numMeteors + "/" + numElecMines + "/" + numMagMines + "/" + numElecMagMines + "/" + numDenseMines + "/" + numBHMines);
-			//*******************************
+			//Debug.Log("Level:" + currentLevel + "  UFO1:" + spawnRateUfo1 + "  UFO2:" + spawnRateUfo2);
+			//Debug.Log("Meteors:" + numTotal + "  minType:" + minType + "  maxType:" + maxType);
+			//Debug.Log("Met/Ele/Mag/ElM/Den/BHM: " + numMeteors + "/" + numElecMines + "/" + numMagMines + "/" + numElecMagMines + "/" + numDenseMines + "/" + numBHMines);
 		}
 		//===========================================
 
@@ -369,7 +367,7 @@ public class GameManager : MonoBehaviour {
 
 	void SetupContinueMode()
 	{
-		currentLevel = prefs.GetGameStats(PrefsControl.stats.Level) - 1;
+		currentLevel = prefs.GetGameStats(PrefsControl.stats.Level);
 		score = prefs.GetGameStats(PrefsControl.stats.Score);
 		shipsRemaining = prefs.GetGameStats(PrefsControl.stats.Ships);
 	}
@@ -381,26 +379,40 @@ public class GameManager : MonoBehaviour {
 		prefs.SetGameStats(PrefsControl.stats.Ships, shipsRemaining);
 	}
 
+	void UpdateForSceneReload() {
+		currentLevel = prefs.GetGameStats(PrefsControl.stats.Level);
+		score = prefs.GetGameStats(PrefsControl.stats.Score);
+		shipsRemaining = prefs.GetGameStats(PrefsControl.stats.Ships);
+		txtScore.text = score.ToString(scoreFormat);
+	}
+
 	void CameraModeSet() {
 		GameObject.Find("Main Camera").GetComponent<CameraController>().fixedCam = true;
 	}
 
 	void LevelClear() {
 		if (bArcadeMode) {
-			//TODO message to player that level is clear
+			GameObject.FindObjectOfType<PanelController>().ShowMessage("Level Clear");
 			currentLevel++;
 			panFadeIn.GetComponent<HypFader>().ResetTimer(true, 2.5f);
+			prefs.SetGameStats(PrefsControl.stats.Level, currentLevel);
+			prefs.SetGameStats(PrefsControl.stats.Score, score);
+			prefs.SetGameStats(PrefsControl.stats.Ships, shipsRemaining);
 			return;
 		}
-		if (currentLevel < (finalLevel+1)) {  //final level = 26?
-			currentLevel++;
-			//TODO message to player that level is clear
-			//TODO open warp
-			panFadeIn.GetComponent<HypFader>().ResetTimer(true, 2.5f);
 
-			NextLevel();  //TODO instead, go to hyperspace scene
+		//+++ Story mode only
+		currentLevel++;
+		GameObject.Find("Canvas").GetComponent<PanelController>().ShowMessage("Sector Clear");
+		//TODO open warp
+		panFadeIn.GetComponent<HypFader>().ResetTimer(true, 2.5f);
+		if (currentLevel < finalLevel) {  //final level = 26?
+			//NextLevel();  //TODO instead, go to hyperspace scene
+			prefs.SetGameStats(PrefsControl.stats.Level, currentLevel);
+			prefs.SetGameStats(PrefsControl.stats.Score, score);
+			prefs.SetGameStats(PrefsControl.stats.Ships, shipsRemaining);
 		} else {
-			//TODO game over
+			lm.LoadScene("Finish");
 		}
 	}
 
@@ -602,7 +614,7 @@ public class GameManager : MonoBehaviour {
 			points = 450;
 		} else if (type == mine.UFO02) {  //Small UFO
 			points = 300;
-		}  //TODO add more scoring to this section
+		}  
 		score += points;
 
 		ShowPoints(points);

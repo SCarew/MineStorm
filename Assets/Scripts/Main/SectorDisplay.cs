@@ -14,6 +14,7 @@ public class SectorDisplay : MonoBehaviour {
 
 	private float timeToFade = 3f;
 	private float timer;
+	private bool  bHideSector = true;  //to fix 'Level Clear' bug
 
 	void Start () {
 		txtSector = GetComponent<Text>();
@@ -23,10 +24,13 @@ public class SectorDisplay : MonoBehaviour {
 		col = txtSector.color;
 
 		int round = gm.currentLevel;
-		string sec = lm.SectorName(round);
+		string sec; 
 		if (gm.bArcadeMode) { 
+			sec = lm.SectorName(round % (int)(gm.finalLevel/2));
 			txtSector.text = "Level " + round; 
+			txtStaticSector.text = "";
 		} else {   //story mode
+			sec = lm.SectorName(round);
 			txtSector.text = sec;
 		}
 		Debug.Log("Round = " + round);
@@ -56,7 +60,6 @@ public class SectorDisplay : MonoBehaviour {
 		for (int i=0; i<lights.Length; i++) 
 			{ lights[i].SetActive(false); }
 
-		//sec = "Delta";  //Testing - remove
 		if (sec.StartsWith("Alph")) {
 			mr.material       = starfields_bg[0];
 			mr_2.material     = starfields_fg[0];
@@ -99,8 +102,9 @@ public class SectorDisplay : MonoBehaviour {
 			col.a -= t / timeToFade;
 			txtSector.color = col;
 			txtStaticSector.color = col;
-		} else {
+		} else if (bHideSector) {
 			gameObject.transform.parent.gameObject.SetActive(false);
+			bHideSector = false;
 		}
 	}
 }

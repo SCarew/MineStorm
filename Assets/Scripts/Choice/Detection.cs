@@ -24,10 +24,6 @@ public class Detection : MonoBehaviour {
 		cv2 = GameObject.Find("ChoiceValue1").GetComponent<Text>();
 		cv3 = GameObject.Find("ChoiceValue2").GetComponent<Text>();
 
-		// ***Testing***
-		//prefs.SetChoice("Select Primary Weapon/Torpedo/Laser/Missile", "101/102/103", 3); 
-		// ***Testing End***
-
 		str = prefs.GetChoices();
 		if (str == "") { str = "Primary Weapon"; }
 
@@ -75,15 +71,10 @@ public class Detection : MonoBehaviour {
 		coords[1] = panels[1].anchoredPosition.y;
 		coords[2] = panels[2].anchoredPosition.y;
 		coords[3] = panels[3].anchoredPosition.y;
-//		coords[0] = -panels[0].offsetMax.y;
-//		coords[1] = -panels[1].offsetMax.y;
-//		coords[2] = -panels[2].offsetMax.y;
-//		coords[3] = -panels[3].offsetMax.y;
 		Debug.Log(coords[0] + "," + coords[1] + "," + coords[2] + "," + coords[3] );
 		Debug.Log(panels[0].localPosition.x + " " + panels[0].localPosition.y);
 		for (int i=0; i<3; i++) {
 			panels[i].anchoredPosition = new Vector2(0f, -344f);
-			//panels[i].offsetMin = new Vector2(0f, -344f);
 		}
 		panels[3].anchoredPosition = new Vector2(0f, 140f);
 
@@ -94,7 +85,6 @@ public class Detection : MonoBehaviour {
 		float rate = 0.05f;
 		for (int i = 0; i<4; i++) {
 			panels[i].anchoredPosition = Vector2.Lerp(panels[i].anchoredPosition, new Vector2(0, coords[i]), rate);
-			//panels[i].offsetMin = Vector2.Lerp(panels[i].offsetMin, new Vector2(0, - coords[i]), rate);
 		}
 		if (Mathf.Abs((int) panels[0].anchoredPosition.y) == Mathf.Abs((int) coords[0])) {
 			fComplete = true;

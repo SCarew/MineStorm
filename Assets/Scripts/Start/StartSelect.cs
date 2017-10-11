@@ -172,20 +172,20 @@ public class StartSelect : MonoBehaviour {
 	}
 
 	void StartGame() {
-		//TODO launch Choice and game here
-		if (textOptions[currentButton].name == "txtStory") {
-			prefs.SetChoice("Select Primary Weapon/Torpedo/Laser/Missile", "101/102/103", 3); 
-			prefs.SetChoice2("Select Secondary Weapon/Hyperjump/Forcefield/Shockwave", "201/202/203", 3); 
-			lm.LoadScene("Choice", "Choice", "Main");
-		}
 		if (textOptions[currentButton].name == "txtContinue") {
 			lm.LoadScene("Main");
+			return;
 		}
-		if (textOptions[currentButton].name == "txtArcade") {
-			prefs.SetChoice("Select Primary Weapon/Torpedo/Laser/Missile", "101/102/103", 3); 
-			prefs.SetChoice2("Select Secondary Weapon/Hyperjump/Forcefield/Shockwave", "201/202/203", 3); 
-			lm.LoadScene("Choice", "Choice", "Main");
+		// *** below for Arcade and Story only ***
+		prefs.SetGameStats(PrefsControl.stats.Level, 0);
+		prefs.SetGameStats(PrefsControl.stats.Score, 0);
+		prefs.SetGameStats(PrefsControl.stats.Ships, 2);
+		if (textOptions[currentButton].name == "txtStory") {
+			prefs.ReplaceUpgrade("");
 		}
+		prefs.SetChoice("Select Primary Weapon/Torpedo/Laser/Missile", "101/102/103", 3); 
+		prefs.SetChoice2("Select Secondary Weapon/Hyperjump/Forcefield/Shockwave", "201/202/203", 3); 
+		lm.LoadScene("Choice", "Choice", "Main");
 	}
 
 	void UpdateControlLayout() {
@@ -200,7 +200,6 @@ public class StartSelect : MonoBehaviour {
 		} else {   //Layout 3
 			panelLayout[2].SetActive(true);
 		}
-		//TODO Layout 2 
 	}
 
 	void LayoutSelected() {
@@ -299,7 +298,6 @@ public class StartSelect : MonoBehaviour {
 	}
 
 	void LoadOptions() {
-		//TODO read Controller Setup from Prefs
 		sldMini[0].value = prefs.GetMainVolume();
 		sldMini[1].value = prefs.GetMusicVolume();
 		foreach (Text txt in textMini) {
@@ -325,7 +323,6 @@ public class StartSelect : MonoBehaviour {
 	}
 
 	void SaveOptions() {
-		//TODO write Controller Setup to prefs
 		prefs.SetMainVolume(sldMini[0].value);
 		prefs.SetMusicVolume(sldMini[1].value);
 		foreach (Text txt in textMini) {

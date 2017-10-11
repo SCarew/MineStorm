@@ -9,7 +9,7 @@ public class PrefsControl : MonoBehaviour {
 	private static List<string> lstUpgrade;
 	//private static List<int>    lstUpgradeValue;
 	private static List<string> lstUpgradeFormula;
-	private static bool bDeveloperMode = true;  //TODO change to false
+	private static bool bDeveloperMode = false;
 
 	public bool isHypDead = false;  //flag for Hyperspace death
 	public bool bHypGameOver = false;  //flag for Hyperspace end of game
@@ -616,13 +616,6 @@ public class PrefsControl : MonoBehaviour {
 		for (int i=0; i<lstUpgradeFormula.Count; i++) {
 			lstUpgrade.Add(UpgradeText(lstUpgradeFormula[i], true));
 		}
-
-		//*********Testing*********
-//		Debug.Log("Total items in Upgrade List: " + lstUpgrade.Count);
-//		for (int i=0; i<lstUpgrade.Count; i++) {
-//			Debug.Log((i+1) + ": " + lstUpgrade[i] + " >>> " + lstUpgradeFormula[i]);
-//		}
-		//**************************
 
 	}
 

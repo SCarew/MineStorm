@@ -57,6 +57,7 @@
      <Compile Include="Assets\Scripts\Finish\FinShipController.cs" />
      <Compile Include="Assets\Scripts\Finish\FinTextFadein.cs" />
      <Compile Include="Assets\Scripts\Finish\FinishArcadeControl.cs" />
+     <Compile Include="Assets\Scripts\Finish\FinishClear.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\CorridorControl.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypCrosshair.cs" />
      <Compile Include="Assets\Scripts\Hyperspace\HypEnder.cs" />
@@ -74,7 +75,6 @@
      <Compile Include="Assets\Scripts\Hyperspace\ScoreManager.cs" />
      <Compile Include="Assets\Scripts\Main\Background.cs" />
      <Compile Include="Assets\Scripts\Main\CameraController.cs" />
-     <Compile Include="Assets\Scripts\Main\CameraControllerOld.cs" />
      <Compile Include="Assets\Scripts\Main\DataPanel.cs" />
      <Compile Include="Assets\Scripts\Main\EnemyHealth.cs" />
      <Compile Include="Assets\Scripts\Main\ExplodeShip.cs" />
@@ -85,7 +85,6 @@
      <Compile Include="Assets\Scripts\Main\GameOverMenu.cs" />
      <Compile Include="Assets\Scripts\Main\InfoControl.cs" />
      <Compile Include="Assets\Scripts\Main\MeteorControl.cs" />
-     <Compile Include="Assets\Scripts\Main\MeteorControlOld.cs" />
      <Compile Include="Assets\Scripts\Main\MusicManager.cs" />
      <Compile Include="Assets\Scripts\Main\PanelController.cs" />
      <Compile Include="Assets\Scripts\Main\PauseMenu.cs" />
@@ -105,7 +104,6 @@
      <Compile Include="Assets\Scripts\Start\LevelManager.cs" />
      <Compile Include="Assets\Scripts\Start\SpawnMeteors.cs" />
      <Compile Include="Assets\Scripts\Start\StartSelect.cs" />
-     <Compile Include="Assets\Scripts\Title\AnimatedGIFDrawer.cs" />
      <Compile Include="Assets\Scripts\Title\ImgScrollControl.cs" />
      <Compile Include="Assets\Scripts\Title\TitleManager.cs" />
  <Reference Include="UnityEngine.UI">

@@ -19,7 +19,6 @@ public class ShipController : MonoBehaviour {
 	private int dev = 0;
 	//private Vector3 velVector = new Vector3(0, 0, 0);
 	private bool bUseThrust = false;
-	private Text txtVelocity;  //for testing
 	private bool bEscape = false;    //true when ship destroyed & escape pod launched
 	private bool bGameOver = false;  //true when in escape pod and no ships left
 	private bool bPaused = false;    //true when game is paused
@@ -79,7 +78,6 @@ public class ShipController : MonoBehaviour {
 		launcher = GameObject.Find("Launcher").transform;
 		rb = GetComponent<Rigidbody>();
 		parEff = GameObject.Find("Effects").transform;
-		txtVelocity = GameObject.Find("txtVelocity").GetComponent<Text>();
 		ps = GetComponentsInChildren<ParticleSystem>();
 		mr = GetComponentsInChildren<MeshRenderer>(true);
 
@@ -87,15 +85,13 @@ public class ShipController : MonoBehaviour {
 			primaryWeapon = prefs.GetPrimaryWeapon(true);
 			secondaryWeapon = prefs.GetSecondaryWeapon(true);
 		} else {
-			primaryWeapon = prefs.GetPrimaryWeapon();
-			secondaryWeapon = prefs.GetSecondaryWeapon();
+			primaryWeapon = prefs.GetPrimaryWeapon();      //0=torp 1=laser 2=missiles
+			secondaryWeapon = prefs.GetSecondaryWeapon();  //0=hyper 1=force 2=shockwave
 		}
 		Debug.Log("Primary=" + primaryWeapon + "  Secondary=" + secondaryWeapon + "  GameType=" + prefs.GetGameType());
 
 		conLayout = prefs.GetControlLayout();
-		//conLayout = 0;       //for testing
-		//primaryWeapon = 0;   //for testing - 0=torp 1=laser 2=missiles
-		//secondaryWeapon = 2; //for testing - 0=hyper 1=force 2=shockwave
+		conLayout = 1;       //***** testing - remove this line *****
 
 		if (primaryWeapon == 0)         //torp
 			{ priRechargeRate = chargeTorp; }
@@ -141,7 +137,7 @@ public class ShipController : MonoBehaviour {
 		if (engCurrentCharge > engRechargeRate)  { engCurrentCharge = engRechargeRate; }
 		if (bEscape) { lifeCurrentCharge -= Time.deltaTime; }
 
-		// **** Testing Start ****    //TODO remove this section
+		// **** Developer Mode Start **** 
 		if (prefs.GetDevMode()) {
 			if (Input.GetKeyDown(KeyCode.X)) {   
 				if (bEscape == false) { BlowUpShip(); }
@@ -194,7 +190,7 @@ public class ShipController : MonoBehaviour {
 					{ prefs.SetDevMode(true); dev = 3; }
 			}
 		}
-		// **** Testing End ****
+		// **** Developer Mode End ****
 
 		if (adjustScaleIn) {   //entering hyperjump
 			timeSpent += Time.deltaTime;
@@ -264,6 +260,9 @@ public class ShipController : MonoBehaviour {
 				{ FirePrimaryWeapon(pre_laser, "Laser"); }
 			else if (primaryWeapon == 2)
 				{ FireMissiles(); }
+		} else if (bP && (primaryWeapon == 0) && (priCurrentCharge >= (priRechargeRate * 0.50f))) {
+			FirePrimaryWeapon(pre_torpedo, "Torpedo");
+			priCurrentCharge = 0f;
 		}
 
 		if (conLayout == 0) {
@@ -295,24 +294,51 @@ public class ShipController : MonoBehaviour {
 			}
 		}
 
-		if (conLayout == 1) {    //TODO this doesn't fully work yet
-			if (v > deadZone || v < -deadZone || h > deadZone || h < -deadZone) { 
-				Vector3 dir = new Vector3(-h, 0f, v);
-				Vector3 old = transform.rotation.eulerAngles;
-				Quaternion rot = Quaternion.LookRotation(dir, Vector3.forward);
-				old.z = rot.eulerAngles.z;
-				//transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 100f * rotationSpeed * Time.deltaTime);
-				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(old), 100f * rotationSpeed * Time.deltaTime);
+		if (conLayout == 1) { 
+			bS = false;
+			if ((v > deadZone) && (engCurrentCharge > 0)) {
+				engCurrentCharge -= Time.deltaTime * 1.5f;
+				Thrust(v);
+				if (!bUseThrust) { aud.PlaySoundLimited("engine", 2); }
+				bUseThrust = true;
+			} else {
+				//Thrust(0);
+				if (bUseThrust) { aud.PlaySoundLimited("engine", 0); }
+				bUseThrust = false;
+			}
+
+			if (h > deadZone) {
+				TurnClockwise();
+			}
+			if (h < -deadZone) {
+				TurnCounterClockwise();
+			}
+
+			if ((v < -deadZone) && (secCurrentCharge >= secRechargeRate)) {
+				if (secondaryWeapon == 0)
+					{ HyperJump(); }
+				else if (secondaryWeapon == 1) 
+					{ RaiseForcefield(); }
+				else if (secondaryWeapon == 2)
+					{ LaunchShockwave(); }
 			}
 		}
 
 		if (conLayout == 2) {
+//			if (v > deadZone || v < -deadZone || h > deadZone || h < -deadZone) { 
+//				Vector3 dir = new Vector3(-h, 0f, v);
+//				Vector3 old = transform.rotation.eulerAngles;
+//				Quaternion rot = Quaternion.LookRotation(dir, Vector3.forward);
+//				old.z = rot.eulerAngles.z;
+//				//transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 100f * rotationSpeed * Time.deltaTime);
+//				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(old), 75f * rotationSpeed * Time.deltaTime);
+//			}
 			Vector3 vec = transform.rotation.eulerAngles;
 			float z = vec.z;
 
 			if (v > deadZone || v < -deadZone || h > deadZone || h < -deadZone) { 
 				vec.z = TurnAct(-h, v, z); 
-				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(vec), 100f * rotationSpeed * Time.deltaTime);
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(vec), 75f * rotationSpeed * Time.deltaTime);
 			}
 
 			if (bT && (engCurrentCharge > 0)) {
@@ -350,10 +376,6 @@ public class ShipController : MonoBehaviour {
 //		Vector3 vecTarget = transform.position + (transform.up * 100f);
 //		transform.position = Vector3.MoveTowards(transform.position, vecTarget, thrustVelocity * power * Time.deltaTime);
 
-		//****Testing****
-		//velVector += thrustVelocity * power * transform.up;
-		//return;
-		//****End Testing****
 		//rb.AddForce(transform.up * power * thrustVelocity, ForceMode.Force);
 		//if (rb.velocity.sqrMagnitude > (maxThrust*maxThrust)) {
 		//	rb.AddForce(transform.up * power * -thrustVelocity, ForceMode.Force);
@@ -386,9 +408,8 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-		if (conLayout == 0 || conLayout == 2) {
+		if (conLayout == 0 || conLayout == 2 || conLayout == 1) {
 			float mag = rb.velocity.sqrMagnitude;   //TODO: change to sqrMag or remove
-			txtVelocity.text = mag.ToString();
 			if (mag < 0.4f && mag != 0f) 
 				{ rb.drag = 4f; }
 			else 
@@ -405,17 +426,6 @@ public class ShipController : MonoBehaviour {
 						{ ps1.Play(); }
 				}
 			}
-
-//			if (mag > 0f) {
-//				foreach (ParticleSystem ps1 in ps) {
-//					ps1.emission.rate = 10 + mag;
-//					ps1.Play();
-//				}
-//			} else {
-//				foreach (ParticleSystem ps1 in ps) {
-//					ps1.Stop();
-//				}
-//			}
 		}
 		return;
 
@@ -521,6 +531,11 @@ public class ShipController : MonoBehaviour {
 		} else if (primaryName == "Torpedo") {
 			tc.damage = (int) (tc.damage * upTorpDam);
 			tc.fireSpeed *= upTorpVel;
+			if (priCurrentCharge > 0f) {   //fired with 50%-99% charge
+				float torpSize = priCurrentCharge / priRechargeRate;
+				tc.damage = (int) (tc.damage * (torpSize - 0.05f));
+				go.transform.localScale *= torpSize;
+			}
 		}
 	}
 
@@ -605,7 +620,7 @@ public class ShipController : MonoBehaviour {
 		timeSpent = 0f;
 
 		if (jumpOut) {
-			Invoke("GotoNextLevel", 2f);
+			Invoke("GotoNextLevel", 2.5f);
 		}
 	}
 
@@ -617,11 +632,10 @@ public class ShipController : MonoBehaviour {
 
 		if (gm.bArcadeMode) { return; }
 		string s = prefs.GetUpgrades();
-		//*********Testing - Remove**********
-		for (int i=0; i<(s.Length/3); i++) {
-			Debug.Log(s.Substring(i*3, 3) + " => " + prefs.UpgradeText(s.Substring(i*3, 3), true));
-		}
-		//***********************************
+
+//		for (int i=0; i<(s.Length/3); i++) {
+//			Debug.Log(s.Substring(i*3, 3) + " => " + prefs.UpgradeText(s.Substring(i*3, 3), true));
+//		}
 
 		if (s.Contains("***")) {   //additional ship
 			s = s.Replace("***", "");

@@ -30,8 +30,8 @@ public class FinishArcadeControl : MonoBehaviour {
 		lm = prefs.GetComponent<LevelManager>();
 		music = GameObject.Find("MusicManager").GetComponent<MusicManager>();
 
-		//PlayerPrefs.SetInt("ArcadeScore", 2000); //TODO Remove this line
-		//prefs.SetGameType("Arcade");   //TODO Remove this line
+		//PlayerPrefs.SetInt("ArcadeScore", 2000); 
+		//prefs.SetGameType("Arcade");
 		alphaNum = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_*1234567890 ";
 		defaultColor = txtLetter[0].color;
 		changeColor = new Color(255f/255f, 156f/255f, 91f/255f, 255f/255f);

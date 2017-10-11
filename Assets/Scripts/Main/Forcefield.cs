@@ -11,14 +11,17 @@ public class Forcefield : MonoBehaviour {
 	private float alpha;
 	private bool bWarmup = true;
 	private bool firstTime = true;
+	private bool bTerminateField = false;    //used for ending field on ship blowing up
 	private Transform pShip;
 	private ShipController sc;
+	private ShipHealth sh;
 	private SoundManager aud;
 
 	void Start () {
 		pShip = GameObject.Find("PlayerShip").transform;
 		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
 		sc = pShip.gameObject.GetComponent<ShipController>();
+		sh = pShip.gameObject.GetComponent<ShipHealth>();
 		childCol = GetComponentInChildren<MeshCollider>();
 		childCol.enabled = false;
 		childRend = GetComponentInChildren<MeshRenderer>().materials;
@@ -39,7 +42,7 @@ public class Forcefield : MonoBehaviour {
 				bWarmup = false;
 				childCol.enabled = true;
 				currentTime = startupTime;
-				firstTime = true;  //TODO remove this testing line
+				//firstTime = true;   //was here to test
 			}
 			c = childRend[0].color;
 			c.a = alpha * currentTime / startupTime;
@@ -47,18 +50,23 @@ public class Forcefield : MonoBehaviour {
 		}
 		transform.position = pShip.position;
 		transform.rotation = pShip.rotation;
-		if (Input.GetButtonUp("Secondary")) {
+		if (Input.GetButtonUp("Secondary") || bTerminateField) {
 			childCol.enabled = false;
 			aud.PlaySoundImmediate("forcefieldoff");
 			GetComponentInChildren<MeshRenderer>(true).enabled = false;
 			GetComponentInChildren<ParticleSystem>().Play();
 			Destroy(gameObject, 0.7f);
+			bTerminateField = false;
 			//sc.priCurrentCharge = -2.5f;
 			sc.priCurrentCharge = sc.priRechargeRate - ((sc.priRechargeRate + 2.5f) * sc.upForCon);
 		} else {
 			sc.secCurrentCharge -= Time.deltaTime * (sc.secRechargeRate / 1.5f) / sc.upForDur;
-			//TODO start damage if sc.secCurrentCharge < 0
+			if (sc.secCurrentCharge <= 0f && sh.GetHealth() > 0) {
+				sh.DamageHealth(1);   //start damage if over charge
+			}
 		}
+
+		if (sh.GetHealth() <= 0) { bTerminateField = true; }
 	}
 
 	void OnCollisionEnter(Collision coll) {
