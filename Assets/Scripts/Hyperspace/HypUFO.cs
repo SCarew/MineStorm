@@ -18,7 +18,7 @@ public class HypUFO : MonoBehaviour {
 	private Transform pShip;
 	private Rigidbody rb;
 	//private Vector3 myTarget;
-	private Vector3 myGravity;
+	//private Vector3 myGravity;
 	private bool bInCorridor = false;
 	private bool bNewlySpawned = false;
 	private bool bOutOfBounds = false;
@@ -109,7 +109,6 @@ public class HypUFO : MonoBehaviour {
 //		Vector3 v = (transform.position - myTarget).normalized * speed;
 //		rb.velocity += v * Time.deltaTime;
 		velocity = velocity - gravity * Time.deltaTime;
-		//Debug.Log("vel=" + velocity);
 		if (gameObject.transform.position.z >= 37) {  //keep in front of background
 			velocity = new Vector3(velocity.x, velocity.y, -velocity.z);
 		}
@@ -202,7 +201,8 @@ public class HypUFO : MonoBehaviour {
 	void SetGrayTarget() {
 		bNewlySpawned = false;
 		Vector3 v3 = transform.position;
-		float x, y, z;
+		float x, y; 
+		//float z;
 		/*   //seems this section is now unused
 		if (v3.x <= 0f && v3.y <= 0f) {
 			x = Random.Range(v3.x, maxDistance);
@@ -226,17 +226,18 @@ public class HypUFO : MonoBehaviour {
 		float maxGrav = 5f;
 		x = Random.Range(-maxGrav, maxGrav);
 		y = Random.Range(-maxGrav, maxGrav);
-		z = Random.Range(-maxGrav, maxGrav);
+		//z = Random.Range(-maxGrav, maxGrav);
 		if (v3.x > 0f && x > 0) { x = x/2; }
 		if (v3.x < 0f && x < 0) { x = x/2; }
 		if (v3.y > 0f && y > 0) { y = y/2; }
 		if (v3.y < 0f && y < 0) { y = y/2; }
-		myGravity = new Vector3(x, y, z);
+		//myGravity = new Vector3(x, y, z);
 	}
 
 	private IEnumerator FireUpdate() {
 		bool bLoop = true;
-		GameObject go0, go1, go2, go3, go4;
+		GameObject go0, go1;
+		// GameObject go2, go3, go4;
 		Vector3 v3 = new Vector3(0f, 0f, 0f);
 		Vector3 vl = new Vector3(0f, 0f, 0f); 
 		Transform launch = transform.Find("MLauncher").transform;
@@ -283,7 +284,7 @@ public class HypUFO : MonoBehaviour {
 					weaponTime += Random.Range(-0.25f, 0.25f);
 				}
 			}
-			Debug.Log(bInCorridor + "/" + rb.rotation.eulerAngles + "/" + v3);
+			//Debug.Log(bInCorridor + "/" + rb.rotation.eulerAngles + "/" + v3);
 			if (weaponTime < 0.25f) { weaponTime = 0.25f; }
 			yield return new WaitForSeconds(weaponTime);
 		}

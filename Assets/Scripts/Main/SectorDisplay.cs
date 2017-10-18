@@ -33,7 +33,6 @@ public class SectorDisplay : MonoBehaviour {
 			sec = lm.SectorName(round);
 			txtSector.text = sec;
 		}
-		Debug.Log("Round = " + round);
 
 		//---------------------------------------------------------------
 		// Start music   
@@ -88,7 +87,6 @@ public class SectorDisplay : MonoBehaviour {
 			mr_2.material     = starfields_fg[0];
 			lights[0].SetActive(true);
 			lights[6].SetActive(true);
-			Debug.Log("Sector: " + sec);
 		}
 		//---------------------------------------------------------------
 

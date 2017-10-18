@@ -11,7 +11,7 @@ public class HypMeteor : MonoBehaviour {
 	private HypShipHealth pShipHealth;
 	[SerializeField] private GameObject ps_Pieces;
 
-	private float moveSpeed = 1f;
+	private float moveSpeed = 2f;
 	private float rotTime = 1f / 6f;
 	private int value = 50;  //score
 	private int health = 1;
@@ -29,7 +29,7 @@ public class HypMeteor : MonoBehaviour {
 		if (mySize == mineSize.big) 			{ moveSpeed += 1f; }
 		else if (mySize == mineSize.medium) 	{ moveSpeed += 0.5f; }
 		else if (mySize == mineSize.small)		{ moveSpeed += 0.1f; }
-		int round = GameObject.Find("LevelManager").GetComponent<PrefsControl>().GetGameStats(PrefsControl.stats.Level);
+		int round = GameObject.Find("LevelManager").GetComponent<PrefsControl>().GetGameStats(PrefsControl.stats.Level, true);
 		moveSpeed += ((float)round / 10f);
 		//Debug.Log("HyperMeteor move speed = " + moveSpeed + " (" + mySize + ")");
 	}
@@ -67,7 +67,6 @@ public class HypMeteor : MonoBehaviour {
 	}
 
 	void OnCollisionEnter (Collision coll) {
-		//Debug.Log(coll.gameObject.name + " was hit");
 		if (coll.gameObject.name == "HypLaser") {
 			Destroy(coll.gameObject);
 			health -= 1;

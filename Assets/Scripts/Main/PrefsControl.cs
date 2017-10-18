@@ -30,7 +30,7 @@ public class PrefsControl : MonoBehaviour {
 
 	public void SetDevMode(bool b) {
 		bDeveloperMode = b;
-		Debug.Log("Dev reached!!!"); 
+		PrintWarning("Dev mode activated!!!"); 
 	}
 
 	public string GetChoices() {
@@ -49,10 +49,10 @@ public class PrefsControl : MonoBehaviour {
 
 	public void UpdateSetChoice() {
 		if (PlayerPrefs.GetString("NextChoice1", "") == "") {
-			Debug.LogWarning("UpdateSetChoice() called with no update");
+			PrintWarning("UpdateSetChoice() called with no update");
 			//return;
 		}
-		Debug.Log(PlayerPrefs.GetString("ChoiceTitle", "*") + " <- " + PlayerPrefs.GetString("NextChoiceTitle", "*"));
+		//Debug.Log(PlayerPrefs.GetString("ChoiceTitle", "*") + " <- " + PlayerPrefs.GetString("NextChoiceTitle", "*"));
 
 		for (int i=1; i<4; i++) {
 			PlayerPrefs.SetString("Choice" + i.ToString(), PlayerPrefs.GetString("NextChoice" + i.ToString(), ""));
@@ -143,14 +143,7 @@ public class PrefsControl : MonoBehaviour {
 
 		if (bSG && !arcadeMode)   //new story mode game
 			{ PlayerPrefs.DeleteKey("Upgrades"); }
-
-		Debug.Log("Chosen: " + value + " --> " + PlayerPrefs.GetString("ChoiceFormula" + (value-290).ToString(), ""));
 	}
-
-//	public void SetChosenValue(string value) {
-//		SetUpgrade(value);
-//		ClearNextUpgrade();
-//	}
 
 	public int GetPrimaryWeapon(bool arcadeMode = false) {
 		if (arcadeMode) {
@@ -239,13 +232,19 @@ public class PrefsControl : MonoBehaviour {
 		else   { PlayerPrefs.SetInt("CameraMode", 0); }
 	}
 
-	public int GetGameStats(stats type) {
+	public int GetGameStats(stats type, bool bHypTransition = false) {
 		int returnValue = 0;
 		if (GetGameType() != "Arcade") {
-			if (type == stats.Ships) { returnValue = PlayerPrefs.GetInt("ShipsRemaining", 0); }
-			if (type == stats.Score) { returnValue = PlayerPrefs.GetInt("StoryScore", 0); }
-			if (type == stats.Level) { returnValue = PlayerPrefs.GetInt("CurrentLevel", 0); }
-		} else {
+			if (bHypTransition) {   //starting hyperspace
+				if (type == stats.Ships) { returnValue = PlayerPrefs.GetInt("Hyp_ShipsRemaining", 0); }
+				if (type == stats.Score) { returnValue = PlayerPrefs.GetInt("Hyp_StoryScore", 0); }
+				if (type == stats.Level) { returnValue = PlayerPrefs.GetInt("Hyp_CurrentLevel", 0); }
+			} else {   //starting story mode sector
+				if (type == stats.Ships) { returnValue = PlayerPrefs.GetInt("ShipsRemaining", 0); }
+				if (type == stats.Score) { returnValue = PlayerPrefs.GetInt("StoryScore", 0); }
+				if (type == stats.Level) { returnValue = PlayerPrefs.GetInt("CurrentLevel", 0); }
+			}
+		} else {   //arcade mode
 			if (type == stats.Ships) { returnValue = PlayerPrefs.GetInt("Arc_ShipsRemaining", 0); }
 			if (type == stats.Score) { returnValue = PlayerPrefs.GetInt("ArcadeScore", 0); }
 			if (type == stats.Level) { returnValue = PlayerPrefs.GetInt("Arc_CurrentLevel", 0); }
@@ -254,12 +253,18 @@ public class PrefsControl : MonoBehaviour {
 		return returnValue;
 	}
 
-	public void SetGameStats(stats type, int value) {
+	public void SetGameStats(stats type, int value, bool bHypTransition = false) {
 		if (GetGameType() != "Arcade") {
-			if (type == stats.Ships) { PlayerPrefs.SetInt("ShipsRemaining", value); }
-			if (type == stats.Score) { PlayerPrefs.SetInt("StoryScore", value); }
-			if (type == stats.Level) { PlayerPrefs.SetInt("CurrentLevel", value); }
-		} else {
+			if (bHypTransition) {   //end of story sector, entering hyperspace - not saved for continue
+				if (type == stats.Ships) { PlayerPrefs.SetInt("Hyp_ShipsRemaining", value); }
+				if (type == stats.Score) { PlayerPrefs.SetInt("Hyp_StoryScore", value); }
+				if (type == stats.Level) { PlayerPrefs.SetInt("Hyp_CurrentLevel", value); }
+			} else {  //start of story sector
+				if (type == stats.Ships) { PlayerPrefs.SetInt("ShipsRemaining", value); }
+				if (type == stats.Score) { PlayerPrefs.SetInt("StoryScore", value); }
+				if (type == stats.Level) { PlayerPrefs.SetInt("CurrentLevel", value); }
+			}
+		} else {  //arcade mode
 			if (type == stats.Ships) { PlayerPrefs.SetInt("Arc_ShipsRemaining", value); }
 			if (type == stats.Score) { PlayerPrefs.SetInt("ArcadeScore", value); }
 			if (type == stats.Level) { PlayerPrefs.SetInt("Arc_CurrentLevel", value); }
@@ -357,7 +362,7 @@ public class PrefsControl : MonoBehaviour {
 
 	public void ReplaceUpgrade(string upList) {
 		if (upList.Length % 3 != 0) { 
-			Debug.LogWarning("Incorrect call to ReplaceUpgrade(" + upList + ")");
+			PrintWarning ("Incorrect call to ReplaceUpgrade(" + upList + ")");
 			return; 
 		}
 		PlayerPrefs.SetString("Upgrades", upList);
@@ -451,6 +456,10 @@ public class PrefsControl : MonoBehaviour {
 	private void AddAdditionalShip() {
 		lstUpgradeFormula.Add("***");
 		//lstUpgrade.Add("Additional Ship");
+	}
+
+	private void PrintWarning(string s) {
+		Debug.LogWarning(s);
 	}
 
 	private void CreateListUpgrade() {   //compare with CheckUpgrades() in ShipController

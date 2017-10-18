@@ -24,7 +24,7 @@ public class MeteorControl : MonoBehaviour {
 	private float zDepth = 0f;
 	private int iSize = 3;  //default 3=big 2=medium 1=small
 	private Vector3 location = new Vector3(0f, 0f, 1f);
-	private float spawnDist = 5f;  //distance from ship meteors can spawn
+	private float spawnDist = 6f;  //distance from ship meteors can spawn
 	private float spawnChildDist = 1.5f;  //distance from ship child meteors can spawn
 	private float magDistance = 12f;  //distance from ship Magnets are attracted
 	private float bholeDistance = 12f;  //distance from ship BHole mines attract
@@ -105,10 +105,9 @@ public class MeteorControl : MonoBehaviour {
 		float vel = rb.velocity.sqrMagnitude;
 		if (vel > (moveSpeed * moveSpeed)) {
 			rb.velocity = rb.velocity.normalized * moveSpeed; 
-			Debug.Log(gameObject.name + " vel reduced from " + Mathf.Sqrt(vel) + " to " + rb.velocity.magnitude + " with max of " + moveSpeed);
+			//Debug.Log(gameObject.name + " vel reduced from " + Mathf.Sqrt(vel) + " to " + rb.velocity.magnitude + " with max of " + moveSpeed);
 		}
 		//yield return new WaitForSeconds(1.6f);
-		//Debug.Log(gameObject.name + "+2 secs vel = " + rb.velocity.magnitude);
 	}
 
 	void SetXY ()
@@ -121,16 +120,15 @@ public class MeteorControl : MonoBehaviour {
 			if (Vector3.Distance (pShip.position, new Vector3 (x, y, zDepth)) > (spawnDist)) {
 				bTooClose = false;
 			}
-			else {
-				Debug.Log (gameObject.name + ":" + x + ", " + y + ", " + zDepth + " = " + Vector3.Distance (pShip.position, new Vector3 (x, y, zDepth)));
-			}
+//			else {
+//				Debug.Log (gameObject.name + ":" + x + ", " + y + ", " + zDepth + " = " + Vector3.Distance (pShip.position, new Vector3 (x, y, zDepth)));
+//			}
 		}
 	}
 
 	void CheckChildXY() {
 		Vector3 v3_dist = location - pShip.position;
 		if (Vector3.Distance (pShip.position, location) < spawnChildDist) {
-			Debug.Log("Original loc=" + location + " ship=" + pShip.position);
 			Vector3 v3_add = new Vector3(0, 0, 0);
 			if (v3_dist.x < 0) {v3_add += new Vector3(-1, 0, 0);}
 			if (v3_dist.x > 0) {v3_add += new Vector3( 1, 0, 0);}
@@ -138,7 +136,6 @@ public class MeteorControl : MonoBehaviour {
 			if (v3_dist.y > 0) {v3_add += new Vector3( 0, 1, 0);}
 			v3_add = v3_add * spawnChildDist;
 			location += v3_add;
-			Debug.Log("  New loc=   " + location + " ship=" + pShip.position);
 		}
 	}
 
@@ -195,7 +192,6 @@ public class MeteorControl : MonoBehaviour {
 		if (eh.myType == GameManager.mine.Magnet || eh.myType == GameManager.mine.ElectroMagnet || eh.myType == GameManager.mine.Test) {
 			if (Vector3.Distance(gameObject.transform.position, pShip.position) < magDistance) {
 				Vector3 attract = Vector3.Normalize(pShip.position - gameObject.transform.position);
-				//Debug.Log(gameObject.name + ":" + attract + " Vel=" + rb.velocity);
 				rb.AddForce(attract * moveSpeed * Time.deltaTime, ForceMode.VelocityChange);
 				rb.AddTorque(attract * Time.deltaTime, ForceMode.Force);
 				if (rb.velocity.sqrMagnitude > (moveSpeed * moveSpeed)) {
@@ -218,13 +214,11 @@ public class MeteorControl : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		int damage = 100;  //temp test
-		//Debug.Log(coll.gameObject.name + " hit for " + damage);
+		int damage = 0;
 	
 		if (coll.gameObject.tag == "Laser" || coll.gameObject.tag == "EnemyLaser") {
 			damage = coll.gameObject.GetComponent<TorpedoController>().GetDamage();
 			eh.DamageHealth(damage);
-			//Debug.Log(gameObject.name + " hit for " + damage + " with " + coll.relativeVelocity.magnitude + " vel");
 			Destroy(coll.gameObject);
 		}
 		if (coll.gameObject.tag == "Player") {
@@ -233,10 +227,8 @@ public class MeteorControl : MonoBehaviour {
 			else if (iSize == 1)  { damage = gm.mineSHit; }
 			eh.DamageHealth(400);
 			coll.gameObject.GetComponentInParent<ShipHealth>().DamageHealth(damage);
-			Debug.Log("Ship hit for damage: -" + damage + "-->" + pShip.GetComponent<ShipHealth>().GetHealth());
 		}
 		if (coll.gameObject.tag == "MeteorParent") {
-			//Debug.Log("!!! Meteor Collision detected for " + coll.gameObject.tag);
 			aud.PlaySoundVisible("meteorHit", gameObject.transform, Mathf.Min(iSize, coll.gameObject.GetComponent<MeteorControl>().GetSize()));
 		}
 	}

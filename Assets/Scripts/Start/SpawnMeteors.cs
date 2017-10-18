@@ -37,7 +37,6 @@ public class SpawnMeteors : MonoBehaviour {
 		float y_s = spawner.localScale.y;
 		float y = Random.Range(0f, y_s);
 		Vector3 v3pos = new Vector3(spawner.position.x, spawner.position.y - (y_s/2) + y, Random.Range(-9f, 9f));
-		Debug.Log("Pos: " + v3pos);
 		GameObject go = Instantiate(meteors[i], v3pos, Quaternion.identity, parObj) as GameObject;
 
 		scale = Random.Range(0.4f, 0.6f);

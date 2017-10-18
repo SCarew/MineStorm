@@ -242,7 +242,6 @@ public class SoundManager : MonoBehaviour {
 	/// <param name="soundName">Sound name.</param>
 	public void PlaySoundGeneric(string soundName) {
 		AudioClip ac = null;
-		float vol = 1f;
 		soundName = soundName.ToLower();
 
 		//this section includes all sound names for reference

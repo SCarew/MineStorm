@@ -42,7 +42,6 @@ public class ButtonControl : MonoBehaviour {
 	
 	void Update () {
 		if (Input.GetButtonDown("Primary") && (numSelected > 0)) {
-			Debug.Log("Button " + numSelected + " => " + txtValue[numSelected-1].text);
 			img[numSelected - 1].color = colSelected;
 			txt[numSelected - 1].fontStyle = FontStyle.BoldAndItalic;
 			aud.PlaySoundImmediate("choiceSelect");

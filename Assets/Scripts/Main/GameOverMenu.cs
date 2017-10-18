@@ -6,6 +6,7 @@ public class GameOverMenu : MonoBehaviour {
 	private bool bActive = false;    //is gameOverCanvas visible (is game over)
 	private bool bFinished = false;  //finished darkening and slow down
 	private GameManager gm;
+	private LevelManager lm;
 	private ShipController sc;
 	public GameObject gameOverCanvas;
 	private Image darkBackground;
@@ -19,6 +20,7 @@ public class GameOverMenu : MonoBehaviour {
 	void Start () {
 		gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 		sc = GameObject.Find("PlayerShip").GetComponent<ShipController>();
+		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		gameOverCanvas.SetActive(true);
 		darkBackground = GameObject.Find("DarkBackground").GetComponent<Image>();
 		txtGameOver = GameObject.Find("txtGameOver").GetComponent<Text>();
@@ -53,7 +55,11 @@ public class GameOverMenu : MonoBehaviour {
 				sc.enabled = false;   //turn off controls/input
 				if (Input.GetButtonDown("Primary") || Input.GetButtonDown("Cancel")) {
 					Time.timeScale = 1f;
-					GameObject.Find("LevelManager").GetComponent<LevelManager>().LoadScene("Title");
+					if (gm.bArcadeMode) { 
+						lm.LoadScene("FinishArcade");
+					} else {
+						lm.LoadScene("Title");
+					}
 				}
 			}
 		}

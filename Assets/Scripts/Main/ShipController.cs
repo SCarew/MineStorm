@@ -29,12 +29,16 @@ public class ShipController : MonoBehaviour {
 	private float timeSpent = 0f;    //counter to timeScale
 	private bool adjustScaleIn = false;
 	private bool adjustScaleOut = false;
-	[SerializeField] private GameObject pre_WarpEnter, pre_WarpExit;  //warp effects
+	[SerializeField] private GameObject pre_WarpEnter;  //warp effects
+	[SerializeField] private GameObject pre_WarpExit;   //warp effects
 	[SerializeField] private GameObject pre_Forcefield;
 	[SerializeField] private GameObject pre_Shockwave;
 	[SerializeField] private GameObject pre_ShipExplosion;
 
-	[SerializeField] private GameObject pre_torpedo, pre_laser, pre_missile;
+	[SerializeField] private GameObject pre_torpedo;
+	[SerializeField] private GameObject pre_laser;
+	[SerializeField] private GameObject pre_missile;
+	[SerializeField] private GameObject pre_panCancel;
 	private Transform launcher;
 	private Transform parEff;   //for empty parent container
 	private ParticleSystem[] ps;
@@ -88,10 +92,9 @@ public class ShipController : MonoBehaviour {
 			primaryWeapon = prefs.GetPrimaryWeapon();      //0=torp 1=laser 2=missiles
 			secondaryWeapon = prefs.GetSecondaryWeapon();  //0=hyper 1=force 2=shockwave
 		}
-		Debug.Log("Primary=" + primaryWeapon + "  Secondary=" + secondaryWeapon + "  GameType=" + prefs.GetGameType());
 
 		conLayout = prefs.GetControlLayout();
-		conLayout = 1;       //***** testing - remove this line *****
+		//conLayout = 1;       //***** testing - remove this line *****
 
 		if (primaryWeapon == 0)         //torp
 			{ priRechargeRate = chargeTorp; }
@@ -127,7 +130,6 @@ public class ShipController : MonoBehaviour {
 			{ bP = Input.GetButtonDown("Primary"); }
 
 		if (bPaused) { return; }
-		//if (h !=0 || v != 0 || bT != false) {Debug.Log ("h=" + h + " v=" + v + " b=" + bT); }
 
 		priCurrentCharge += Time.deltaTime;
 		if (priCurrentCharge > priRechargeRate)  { priCurrentCharge = priRechargeRate; }
@@ -139,47 +141,7 @@ public class ShipController : MonoBehaviour {
 
 		// **** Developer Mode Start **** 
 		if (prefs.GetDevMode()) {
-			if (Input.GetKeyDown(KeyCode.X)) {   
-				if (bEscape == false) { BlowUpShip(); }
-				else { bEscape = false; lifeCurrentCharge = lifeRechargeRate; }
-			}
-			if (Input.GetKeyDown(KeyCode.Alpha1)) { 
-				primaryWeapon = 0; priRechargeRate = chargeTorp;
-				Debug.Log("* Primary weapon: Torpedo");
-			} 
-			if (Input.GetKeyDown(KeyCode.Alpha2)) {
-				primaryWeapon = 1; priRechargeRate = chargeLaser;
-				Debug.Log("* Primary weapon: Laser");
-			} 
-			if (Input.GetKeyDown(KeyCode.Alpha3)) {
-				primaryWeapon = 2; priRechargeRate = chargeMissile;
-				Debug.Log("* Primary weapon: Missile");
-			} 
-			if (Input.GetKeyDown(KeyCode.Alpha4)) { 
-				secondaryWeapon = 0; secRechargeRate = chargeHyperjump; secCurrentCharge = secRechargeRate;
-				Debug.Log("* Secondary weapon: Hyperjump");
-			} 
-			if (Input.GetKeyDown(KeyCode.Alpha5)) { 
-				secondaryWeapon = 1; secRechargeRate = chargeForcefield; secCurrentCharge = secRechargeRate;
-				Debug.Log("* Secondary weapon: Forcefield");
-			} 
-			if (Input.GetKeyDown(KeyCode.Alpha6)) { 
-				secondaryWeapon = 2; secRechargeRate = chargeShockwave; secCurrentCharge = secRechargeRate;
-				Debug.Log("* Secondary weapon: Shockwave");
-			} 
-			if (Input.GetKeyDown(KeyCode.C)) {
-				Debug.Log("Clearing enemies");
-				Transform met = GameObject.Find("Meteors").transform;
-				foreach (Transform t in met) {
-					//t.GetComponent<EnemyHealth>().DamageHealth(1000);
-					Destroy(t.gameObject);
-				}
-				met = GameObject.Find("Enemies").transform;
-				foreach (Transform t in met) {
-					//t.GetComponent<EnemyHealth>().DamageHealth(1000);
-					Destroy(t.gameObject);
-				}
-			}
+			DevMode ();
 		} else {
 			if (Input.GetKey("left ctrl") || Input.GetKey("right ctrl")) {
 				if (Input.GetKeyDown("d"))
@@ -219,16 +181,13 @@ public class ShipController : MonoBehaviour {
 		if (bEscape) {   //escape pod in use
 			ConstantThrust();
 			if (lifeCurrentCharge <= 0f) {
-				//Debug.Log("Game Over");
 				if (gm.shipsRemaining > 0) {
 					bS = true;   //make sense to summon ship automatically when time expired?
 				} else {
-					//Debug.Log("Game Over");
 					if (!bGameOver) {
 						gm.ShowGameOver();
 					}
 					bGameOver = true;
-					// TODO complete this section
 					return;
 				}
 			}
@@ -236,13 +195,14 @@ public class ShipController : MonoBehaviour {
 				transform.localScale = new Vector3(0f, 0f, 0f);
 				mr[1].enabled = true;
 				FreezeMovement();
-				//TODO drain power from weapons or engines?
 				timeSpent = 0f;
 				GameObject go = Instantiate(pre_WarpExit, transform.position, Quaternion.identity) as GameObject;
 				go.GetComponent<Swirl>().countdown = 1.2f;
 				adjustScaleOut = true;
 				bEscape = false;
 				lifeCurrentCharge = lifeRechargeRate;
+				secCurrentCharge = secRechargeRate;
+				priCurrentCharge = priRechargeRate;
 				gm.LoseShip();
 				GetComponent<ShipHealth>().ResetHealth();
 			}
@@ -295,7 +255,7 @@ public class ShipController : MonoBehaviour {
 		}
 
 		if (conLayout == 1) { 
-			bS = false;
+			bS = false;   //button not used
 			if ((v > deadZone) && (engCurrentCharge > 0)) {
 				engCurrentCharge -= Time.deltaTime * 1.5f;
 				Thrust(v);
@@ -361,10 +321,93 @@ public class ShipController : MonoBehaviour {
 			}
 		}
 
+		if (Input.GetButtonDown("Cancel")) {
+			if (!GameObject.Find("panCancel") && !bGameOver) {
+				Transform t_Can = GameObject.Find("Canvas").transform;
+				GameObject go = Instantiate(pre_panCancel, t_Can) as GameObject;
+				go.name = "panCancel";
+			}
+		}
+
 		if (currentLvl != gm.currentLevel) {
 			currentLvl = gm.currentLevel;
 			HyperSpaceJump(true);			//for end of level jump
 		}
+	}
+
+	void DevMode ()
+	{
+		if (Input.GetKeyDown (KeyCode.X)) {
+			if (bEscape == false) {
+				BlowUpShip ();
+			}
+			else {
+				bEscape = false;
+				lifeCurrentCharge = lifeRechargeRate;
+			}
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha1)) {
+			primaryWeapon = 0;
+			priRechargeRate = chargeTorp;
+			PrintWarning ("* Primary weapon: Torpedo");
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha2)) {
+			primaryWeapon = 1;
+			priRechargeRate = chargeLaser;
+			PrintWarning ("* Primary weapon: Laser");
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha3)) {
+			primaryWeapon = 2;
+			priRechargeRate = chargeMissile;
+			PrintWarning ("* Primary weapon: Missile");
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha4)) {
+			secondaryWeapon = 0;
+			secRechargeRate = chargeHyperjump;
+			secCurrentCharge = secRechargeRate;
+			PrintWarning ("* Secondary weapon: Hyperjump");
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha5)) {
+			secondaryWeapon = 1;
+			secRechargeRate = chargeForcefield;
+			secCurrentCharge = secRechargeRate;
+			PrintWarning ("* Secondary weapon: Forcefield");
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha6)) {
+			secondaryWeapon = 2;
+			secRechargeRate = chargeShockwave;
+			secCurrentCharge = secRechargeRate;
+			PrintWarning ("* Secondary weapon: Shockwave");
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha7)) {
+			conLayout = 0;
+			PrintWarning ("* Controller setup: Set 1");
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha8)) {
+			conLayout = 1;
+			PrintWarning ("* Controller setup: Set 2");
+		}
+		if (Input.GetKeyDown (KeyCode.Alpha9)) {
+			conLayout = 2;
+			PrintWarning ("* Controller setup: Set 3");
+		}
+		if (Input.GetKeyDown (KeyCode.C)) {
+			PrintWarning ("* Clearing enemies");
+			Transform met = GameObject.Find ("Meteors").transform;
+			foreach (Transform t in met) {
+				//t.GetComponent<EnemyHealth>().DamageHealth(1000);
+				Destroy (t.gameObject);
+			}
+			met = GameObject.Find ("Enemies").transform;
+			foreach (Transform t in met) {
+				//t.GetComponent<EnemyHealth>().DamageHealth(1000);
+				Destroy (t.gameObject);
+			}
+		}
+	}
+
+	public int GetConLayout() {
+		return conLayout;
 	}
 
 	void Thrust(float power) {
@@ -409,13 +452,12 @@ public class ShipController : MonoBehaviour {
 
 	void FixedUpdate() {
 		if (conLayout == 0 || conLayout == 2 || conLayout == 1) {
-			float mag = rb.velocity.sqrMagnitude;   //TODO: change to sqrMag or remove
+			float mag = rb.velocity.sqrMagnitude; 
 			if (mag < 0.4f && mag != 0f) 
 				{ rb.drag = 4f; }
 			else 
 				{ rb.drag = 0.3f; }
 
-			//Debug.Log ("Thrust=" + bUseThrust + "  Playing=" + gameObject.GetComponentInChildren<ParticleSystem>().isPlaying);
 			if (!bUseThrust) {
 				foreach (ParticleSystem ps1 in ps) {
 					ps1.Stop();
@@ -463,7 +505,6 @@ public class ShipController : MonoBehaviour {
 		transform.Rotate(new Vector3(0,0,1) * rot);
 
 		//Vector3 v = transform.rotation.eulerAngles;
-		//Debug.Log("Angle = " + v.z); 
 	}
 
 	void TurnClockwise() {
@@ -476,7 +517,6 @@ public class ShipController : MonoBehaviour {
 
 	void TurnDirection(Vector3 v) {
 		Vector3 vm = Vector3.RotateTowards(transform.position, v, 2f * rotationSpeed * Time.deltaTime, rotationSpeed);
-		Debug.Log("Turn vector: " + vm);
 		transform.rotation = Quaternion.LookRotation(vm, -Vector3.right);
 	}
 
@@ -502,7 +542,6 @@ public class ShipController : MonoBehaviour {
 		//transform.rotation = transform.up;
 		//transform.Rotate(0,0,-transform.rotation.eulerAngles.z);
 		bPaused = isPaused;
-		Debug.Log ("Freezing ship at " + transform.rotation.eulerAngles);
 	}
 
 	void FireMissiles() {
@@ -551,6 +590,8 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void RaiseForcefield() {
+		if (parEff.Find("Forcefield") != null) { return; }
+
 		priCurrentCharge = -2.5f;   //also done in ForceField.cs when shield ends
 		//priCurrentCharge = priRechargeRate - ((priRechargeRate + 2.5f) * upForCon);
 					//also done in ForceField.cs when shield ends
@@ -568,7 +609,6 @@ public class ShipController : MonoBehaviour {
 	}
 
 	void FreezeMovement() {
-		//TODO freeze velocity and rotation?
 		rb.velocity = Vector3.zero;
 	}
 
@@ -591,7 +631,6 @@ public class ShipController : MonoBehaviour {
 		transform.position = new Vector3(x, y, transform.position.z);
 		Turn(Random.Range(0f, 360f));
 		FreezeMovement();
-		//TODO drain power from weapons or engines?
 		timeSpent = 0f;
 		GameObject go = Instantiate(pre_WarpExit, transform.position, Quaternion.identity) as GameObject;
 		go.GetComponent<Swirl>().countdown = 1.4f;
@@ -628,14 +667,18 @@ public class ShipController : MonoBehaviour {
 		gm.GotoNextScene();
 	}
 
-	void CheckUpgrades() {    //compare with CreateListUpgrade() in PrefsControl
+	void PrintWarning(string s) {
+		Debug.LogWarning(s);
+	}
+
+	void CheckUpgrades() {    //compare with PrefsControl.CreateListUpgrade()
 
 		if (gm.bArcadeMode) { return; }
 		string s = prefs.GetUpgrades();
 
-//		for (int i=0; i<(s.Length/3); i++) {
-//			Debug.Log(s.Substring(i*3, 3) + " => " + prefs.UpgradeText(s.Substring(i*3, 3), true));
-//		}
+		//for (int i=0; i<(s.Length/3); i++) {
+		//	Debug.Log(s.Substring(i*3, 3) + " => " + prefs.UpgradeText(s.Substring(i*3, 3), true));
+		//}
 
 		if (s.Contains("***")) {   //additional ship
 			s = s.Replace("***", "");

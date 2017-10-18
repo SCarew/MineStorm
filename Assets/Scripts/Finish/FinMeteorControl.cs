@@ -15,14 +15,10 @@ public class FinMeteorControl : MonoBehaviour {
 
 	private float moveSpeed;
 	private float rotTime = 1f / 6f;  // denom = num of secs
-	private float x,y,v,h,w;
+	private float v, h, w;
 	private float zDepth = 0f;
 	private int iSize = 3;  //default 3=big 2=medium 1=small
 	private Vector3 location = new Vector3(0f, 0f, 1f);
-	private float spawnDist = 5f;  //distance from ship meteors can spawn
-	private float spawnChildDist = 1.5f;  //distance from ship child meteors can spawn
-	private float magDistance = 12f;  //distance from ship Magnets are attracted
-	private float bholeDistance = 12f;  //distance from ship BHole mines attract
 
 	void Start () {
 		rb = transform.GetComponentInParent<Rigidbody>();
@@ -30,6 +26,7 @@ public class FinMeteorControl : MonoBehaviour {
 		parObj = gameObject.transform; //transform.parent.transform;
 		parWarp = GameObject.Find("Effects").transform;
 
+		float x = 0f, y = 0f;
 		iSize = 3;
 
 		if (location.z == 1) {  //spawn new meteor
@@ -55,7 +52,6 @@ public class FinMeteorControl : MonoBehaviour {
 	}
 
 	public void SetLocation(Vector3 loc) {
-		//parObj.position = loc;
 		location = loc;
 	}
 
@@ -64,10 +60,8 @@ public class FinMeteorControl : MonoBehaviour {
 		float vel = rb.velocity.sqrMagnitude;
 		if (vel > (moveSpeed * moveSpeed)) {
 			rb.velocity = rb.velocity.normalized * moveSpeed; 
-			Debug.Log(gameObject.name + " vel reduced from " + Mathf.Sqrt(vel) + " to " + rb.velocity.magnitude + " with max of " + moveSpeed);
+			//Debug.Log(gameObject.name + " vel reduced from " + Mathf.Sqrt(vel) + " to " + rb.velocity.magnitude + " with max of " + moveSpeed);
 		}
-		//yield return new WaitForSeconds(1.6f);
-		//Debug.Log(gameObject.name + "+2 secs vel = " + rb.velocity.magnitude);
 	}
 
 	void Update() {
@@ -94,16 +88,11 @@ public class FinMeteorControl : MonoBehaviour {
 		foreach (Transform t in go.transform) {
 			t.localScale = t.localScale * mult;
 		}
-		//aud.PlaySoundConstant("swirlSmall", go.transform);
 		adjustScale = true;
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		int damage = 100;  //temp test
-		//Debug.Log(coll.gameObject.name + " hit for " + damage);
-	
 		if (coll.gameObject.tag == "MeteorParent") {
-			//Debug.Log("!!! Meteor Collision detected for " + coll.gameObject.tag);
 			aud.PlaySoundVisible("meteorHit", gameObject.transform, 1);
 		}
 	}

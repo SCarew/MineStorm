@@ -17,7 +17,7 @@ public class HypTimer : MonoBehaviour {
 		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 
 		Text txtNext = GameObject.Find("txtNext").GetComponent<Text>();
-		round = prefs.GetGameStats(PrefsControl.stats.Level);
+		round = prefs.GetGameStats(PrefsControl.stats.Level, true);
 		txtNext.text = lm.SectorName(round);
 
 		StartCoroutine(Countdown());
@@ -64,7 +64,6 @@ public class HypTimer : MonoBehaviour {
 
 		s1 = prefs.FindNextUpgrade();
 		s1 = "Upgrade Available/" + s1;
-		//Debug.Log(s1);
 		prefs.SetChoice(s1, "291/292/293", 3);
 	}
 

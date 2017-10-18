@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class FinTextFadein : MonoBehaviour {
 
-	[SerializeField] private Text txtVict, txtQues;
+	[SerializeField] private Text txtVict;
+	[SerializeField] private Text txtQues;
 	private float fadeTime = 4f;
 	private float startTime;
 	private Color c;

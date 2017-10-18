@@ -32,12 +32,8 @@ public class HypSpawner : MonoBehaviour {
 		min0 = spawner.GetComponent<MeshRenderer>().bounds.min;
 		max1 = ender.GetComponent<MeshRenderer>().bounds.max;
 		min1 = ender.GetComponent<MeshRenderer>().bounds.min;
-		//Debug.Log("spawner max: " + max0);
-		//Debug.Log("spawner min: " + min0);
-		//Debug.Log("  ender max: " + max1);
-		//Debug.Log("  ender min: " + min1);
 
-		level = prefs.GetGameStats(PrefsControl.stats.Level);
+		level = prefs.GetGameStats(PrefsControl.stats.Level, true);
 		LevelSort();
 		hypTimer.SetHypTime(timeToWarp);
 		meteorSpawnTime = meteorSpawnRate;
@@ -47,36 +43,38 @@ public class HypSpawner : MonoBehaviour {
 	}
 
 	void LevelSort() {
-		if (level < 2) {
+		if (level < 2) {								//Alpha starts
 			LevelSortHelper(5.5f, 0f, 0f, 30f); 
 		} else if (level == 2 || level == 3) {
 			LevelSortHelper(5f, 0f, 0f, 45f);
 		} else if (level == 4 || level == 5) {
 			LevelSortHelper(5f, 12f, 0f, 70f + Random.Range(0f, 5f));
-		} else if (level == 6) {
-			LevelSortHelper(2f, 0f, 40f, 51f);
+		} else if (level == 6) {						//Beta begins
+			LevelSortHelper(2f, 15f, 0f, 51f);
 		} else if (level == 7 || level == 8) {
 			LevelSortHelper(4f, 10f, 0f, 62f);
 		} else if (level == 9) {
 			LevelSortHelper(5.5f, 8f, 0f, 25f);
 		} else if (level == 10 || level == 11) {
-			LevelSortHelper(4.5f, 8f, 30f, 77f + Random.Range(0f, 10f));
-		} else if (level == 12 || level == 13) {
+			LevelSortHelper(4.5f, 8f, 40f, 77f + Random.Range(0f, 10f));
+		} else if (level == 12 || level == 13) {        //Delta begins
 			LevelSortHelper(5f, 15f, 20f, 50f + Random.Range(0f, 4f));
-		} else if (level == 14 || level == 15) {
+		} else if (level == 14) {
 			LevelSortHelper(3f, 10f, 20f, 85f);
-		} else if (level == 16) {
+		} else if (level == 15) {
 			LevelSortHelper(1.5f, 0f, 25f, 55f);
+		} else if (level == 16) {						//Gamma begins
+			LevelSortHelper(3f, 10f, 18f, 80f);
 		} else if (level == 17 || level == 18) {
 			LevelSortHelper(3.5f, 8f, 26f, 95f + Random.Range(0f, 5f));
 		} else if (level == 19 || level == 20) {
 			LevelSortHelper(4.5f, 4f, 35f, 60f);
-		} else if (level == 21 || level == 22) {
+		} else if (level == 21 || level == 22) {		//Omega begins (22)
 			LevelSortHelper(7f, 3f, 15f, 45f + Random.Range(0f, 10f));
 		} else if (level == 23 || level == 24) {
 			LevelSortHelper(4f, 5f, 10f, 75f + Random.Range(0f, 5f));
 		} else if (level == 25) {
-			LevelSortHelper(1f, 0f, 13f, 35f);
+			LevelSortHelper(1f, 8f, 13f, 135f);
 		} else if (level >= 26) {
 			LevelSortHelper(4f, 4f, 10f, 135f);
 		}
@@ -93,9 +91,7 @@ public class HypSpawner : MonoBehaviour {
 		Vector3 rnd0 = new Vector3(Random.Range(min0.x, max0.x), Random.Range(min0.y, max0.y), Random.Range(min0.z, max0.z));
 		Vector3 rnd1 = new Vector3(Random.Range(min1.x, max1.x), Random.Range(min1.y, max1.y), Random.Range(min1.z, max1.z));
 		int num = Random.Range(0, mines.Length);
-//		Debug.Log("rnd0: " + rnd0);
-//		Debug.Log("rnd1: " + rnd1);
-//		Debug.DrawLine(rnd0, rnd1);
+
 		iMeteor++;
 		GameObject go = Instantiate(mines[num], rnd0, Quaternion.identity, parMet) as GameObject;
 		go.name = "Meteor" + iMeteor.ToString("000");

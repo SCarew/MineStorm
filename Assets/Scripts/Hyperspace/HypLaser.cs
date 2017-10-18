@@ -11,11 +11,9 @@ public class HypLaser : MonoBehaviour {
 	[SerializeField] private GameObject pre_LaserTimedExplosion;
 	private Rigidbody rb;
 	private float lifeSpent = 0f;
-	private bool bMissile = false;
 	private Quaternion rot;
 	private float missVel;
 	static private Transform parEff;  //for empty parent container
-//	static private GameManager gm;
 	static private SoundManager aud;
 	static private Camera cam;
 	static private Transform quad;
@@ -23,10 +21,8 @@ public class HypLaser : MonoBehaviour {
 
 	void Start () {
 		Destroy(gameObject, lifetime);
-		Rigidbody shipRb = GameObject.Find("Hyp_PlayerShip").GetComponent<Rigidbody>();
+		//Rigidbody shipRb = GameObject.Find("Hyp_PlayerShip").GetComponent<Rigidbody>();
 		rb = GetComponent<Rigidbody>();
-//		if (gm == null) 
-//			{ gm = GameObject.Find("GameManager").GetComponent<GameManager>(); }
 		if (parEff == null) 
 			{ parEff = GameObject.Find("Effects").transform; }
 		if (!aud) 
@@ -49,7 +45,6 @@ public class HypLaser : MonoBehaviour {
 		//transform.RotateAround(transform.position, transform.right, -1.25f);
 		Vector3 f = fireSpeed * transform.forward;
 		rb.AddForce(f, ForceMode.VelocityChange);
-		//Debug.Log(rb.transform.localRotation.eulerAngles + " + " + f);
 
 		aud.PlaySoundImmediate(gameObject.name);   
 
@@ -71,16 +66,12 @@ public class HypLaser : MonoBehaviour {
 	    //pos.z = cross.GetZDistance();
     	Vector3 aimingDirection = pos - transform.position;
      	transform.rotation = Quaternion.LookRotation(aimingDirection);
-     	//Debug.Log("pos = " + pos);
 	}
 
 	void OnDestroy() {
-//		if (gm.bGameOver) { return; }
 		Vector3 pos = transform.position;
 		pos -= 0.4f * (rb.velocity.normalized);   //for correcting explosion location
-		//Debug.Log(transform.position + " -> " + pos);
 		GameObject go;
-		//Debug.Log(lifetime + " vs " + lifeSpent + " t=" + (lifetime - lifeSpent));
 		if ((lifetime - 0.015f) <= lifeSpent) {
 			go = Instantiate(pre_LaserTimedExplosion, pos, Quaternion.identity) as GameObject;
 		} else {  //for everything but timed laser exp

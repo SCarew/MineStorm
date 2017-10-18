@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class HypCrosshair : MonoBehaviour {
 
-	[SerializeField] private Texture crosshairG, crosshairR;
+	[SerializeField] private Texture crosshairG;
+	[SerializeField] private Texture crosshairR;
 	[SerializeField] private GameObject target;
 	private float zDistance = 50f;
 
@@ -26,6 +27,5 @@ public class HypCrosshair : MonoBehaviour {
 			target.GetComponent<RawImage>().texture = crosshairG;
 			zDistance = 50f;
 		}
-		//txtY.text = zDistance.ToString();
 	}
 }

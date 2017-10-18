@@ -34,7 +34,6 @@ public class TorpedoController : MonoBehaviour {
 			rb.MoveRotation(shipRb.rotation);
 			Vector3 f = fireSpeed * transform.up;
 			rb.AddForce(f + shipVel, ForceMode.VelocityChange);
-			//Debug.Log(shipVel + "+" + f);
 		}
 
 		if (gameObject.name == "UFOLaser" || gameObject.name == "UFOTorp") {
@@ -84,7 +83,6 @@ public class TorpedoController : MonoBehaviour {
 		//transform.localRotation = Quaternion.Slerp(transform.localRotation, rot, 3f*Time.deltaTime);
 		//rb.AddForce((transform.up * fireSpeed) - rb.velocity, ForceMode.Impulse);
 
-		//Debug.Log(transform.localRotation.eulerAngles + " -> " + v);
 		//rb.AddForce(transform.up * fireSpeed / 2, ForceMode.Force);
 	}
 
@@ -96,7 +94,6 @@ public class TorpedoController : MonoBehaviour {
 
 			if ((missVel + 2f) < rb.velocity.sqrMagnitude) {
 				rb.velocity = rb.velocity.normalized * Mathf.Sqrt(missVel);
-				//Debug.Log("*" + missVel);
 			}
 
 			//transform.rotation = Quaternion.Slerp(transform.rotation, rot, 0.1f);
@@ -110,14 +107,7 @@ public class TorpedoController : MonoBehaviour {
 		lifeSpent += Time.deltaTime;
 	}
 
-//	void Update () {
-//		if (gameObject.name == "Torpedo2(Clone)") {
-//			transform.position += (shipVel * Time.deltaTime) + (transform.up * Time.deltaTime * fireSpeed);
-//		}
-//	}
-
 	public int GetDamage() {
-		//Debug.Log("Damage=" + damage + " firespeed=" + fireSpeed + " lifetime=" + lifetime + " missVel=" + missVel);
 		return damage;
 	}
 
@@ -135,9 +125,7 @@ public class TorpedoController : MonoBehaviour {
 		Vector3 pos = transform.position;
 		if (gameObject.name != "Missile") 
 			{ pos -= 0.4f * (rb.velocity.normalized); }  //for correcting explosion location
-		//Debug.Log(transform.position + " -> " + pos);
 		GameObject go;
-		//Debug.Log(lifetime + " vs " + lifeSpent + " t=" + (lifetime - lifeSpent));
 		if (((gameObject.name == "Laser") || (gameObject.name == "UFOLaser")) && ((lifetime - 0.015f) <= lifeSpent)) {
 			go = Instantiate(pre_LaserTimedExplosion, pos, Quaternion.identity) as GameObject;
 		} else {  //for everything but timed laser exp
@@ -154,20 +142,6 @@ public class TorpedoController : MonoBehaviour {
 		else if (gameObject.name == "UFOLaser") { aud.PlaySoundVisible("expUFOLaser", gameObject.transform); }
 		else if (gameObject.name == "UFOTorp") { aud.PlaySoundVisible("expUFOTorp", gameObject.transform); }
 	}
-
-//	void OnCollisionEnter(Collision coll) {
-//		Debug.Log(coll.gameObject.name + " hit for " + damage);
-//	
-//		if (coll.gameObject.tag == "Meteor") {
-//			coll.gameObject.GetComponent<EnemyHealth>().DamageHealth(damage);
-//			Debug.Log(coll.gameObject.name + " hit for " + damage);
-//		}
-//		if (coll.gameObject.tag == "Enemy") {
-//			coll.gameObject.GetComponent<EnemyHealth>().DamageHealth(damage);
-//			Debug.Log("Enemy " + coll.gameObject.name + " hit for " + damage);
-//		}
-//		Destroy(gameObject);
-//	}
 
 	void OnCollisionEnter(Collision coll) {
 		if (coll.gameObject.tag == "EnemyLaser" && gameObject.tag == "Laser") {

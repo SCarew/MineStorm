@@ -109,8 +109,6 @@ public class PauseMenu : MonoBehaviour {
 		if (gm.bArcadeMode) { return; }
 
 		Transform tMeteors = GameObject.Find("Meteors").transform;
-		string i1, i2;
-		string s = "";
 		int big = 0;
 		foreach ( Transform t in tMeteors ) {
 			if (t.name.Contains(".B."))  { big++; }
@@ -129,7 +127,6 @@ public class PauseMenu : MonoBehaviour {
 	void KillSounds(bool bPause) {
 		AudioSource[] aud = GameObject.FindObjectsOfType<AudioSource>();
 		foreach (AudioSource a in aud) {
-			//Debug.Log(a.name + " < " + a.gameObject.transform.parent.name);
 			if (bPause) {
 				if (!a.name.StartsWith("Theme") && !a.name.StartsWith("Insert")) {
 					a.Pause();

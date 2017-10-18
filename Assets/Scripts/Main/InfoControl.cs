@@ -43,11 +43,9 @@ public class InfoControl : MonoBehaviour {
 			bHyperspace = !bHyperspace;
 		}
 		s = s.Substring(0, s.Length-1);  //remove trailing #
-		Debug.Log ("s===[" + s + "]");
 		return s.Split('#');
 	}
 
-	//TODO Finish level info messages
 	void Level1() {
 		info = "Asteroids are a problem for trade ships.  Blow up all asteroids until sectors are clear.  ";
 		info = info + "Space pirates seem to be taking advantage of the asteroid disruption.";
@@ -88,9 +86,30 @@ public class InfoControl : MonoBehaviour {
 		info = info + "Trade freighters will be in extreme danger if Meteor Busters can't clear the area.";
 	}
 
+	void Level6h() {
+		info = "Be aware of substantial asteroid activity in the hyperspace tunnel from sector Beta I to Beta II.  ";
+		info = info + "Command is still ascertaining the cause.";
+	}
+
 	void Level9() {
 		info = "Extremely dangerous mines have been reported in the Beta cluster!  ";
 		info = info + "These incorporate the attraction properties of magnetic mines while maintaining the firing charges of electric mines.  ";
+	}
+
+	void Level10h() {
+		info = "Reports indicate Alaghaz-class (pink) enemy vessels are now harassing ships in hyperspace.  ";
+		info = info + "Although they do not have functional weaponry, they are mining hyperspace lanes with asteroids.  ";
+		info = info + "Extreme caution is urged.";
+	}
+
+	void Level13h() {
+		info = "Pilots are now reporting large, extra dense asteroids, starting in the Delta cluster.  ";
+		info = info + "These require considerable firepower to destroy.  How these are connected to the enemy's mines is unclear.";
+	}
+
+	void Level15h() {
+		info = "Please be advised of heavy asteroid activity in the hyperspace tunnel from the Delta cluster to sector Gamma I.  ";
+		info = info + "All pilots using this tunnel should be cautious.";
 	}
 
 	void Level16() {
@@ -99,5 +118,32 @@ public class InfoControl : MonoBehaviour {
 		info = info + "Attention should be paid to radar instruments for assistance.";
 	}
 
+	void Level17h() {
+		info = "Space pirates are now deploying a new, powerful type of mine.  ";
+		info = info + "Buster pilots in the Gamma cluster are referring to them as Black Hole Mines.  ";
+		info = info + "Strong gravitational fields emanate from these mines, affecting Meteor Busters.";
+	}
+
+	void Level21() {
+		info = "Remaining Buster pilots are asked to proceed to the Omega cluster on the outskirts of controlled territory.  ";
+		info = info + "Pirate activity has become extremely high in these sectors recently.  ";
+		info = info + "We have lost several freighters en route to our outer colonies.";
+	}
+
+	void Level23() {
+		info = "Heavy pirate activity is reported throughout the Omega cluster.  ";
+		info = info + "It is believed that the pirates' home base must be nearby.  ";
+		info = info + "Clear this area of mines to restore trade routes for our economy.";
+	}
+
+	void Level25h() {
+		info = "Space pirates are now filling the hyperspace tunnels in the Omega cluster.  ";
+		info = info + "Please ensure mining lasers are fully functional if traveling by hyperspace."; 
+	}
+
+	void Level26() {
+		info = "The final group of space pirates has gathered in sector Omega V.  ";
+		info = info + "Clear this small, remaining sector to make our territory free for shipping again!"; 
+	}
 
 }

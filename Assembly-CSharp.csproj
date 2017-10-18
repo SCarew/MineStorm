@@ -53,6 +53,7 @@
      <Compile Include="Assets\Scripts\Choice\Detection.cs" />
      <Compile Include="Assets\Scripts\FadeIn\Fader.cs" />
      <Compile Include="Assets\Scripts\Finish\FinCameraController.cs" />
+     <Compile Include="Assets\Scripts\Finish\FinCredits.cs" />
      <Compile Include="Assets\Scripts\Finish\FinMeteorControl.cs" />
      <Compile Include="Assets\Scripts\Finish\FinShipController.cs" />
      <Compile Include="Assets\Scripts\Finish\FinTextFadein.cs" />
@@ -75,6 +76,7 @@
      <Compile Include="Assets\Scripts\Hyperspace\ScoreManager.cs" />
      <Compile Include="Assets\Scripts\Main\Background.cs" />
      <Compile Include="Assets\Scripts\Main\CameraController.cs" />
+     <Compile Include="Assets\Scripts\Main\CancelControl.cs" />
      <Compile Include="Assets\Scripts\Main\DataPanel.cs" />
      <Compile Include="Assets\Scripts\Main\EnemyHealth.cs" />
      <Compile Include="Assets\Scripts\Main\ExplodeShip.cs" />

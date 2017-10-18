@@ -18,7 +18,6 @@ public class LevelManager : MonoBehaviour {
 	}
 
 	public void LoadNextScene() {
-		Debug.Log("Scenes queued: " + sceneName01 + ", " + sceneName02);
 		if (sceneName01 == "") {
 			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 			return;
@@ -34,15 +33,14 @@ public class LevelManager : MonoBehaviour {
 		sceneName01 = sceneName1;
 		sceneName02 = sceneName2;
 		SceneManager.LoadScene(sceneName0);
-		Debug.Log("Scenes queuing: " + sceneName01 + ", " + sceneName02);
 	}
 
 	public string SectorName(int round) {
-		// Compare with SectorDisplay.Start(), GameManager.NextLevel()
+		// Compare with SectorDisplay.Start(), GameManager.NextLevel(), HypSpawner.LevelSort()
 		if (round > 26 || round < 0) { return ""; }
 
 		int alpha = 6, beta = 12, delta = 16, gamma = 22, omega = 27;
-			//sectors 
+			//sectors / clusters
 
 		string s = "";
 		if (round < alpha) {

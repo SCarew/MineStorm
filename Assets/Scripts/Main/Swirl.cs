@@ -40,7 +40,6 @@ public class Swirl : MonoBehaviour {
 	}
 
 	void Update () {
-		//Debug.Log("PS " + gameObject.name + " = " + bFreeze);
 		if (bFreeze) { return; }
 		transform.Rotate(euler);	
 //		if (Input.GetButtonDown("Secondary") == true)   

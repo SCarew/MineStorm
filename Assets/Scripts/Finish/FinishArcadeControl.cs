@@ -5,7 +5,8 @@ using UnityEngine;
 public class FinishArcadeControl : MonoBehaviour {
 
 	public GameObject panFadein;
-	[SerializeField] private Text txtScores, txtFinalScore;
+	[SerializeField] private Text txtScores;
+	[SerializeField] private Text txtFinalScore;
 	[SerializeField] private Text[] txtLetter; 
 	//[SerializeField] private GameObject[] pre_Fireworks;
 	private PrefsControl prefs;

@@ -71,8 +71,8 @@ public class Detection : MonoBehaviour {
 		coords[1] = panels[1].anchoredPosition.y;
 		coords[2] = panels[2].anchoredPosition.y;
 		coords[3] = panels[3].anchoredPosition.y;
-		Debug.Log(coords[0] + "," + coords[1] + "," + coords[2] + "," + coords[3] );
-		Debug.Log(panels[0].localPosition.x + " " + panels[0].localPosition.y);
+		//Debug.Log(coords[0] + "," + coords[1] + "," + coords[2] + "," + coords[3] );
+		//Debug.Log(panels[0].localPosition.x + " " + panels[0].localPosition.y);
 		for (int i=0; i<3; i++) {
 			panels[i].anchoredPosition = new Vector2(0f, -344f);
 		}
@@ -88,7 +88,6 @@ public class Detection : MonoBehaviour {
 		}
 		if (Mathf.Abs((int) panels[0].anchoredPosition.y) == Mathf.Abs((int) coords[0])) {
 			fComplete = true;
-			Debug.Log("Time elapsed: " + Time.time);
 		}
 	}
 }

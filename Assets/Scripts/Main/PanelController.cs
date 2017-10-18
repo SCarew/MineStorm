@@ -8,11 +8,15 @@ public class PanelController : MonoBehaviour {
 	private GameObject panLifeSupport, panGauges, panMapCam;
 	private ShipController sc;
 	private ShipHealth sh;
-	[SerializeField] private Image fillPrimaryWeapon, fillSecondaryWeapon;
-	[SerializeField] private Image fillHealth, fillEngine, fillLifeSupport;
+	[SerializeField] private Image fillPrimaryWeapon;
+	[SerializeField] private Image fillSecondaryWeapon;
+	[SerializeField] private Image fillHealth;
+	[SerializeField] private Image fillEngine;
+	[SerializeField] private Image fillLifeSupport;
 	[SerializeField] private GameObject txtSector;
 	[SerializeField] private Material[] Gauges;
-	private Color level0, level1, levelminus;
+	private Color level0, level1; 
+	// private Color levelminus;
 	private float fadeinTime = 0f, totalTime = 0f;
 
 	void Start () {
@@ -32,7 +36,7 @@ public class PanelController : MonoBehaviour {
 		txtSector.SetActive(true);
 		level0 = new Color(255/255,  26/255,  26/255, 255/255);      //empty bar
 		level1 = new Color( 58/255, 255/255, 133/255, 255/255);      //full bar
-		levelminus = new Color(0, 0, 0, 0);                          //negative bar
+		//levelminus = new Color(0, 0, 0, 0);                          //negative bar
 		FixOverlay();
 	}
 	
@@ -64,7 +68,6 @@ public class PanelController : MonoBehaviour {
 			if (fadeinTime < 0f) { fadeinTime = 0f; }
 			Color c = txtSector.transform.Find("txtSector").GetComponent<Text>().color;
 			c.a = (totalTime - fadeinTime) / totalTime;
-			//Debug.Log("Color alpha = " + c.a);
 			txtSector.transform.Find("txtSector").GetComponent<Text>().color = c;
 		}
 	}
@@ -82,7 +85,6 @@ public class PanelController : MonoBehaviour {
 
 	public void ShowMessage(string s) {   //called from GameManager
 		txtSector.SetActive(true);
-		//Debug.Log("Name=" + txtSector.name + " Active=" + txtSector.activeInHierarchy);
 		txtSector.transform.Find("txtStaticSector").GetComponent<Text>().text = "";
 		txtSector.transform.Find("txtSector").GetComponent<Text>().text = s;
 		fadeinTime = 1.25f;

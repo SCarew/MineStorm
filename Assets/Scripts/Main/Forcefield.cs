@@ -12,10 +12,12 @@ public class Forcefield : MonoBehaviour {
 	private bool bWarmup = true;
 	private bool firstTime = true;
 	private bool bTerminateField = false;    //used for ending field on ship blowing up
+	private bool bFieldDropped = false;      //true when forcefield dropped
 	private Transform pShip;
 	private ShipController sc;
 	private ShipHealth sh;
 	private SoundManager aud;
+	private int conLayout = 0;
 
 	void Start () {
 		pShip = GameObject.Find("PlayerShip").transform;
@@ -26,13 +28,13 @@ public class Forcefield : MonoBehaviour {
 		childCol.enabled = false;
 		childRend = GetComponentInChildren<MeshRenderer>().materials;
 		aud.PlaySoundImmediate("forcefield");
+		conLayout = sc.GetConLayout();
 	}
 
 	void Update () {
 		if (firstTime) {
 			alpha = childRend[0].color.a;
 			firstTime = false;
-			//Debug.Log(childRend.Length + ": " + alpha);
 		}
 		if (bWarmup) {
 			Color c;
@@ -50,17 +52,30 @@ public class Forcefield : MonoBehaviour {
 		}
 		transform.position = pShip.position;
 		transform.rotation = pShip.rotation;
-		if (Input.GetButtonUp("Secondary") || bTerminateField) {
+
+		bool bS = true;
+		if (conLayout == 0 || conLayout == 2) {
+			bS = !Input.GetButtonUp("Secondary");
+		} else if (conLayout == 1) {
+			if (Input.GetAxis("Vertical") < -0.25f) {
+				bS = true;
+			} else {
+				bS = false;
+			}
+		}
+		if (bS == false) { conLayout = 3; }       //to fix forcefield dismissal bug
+		if (bFieldDropped) { return; }
+		if (!bS || bTerminateField) {
 			childCol.enabled = false;
 			aud.PlaySoundImmediate("forcefieldoff");
 			GetComponentInChildren<MeshRenderer>(true).enabled = false;
-			GetComponentInChildren<ParticleSystem>().Play();
+			transform.Find("PS_Forcefield1").GetComponent<ParticleSystem>().Play();
 			Destroy(gameObject, 0.7f);
 			bTerminateField = false;
-			//sc.priCurrentCharge = -2.5f;
+			bFieldDropped = true;
 			sc.priCurrentCharge = sc.priRechargeRate - ((sc.priRechargeRate + 2.5f) * sc.upForCon);
 		} else {
-			sc.secCurrentCharge -= Time.deltaTime * (sc.secRechargeRate / 1.5f) / sc.upForDur;
+			sc.secCurrentCharge -= Time.deltaTime * ((sc.secRechargeRate / 1.5f) / sc.upForDur);
 			if (sc.secCurrentCharge <= 0f && sh.GetHealth() > 0) {
 				sh.DamageHealth(1);   //start damage if over charge
 			}
@@ -70,7 +85,6 @@ public class Forcefield : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		Debug.Log("FF hit " + coll.gameObject.name + "/" + coll.gameObject.tag);
 		if (coll.gameObject.tag == "EnemyLaser" || coll.gameObject.tag == "MineLaser") {
 			Destroy(coll.gameObject);
 		}

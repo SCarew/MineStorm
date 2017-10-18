@@ -5,12 +5,14 @@ using UnityEngine.UI;
 public class HypShipController : MonoBehaviour {
 	[SerializeField] private GameObject launcher;
 	[SerializeField] private GameObject pre_Laser;
+	[SerializeField] private GameObject pre_panCancel;
 	private Camera cam;
 	public  float targetMoveSpeed = 15f;
 	private RectTransform targetObj;
 	private RectTransform instObj;
-	private Transform quad;
+	//private Transform quad;
 	private Transform pre_Effects;
+	private PrefsControl prefs;
 	private Vector2 target = new Vector2(0f, 0f);
 	private bool bPaused = false;
 	private bool bInvertY = false;
@@ -24,11 +26,12 @@ public class HypShipController : MonoBehaviour {
 	private float return_x = 0.9f, return_y = 0.6f;
 
 	void Start () {
-		quad = GameObject.Find("Background").transform;
+		//quad = GameObject.Find("Background").transform;
 		pre_Effects = GameObject.Find("Effects").transform;
 		targetObj = GameObject.Find("Crosshair").GetComponent<RectTransform>();
 		instObj = GameObject.Find("Instruments").GetComponent<RectTransform>();
 		cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+		prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		max_x = 750f;   //X = 1600 / 2
 		max_y = 410f;   //Y =  900 / 2
 		laserCurrentCharge = laserRechargeRate;
@@ -36,7 +39,6 @@ public class HypShipController : MonoBehaviour {
 		original_y = transform.position.y;
 		original_z = transform.position.z;
 
-		PrefsControl prefs = GameObject.Find("LevelManager").GetComponent<PrefsControl>();
 		bInvertY = prefs.GetHyperY();
 	}
 
@@ -94,7 +96,7 @@ public class HypShipController : MonoBehaviour {
 		float h = Input.GetAxis("Horizontal");
 		float v = Input.GetAxis("Vertical");
 		if (bInvertY) { v = -v; }
-		bool bS = Input.GetButtonDown("Secondary");
+		//bool bS = Input.GetButtonDown("Secondary");
 		bool bP = Input.GetButtonDown("Primary");
 
 		if (bP && (laserCurrentCharge >= laserRechargeRate)) {
@@ -123,5 +125,15 @@ public class HypShipController : MonoBehaviour {
 		instObj.rotation = Quaternion.Euler(0f, 0f, x * -10f);
 		instObj.anchoredPosition = new Vector2(0 + x * 50f, 150 + y * 20f);
 		targetObj.rotation = Quaternion.Euler(0f, 0f, x * -10f);
+
+		if (Input.GetButtonDown("Cancel")) {
+			if (!GameObject.Find("panCancel") && !prefs.bHypGameOver) {
+				Transform t_Can = GameObject.Find("Canvas").transform;
+				GameObject go = Instantiate(pre_panCancel, t_Can) as GameObject;
+				go.name = "panCancel";
+				go.GetComponent<RectTransform>().sizeDelta = new Vector2(1600f, 200f);
+			}
+		}
+
 	}
 }

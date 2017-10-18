@@ -108,16 +108,10 @@ public class UFOController : MonoBehaviour {
 				go.layer = LayerMask.NameToLayer("Enemy fire");
 				//go.transform.rotation = Quaternion.LookRotation((pShip.position - go.transform.position), Vector3.right);
 				Vector3 diff = pShip.position - transform.position;
-//				string s = "";
-//				if (diff.x >= 0f && diff.y >= 0) {s = "+ + ";}
-//				if (diff.x < 0f && diff.y >= 0)  {s = "- + ";}
-//				if (diff.x >= 0f && diff.y < 0)  {s = "+ - ";}
-//				if (diff.x < 0f && diff.y < 0)   {s = "- - ";}
 				float deg = Mathf.Atan2(diff.y, diff.x) * 180/Mathf.PI + 270f;
 				deg = deg + Random.Range(-30f, 30f);
 				//go.transform.rotation = Quaternion.AngleAxis(Vector3.Angle(diff, Vector3.right), Vector3.forward);
 				go.transform.rotation = Quaternion.AngleAxis(deg, Vector3.forward);
-				//Debug.Log(s + (pShip.position - go.transform.position) + "  " + go.transform.rotation.eulerAngles + "  d=" + deg);
 			} else {
 				t = 0.2f;
 			}
@@ -182,12 +176,10 @@ public class UFOController : MonoBehaviour {
 				timeSpent = 0f;
 				foreach (MeshCollider mc1 in mc) 
 					{ mc1.enabled = true; }
-				//Debug.Log("Renderchild=" + renderChild.name);
 			} else {
 				float ts = timeSpent / timeScaleOut;
 				if (ts < 0.1f) { ts = 0.1f; }
 				renderChild.localScale = originalScale * ts;
-				//Debug.Log("ts=" + ts + " timespent=" + timeSpent);
 			}
 			return;
 		}
@@ -208,7 +200,6 @@ public class UFOController : MonoBehaviour {
 			Vector3 v1 = pShip.position - transform.position;
 			rb.AddForce(rb.velocity.normalized * -moveSpeed * Time.deltaTime * 0.5f, ForceMode.Impulse);
 			rb.AddForce(v1.normalized * moveSpeed * Time.deltaTime, ForceMode.Impulse);
-			//Debug.Log("*" + gameObject.name + "=" + rb.velocity.normalized);
 			if ((moveSpeed * moveSpeed + 2f) < rb.velocity.sqrMagnitude) {
 				rb.velocity = rb.velocity.normalized * moveSpeed;
 			}
@@ -224,14 +215,14 @@ public class UFOController : MonoBehaviour {
 
 	void OnCollisionEnter(Collision coll) {
 		int damage;
-		if (gameObject.name == "UFO.01") { damage = 150; }
-		else { damage = 100; }
-		//Debug.Log(coll.gameObject.name + " hit for " + damage);
+		if (gameObject.name == "UFO.01") 
+			{ damage = 150; }
+		else 
+			{ damage = 100; }
 
 		if (coll.gameObject.tag == "Laser") {
 			damage = coll.gameObject.GetComponent<TorpedoController>().GetDamage();
 			eh.DamageHealth(damage);
-			//Debug.Log(gameObject.name + " hit for " + damage + " with " + coll.relativeVelocity.magnitude + " vel");
 			Destroy(coll.gameObject);
 		}
 		if (coll.gameObject.tag == "Player") {

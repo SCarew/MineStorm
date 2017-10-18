@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class SoundEffect : MonoBehaviour {
 
-	private AudioSource audio;
+	private AudioSource aud;
 
 	void Start () {
-		audio = GetComponent<AudioSource>();
+		aud = GetComponent<AudioSource>();
 		Invoke("SelfDestruct", 0.1f);
 	}
 
 	void SelfDestruct() {
-		if (audio.loop) { return; }
+		if (aud.loop) { return; }
 		float t = 1f;
-		if (audio.clip != null) {
-			t = audio.clip.length;
+		if (aud.clip != null) {
+			t = aud.clip.length;
 			if ((t <= 0f) || (t > 10f)) 
 				{ t = 1f; }
 		} 

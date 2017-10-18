@@ -34,7 +34,6 @@ public class ShipHealth : MonoBehaviour {
 	}
 
 	void KillShip() {
-		//Debug.Log("Ship destroyed");
 		sc.BlowUpShip();
 	}
 

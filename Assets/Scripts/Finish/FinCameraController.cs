@@ -7,6 +7,7 @@ public class FinCameraController : MonoBehaviour {
 	private Transform ship;
 	private Camera cam;
 	[SerializeField] private GameObject[] pre_Dense;
+	[SerializeField] private Text txtCredits;
 	private Transform parMeteors;
 	private float initZ;
 	private Vector3[] coords;
@@ -25,10 +26,15 @@ public class FinCameraController : MonoBehaviour {
 	private LayerMask myLayerMask;
 	private Text txtQ, txtE;
 
+	void Awake() {
+		txtCredits.gameObject.SetActive(false);
+	}
+
 	void Start () {
 		ship = GameObject.Find("Fin_PlayerShip").transform;	
 		cam = GameObject.Find("Main Camera").GetComponent<Camera>();
 		parMeteors = GameObject.Find("Meteors").transform;
+
 		initZ = transform.position.z;
 		coords = new Vector3[steps];
 		for (int i=0; i<steps; i++) {
@@ -57,16 +63,22 @@ public class FinCameraController : MonoBehaviour {
 		Vector3 loc;
 		//Vector3[] v3s = new Vector3[15];
 		FloatCamera();
-		for (int i=0; i<25; i++) {
+		for (int i=0; i<30; i++) {
 			loc = new Vector3(Random.Range(-max*2f, max*2f) + xCam, Random.Range(-max, max) + yCam, Random.Range(-max, max) + zCam);
 			go = Instantiate(pre_Dense[Random.Range(0, pre_Dense.Length)], new Vector3(0f, 0f, 0f), Quaternion.identity, parMeteors) as GameObject;
 			while (FreeLocation(loc, 1.5f) == false) {
-				Debug.Log(" by " + go.name + " at " + loc);
+				//Debug.Log(" by " + go.name + " at " + loc);
 				loc -= new Vector3(1.5f, 1.5f, 0f);
 			}
 			go.GetComponentInChildren<FinMeteorControl>().SetLocation(loc);
-			yield return new WaitForSeconds(0.25f);
+			yield return new WaitForSeconds(0.22f);
 		}
+		Invoke("RollCredits", 3f);
+	}
+
+	private void RollCredits() {
+		txtCredits.gameObject.SetActive(true);
+		txtCredits.GetComponent<FinCredits>().StartCredits();
 	}
 
 	private void FloatCamera() {
@@ -75,13 +87,12 @@ public class FinCameraController : MonoBehaviour {
 		bFloat = true;
 		timeScroll = 10f;
 		maxTimeScroll = timeScroll;
-		//GameObject.Find("txtQuestion").GetComponent<Text>().text = "?";
 	}
 
 	private bool FreeLocation (Vector3 coords, float fSize) {
 		//returns true when location is free
 		Collider[] hitColl = Physics.OverlapSphere(coords, fSize, myLayerMask.value);
-		if (hitColl.Length > 0) {Debug.Log ("Overlap with " + hitColl[0].gameObject.name);}
+		//if (hitColl.Length > 0) {Debug.Log ("Overlap with " + hitColl[0].gameObject.name);}
 		return (hitColl.Length == 0);
 	}
 
@@ -119,7 +130,7 @@ public class FinCameraController : MonoBehaviour {
 		}
 
 		if (bFloat) {
-			Vector3 dist = new Vector3(0f, -1f, 0f);
+			//Vector3 dist = new Vector3(0f, -1f, 0f);
 			cam.orthographicSize = 5f + ((maxTimeScroll - timeScroll) * 9f / maxTimeScroll);
 			timeScroll -= Time.deltaTime;
 			if (timeScroll < 0) { 

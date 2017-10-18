@@ -17,7 +17,6 @@ public class CorridorControl : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider coll) {
-		//Debug.Log(coll.gameObject.name + " entered; tag=" + coll.gameObject.tag);
 		if (coll.gameObject.tag == "Enemy") {
 			coll.gameObject.GetComponentInParent<HypUFO>().NowInCorridor(true);
 		}
@@ -27,7 +26,6 @@ public class CorridorControl : MonoBehaviour {
 	} 
 
 	void OnTriggerExit(Collider coll) {
-		//Debug.Log(coll.gameObject.name + " exited");
 		if (coll.gameObject.tag == "Enemy") {
 			coll.gameObject.GetComponentInParent<HypUFO>().NowInCorridor(false);
 		}

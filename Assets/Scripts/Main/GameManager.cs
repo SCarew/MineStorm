@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
 
 	private Transform parMeteor, parTextScores, parEnemy;  //parents for children
 	private int score = 0;
-	private Text txtScore; //, txtScorePlus; 
+	private Text txtScore;  
 	private Text[] txtPlus;
 	private string scoreFormat;   //sets leading zeroes, set in Start()
 	//public GameObject pre_ScorePlus;
@@ -60,7 +60,6 @@ public class GameManager : MonoBehaviour {
 		lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
 		gameOverMenu = GameObject.Find("GameOverMenu").GetComponent<GameOverMenu>();
 		txtScore = GameObject.Find("txtScore").GetComponent<Text>();
-		//txtScorePlus = parTextScores.GetComponent<Text>();
 		scoreFormat = txtScore.text;
 		txtPlus = new Text[3];
 		txtPlus[0] = parTextScores.Find("txtScorePlus0").GetComponent<Text>();
@@ -68,10 +67,7 @@ public class GameManager : MonoBehaviour {
 		txtPlus[2] = parTextScores.Find("txtScorePlus2").GetComponent<Text>();
 
 		myLayerMask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Meteor")) | (1 << LayerMask.NameToLayer("Enemy"));
-		//Debug.Log(myLayerMask + "=" + myLayerMask.value);
 		myLayerMask = myLayerMask | (1 << LayerMask.NameToLayer("MapPlayer")) | (1 << LayerMask.NameToLayer("MapMeteor")) | (1 << LayerMask.NameToLayer("MapEnemy"));
-		//Debug.Log(myLayerMask + "=" + myLayerMask.value);
-		//mine mineType;  
 		for (int i=0; i < pre_Meteor.Length; i++) {   //set up for PickMeteor()
 			if (pre_Meteor[i].name.Contains(".B.")) { metBig++; }
 			if (pre_Meteor[i].name.Contains(".M.")) { metMed++; }
@@ -92,13 +88,14 @@ public class GameManager : MonoBehaviour {
 	void NextLevel() {
 		int numMeteors = 0, numElecMines = 0, numMagMines = 0;
 		int numElecMagMines = 0, numDenseMines = 0, numBHMines = 0;
+		level_width = 100f;
+		level_height = 100f;
 		spawnRateUfo1 = 0f;    //purple mothership 
 		spawnRateUfo2 = 0f;    //gray ship
-		//int i = 0;
 
 		UpdateForSceneReload();
 		if (currentLevel < 1) { currentLevel = 1; }
-		UpdateForContinueMode();
+		SaveForContinueMode();
 		if (currentLevel==1) {
 			numMeteors = 8;
 			spawnRateUfo2 = 65f;
@@ -107,11 +104,15 @@ public class GameManager : MonoBehaviour {
 			numMeteors = 6;
 			numElecMines = 2;
 			spawnRateUfo2 = 65f;
+			level_width = 90f;
+			level_height = 90f;
 		}
 		if (currentLevel==3) {
 			numMeteors = 7;
 			numElecMines = 4;
 			spawnRateUfo2 = 60f;
+			level_width = 110f;
+			level_height = 110f;
 		}
 		if (currentLevel==4) {
 			numMeteors = 6;
@@ -123,6 +124,8 @@ public class GameManager : MonoBehaviour {
 			numMeteors = 4;
 			numMagMines = 4;
 			spawnRateUfo1 = 115f;
+			level_width = 85f;
+			level_height = 85f;
 		}
 		if (currentLevel==6) {     //beta starts
 			numMeteors = 3;
@@ -143,6 +146,8 @@ public class GameManager : MonoBehaviour {
 			numMagMines = 5;
 			spawnRateUfo1 = 110f;
 			spawnRateUfo2 = 55f;
+			level_width = 110f;
+			level_height = 110f;
 		}
 		if (currentLevel==9) {
 			numMeteors = 7;
@@ -160,6 +165,8 @@ public class GameManager : MonoBehaviour {
 			numElecMines = 3;
 			numElecMagMines = 3;
 			spawnRateUfo2 = 60f;
+			level_width = 120f;
+			level_height = 120f;
 		}
 		if (currentLevel==12) {     //delta begins
 			numMeteors = 5;
@@ -173,11 +180,15 @@ public class GameManager : MonoBehaviour {
 			numMagMines = 3;
 			numElecMagMines = 3;
 			spawnRateUfo1 = 110f;
+			level_width = 80f;
+			level_height = 90f;
 		}
 		if (currentLevel==14) {
 			numMeteors = 3;
 			numDenseMines = 5;
 			spawnRateUfo2 = 50f;
+			level_width = 75f;
+			level_height = 110f;
 		}
 		if (currentLevel==15) {
 			numMeteors = 1;
@@ -187,6 +198,8 @@ public class GameManager : MonoBehaviour {
 			numDenseMines = 7;
 			spawnRateUfo1 = 100f;
 			spawnRateUfo2 = 50f;
+			level_width = 100f;
+			level_height = 80f;
 		}
 		if (currentLevel==16) {     //gamma begins
 			numMeteors = 2;
@@ -212,12 +225,16 @@ public class GameManager : MonoBehaviour {
 			numBHMines = 2;
 			spawnRateUfo1 = 120f;
 			spawnRateUfo2 = 60f;
+			level_width = 90f;
+			level_height = 90f;
 		}
 		if (currentLevel==19) {
 			numDenseMines = 6;
 			numBHMines = 4;
 			spawnRateUfo1 = 100f;
 			spawnRateUfo2 = 50f;
+			level_width = 85f;
+			level_height = 85f;
 		}
 		if (currentLevel==20) {
 			numMeteors = 4;
@@ -238,6 +255,8 @@ public class GameManager : MonoBehaviour {
 			numBHMines = 3;
 			spawnRateUfo1 = 100f;
 			spawnRateUfo2 = 50f;
+			level_width = 110f;
+			level_height = 110f;
 		}
 		if (currentLevel==22) {     //omega begins
 			numMagMines = 4;
@@ -245,6 +264,8 @@ public class GameManager : MonoBehaviour {
 			numBHMines = 6;
 			spawnRateUfo1 = 150f;
 			spawnRateUfo2 = 60f;
+			level_width = 95f;
+			level_height = 95f;
 		}
 		if (currentLevel==23) {
 			numMagMines = 4;
@@ -263,6 +284,8 @@ public class GameManager : MonoBehaviour {
 			numBHMines = 5;
 			spawnRateUfo1 = 110f;
 			spawnRateUfo2 = 75f;
+			level_width = 105f;
+			level_height = 105f;
 		}
 		if (currentLevel==25) {
 			numMeteors = 1;
@@ -282,6 +305,8 @@ public class GameManager : MonoBehaviour {
 			numBHMines = 6;
 			spawnRateUfo1 = 80f;
 			spawnRateUfo2 = 40f;
+			level_width = 75f;
+			level_height = 75f;
 		}
 
 		//============ Redo Arcade Level ============
@@ -367,12 +392,10 @@ public class GameManager : MonoBehaviour {
 
 	void SetupContinueMode()
 	{
-		currentLevel = prefs.GetGameStats(PrefsControl.stats.Level);
-		score = prefs.GetGameStats(PrefsControl.stats.Score);
-		shipsRemaining = prefs.GetGameStats(PrefsControl.stats.Ships);
+		UpdateForSceneReload();
 	}
 
-	void UpdateForContinueMode() {
+	void SaveForContinueMode() {
 		if (bArcadeMode) { return; }
 		prefs.SetGameStats(PrefsControl.stats.Level, currentLevel);
 		prefs.SetGameStats(PrefsControl.stats.Score, score);
@@ -404,13 +427,12 @@ public class GameManager : MonoBehaviour {
 		//+++ Story mode only
 		currentLevel++;
 		GameObject.Find("Canvas").GetComponent<PanelController>().ShowMessage("Sector Clear");
-		//TODO open warp
 		panFadeIn.GetComponent<HypFader>().ResetTimer(true, 2.5f);
 		if (currentLevel < finalLevel) {  //final level = 26?
-			//NextLevel();  //TODO instead, go to hyperspace scene
-			prefs.SetGameStats(PrefsControl.stats.Level, currentLevel);
-			prefs.SetGameStats(PrefsControl.stats.Score, score);
-			prefs.SetGameStats(PrefsControl.stats.Ships, shipsRemaining);
+				//prepare for hyperspace scene
+			prefs.SetGameStats(PrefsControl.stats.Level, currentLevel, true);
+			prefs.SetGameStats(PrefsControl.stats.Score, score, true);
+			prefs.SetGameStats(PrefsControl.stats.Ships, shipsRemaining, true);
 		} else {
 			lm.LoadScene("Finish");
 		}
@@ -431,6 +453,9 @@ public class GameManager : MonoBehaviour {
 
 	public void ShowGameOver() {
 		bGameOver = true;
+		if (bArcadeMode) {
+			prefs.SetGameStats(PrefsControl.stats.Score, score);
+		}
 		gameOverMenu.LaunchGameOver();
 		//canvasGameOver.SetActive(true);
 	}
@@ -449,7 +474,7 @@ public class GameManager : MonoBehaviour {
 			if ((size <= 3) && (size >= 1)) 
 				{ s_Meteor = PickMeteor(type, size); }
 			else 
-				{ Debug.LogError("Spawn Unknown Meteor"); }
+				{ PrintError("Spawn Unknown Meteor - " + type.ToString() + " size=" + size.ToString()); }
 		}
 		if (type == mine.Test) {   //Test blocks
 			if (size == 3) 
@@ -459,7 +484,7 @@ public class GameManager : MonoBehaviour {
 			else if (size == 1)
 				{ s_Meteor = pre_Test[2]; } 
 			else 
-				{ Debug.LogError("Spawn Unknown Meteor"); }
+				{ PrintError("Spawn Unknown Meteor - " + type.ToString() + " size=" + size.ToString()); }
 		}
 		if (type == mine.Magnet) {   //Magnet
 			if (size == 3) 
@@ -469,7 +494,7 @@ public class GameManager : MonoBehaviour {
 			else if (size == 1)
 				{ s_Meteor = pre_Magnet[2]; } 
 			else 
-				{ Debug.LogError("Spawn Unknown Meteor"); }
+				{ PrintError("Spawn Unknown Meteor - " + type.ToString() + " size=" + size.ToString()); }
 		}
 		if (type == mine.Electric) {   //Electric
 			if (size == 3) 
@@ -479,7 +504,7 @@ public class GameManager : MonoBehaviour {
 			else if (size == 1)
 				{ s_Meteor = pre_Electric[2]; } 
 			else 
-				{ Debug.LogError("Spawn Unknown Meteor"); }
+				{ PrintError("Spawn Unknown Meteor - " + type.ToString() + " size=" + size.ToString()); }
 		}
 		if (type == mine.ElectroMagnet) {  
 			if (size == 3) 
@@ -489,13 +514,13 @@ public class GameManager : MonoBehaviour {
 			else if (size == 1)
 				{ s_Meteor = pre_ElectroMagnet[2]; } 
 			else 
-				{ Debug.LogError("Spawn Unknown Meteor"); }
+				{ PrintError("Spawn Unknown Meteor - " + type.ToString() + " size=" + size.ToString()); }
 		}
 		if (type == mine.Dense) { 
 			if ((size <= 3) && (size >= 1)) 
 				{ s_Meteor = PickMeteor(type, size); }
 			else 
-				{ Debug.LogError("Spawn Unknown Meteor"); }
+				{ PrintError("Spawn Unknown Meteor - " + type.ToString() + " size=" + size.ToString()); }
 		}
 		if (type == mine.BlackHole) { 
 			if (size == 3) 
@@ -505,7 +530,7 @@ public class GameManager : MonoBehaviour {
 			else if (size == 1)
 				{ s_Meteor = pre_BlackHole[2]; } 
 			else 
-				{ Debug.LogError("Spawn Unknown Meteor"); }
+				{ PrintError("Spawn Unknown Meteor - " + type.ToString() + " size=" + size.ToString()); }
 		}
 
 		if (child) {   //chance to spawn 3 children rather than 2
@@ -531,7 +556,6 @@ public class GameManager : MonoBehaviour {
 //					loc -= new Vector3(1f, 1f, 0f);
 //				}
 				while (FreeLocation(loc, (float) size / 2f) == false) {
-					Debug.Log(" by " + go.name + " at " + loc);
 					loc -= new Vector3(1f, 1f, 0f);
 				}
 				go.GetComponentInChildren<MeteorControl>().SetLocation(loc);
@@ -547,7 +571,6 @@ public class GameManager : MonoBehaviour {
 			if (meteorSize == 3) { r = Random.Range(0, metBig); }
 			if (meteorSize == 2) { r = metBig + Random.Range(0, metMed); }
 			if (meteorSize == 1) { r = metBig + metMed + Random.Range(0, metSma); }
-			//Debug.Log("#" + r + ": " + pre_Meteor[r].name);
 			return pre_Meteor[r];
 		}
 
@@ -555,29 +578,31 @@ public class GameManager : MonoBehaviour {
 			if (meteorSize == 3) { r = Random.Range(0, denBig); }
 			if (meteorSize == 2) { r = denBig + Random.Range(0, denMed); }
 			if (meteorSize == 1) { r = denBig + denMed + Random.Range(0, denSma); }
-			//Debug.Log("#" + r + ": " + pre_Dense[r].name);
 			return pre_Dense[r];
 		}
 
-		Debug.Log("Error in PickMeteor()");
+		PrintError("Error in PickMeteor(" + meteorType.ToString() + "," + meteorSize.ToString() + ")");
 		return null;
 	}
 
 	public bool FreeLocation (Vector3 coords, float fSize) {
 		//returns true when location is free
 		Collider[] hitColl = Physics.OverlapSphere(coords, fSize, myLayerMask.value);
-		if (hitColl.Length > 0) {Debug.Log ("Overlap with " + hitColl[0].gameObject.name);}
+		//if (hitColl.Length > 0) {Debug.Log ("Overlap with " + hitColl[0].gameObject.name);}
 		return (hitColl.Length == 0);
+	}
+
+	private void PrintError(string s) {
+		Debug.LogError(s);
 	}
 
 	private void SpawnUFO (int ufoType) {
 		Transform pShip = GameObject.FindGameObjectWithTag("Player").transform;
 		if (pShip == null) {
-			Debug.LogError("Missing player ship for UFO spawn");
+			PrintError("Missing player ship for SpawnUFO(" + ufoType.ToString() + ")");
 		}
 		Vector3 loc = pShip.position + new Vector3(Random.Range(0, level_width) - (level_width/2), Random.Range(0, level_height) - (level_height/2), 0f);
 		while (FreeLocation(loc, 3) == false) {
-			Debug.Log("UFO" + ufoType + " moved spawn from " + loc);
 			loc -= new Vector3(1f, 1f, 0f);
 		}
 
@@ -620,14 +645,6 @@ public class GameManager : MonoBehaviour {
 		ShowPoints(points);
 		txtScore.text = score.ToString(scoreFormat);
 	}
-
-//	private void ShowPoints(int pts) {
-//		string t = txtScorePlus.text;
-//		if (t != "")  { t = " " + t; }
-//		txtScorePlus.text = "+" + pts.ToString() + t;
-//		CancelInvoke();
-//		Invoke (ClearScore(), 2f);
-//	}
 
 	private void ShowPoints(int pts) {		
 		txtPlus[2].text = txtPlus[1].text;

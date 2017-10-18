@@ -31,10 +31,6 @@ public class DataPanel : MonoBehaviour {
 		txtData.text = "";
 		StartCoroutine(ChooseData());
 
-//		string[] st = info.GetInfoArray(13, false);
-//		for (int i=0; i<st.Length; i++) {
-//			Debug.Log((i+1) + "===[" + st[i] + "]<" + st[i].Length + ">");
-//		}
 	}
 
 	IEnumerator ChooseData() {
@@ -44,14 +40,12 @@ public class DataPanel : MonoBehaviour {
 			yield return new WaitForSeconds(waitTime);
 			if (gm.bArcadeMode) {   //====Arcade Mode====
 				if (lastInfo > 4)  { lastInfo = 1; }
-				//Debug.Log("Last info(A) = " + lastInfo);
 				if (lastInfo == 1) { data = MakeSectorScan(); }
 				if (lastInfo == 2) { data = MakeDamageReport(); }
 				if (lastInfo == 3) { data = MakeSensorScan(); }
 				if (lastInfo == 4) { data = MakeBestScores(); }
 			} else {    			//====Story Mode=====
 				if (lastInfo > 6)  { lastInfo = 1; }
-				//Debug.Log("Last info(S) = " + lastInfo);
 				if (lastInfo == 1) { data = MakeSectorScan(); }
 				if (lastInfo == 2) { data = MakeDamageReport(); }
 				if (lastInfo == 3) { data = MakeUpgradesReport(); }

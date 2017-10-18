@@ -43,7 +43,6 @@ public class HypShipHealth : MonoBehaviour {
 	public void TakeDamage() {
 		if (invulnerableTime > 0) { return; }
 		shields -= 1;
-		//Debug.Log("Shields = " + shields);
 		if (shields < 0) {
 			Explode();
 			return;

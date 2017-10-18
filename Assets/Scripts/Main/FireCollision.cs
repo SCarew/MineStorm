@@ -24,15 +24,11 @@ public class FireCollision : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision coll) {
-		//Debug.Log(coll.gameObject.name + " hit for " + damage);
-	
 		if (coll.gameObject.tag == "Player") {
 			sh.DamageHealth(damage);
-			Debug.Log(gameObject.name + " hit for " + damage + " by " + coll.gameObject.name);
 			Destroy(gameObject);
 		}
 		if (coll.gameObject.tag == "Laser" || coll.gameObject.tag == "EnemyLaser") {
-			Debug.Log(gameObject.name + " hit for " + damage + " by " + coll.gameObject.name);
 			Destroy(coll.gameObject);
 			Destroy(gameObject);
 		}

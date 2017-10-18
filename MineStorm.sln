@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MineStorm", "Assembly-CSharp.csproj", "{86DB184A-5D82-C863-5C4F-2270939C4281}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MineStorm", "Assembly-CSharp-Editor.csproj", "{C216CC80-2806-ACBB-B70C-03C5EA42DCA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{86DB184A-5D82-C863-5C4F-2270939C4281}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86DB184A-5D82-C863-5C4F-2270939C4281}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86DB184A-5D82-C863-5C4F-2270939C4281}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C216CC80-2806-ACBB-B70C-03C5EA42DCA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C216CC80-2806-ACBB-B70C-03C5EA42DCA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C216CC80-2806-ACBB-B70C-03C5EA42DCA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C216CC80-2806-ACBB-B70C-03C5EA42DCA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
