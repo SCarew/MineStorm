@@ -18,17 +18,20 @@ public class TorpedoController : MonoBehaviour {
 	static private GameManager gm;
 	static private SoundManager aud;
 
+	void Awake() {
+		rb = GetComponent<Rigidbody>();
+		if (!gm || gm == null) 
+			{ gm = GameObject.Find("GameManager").GetComponent<GameManager>(); }
+		if (!parEff || parEff == null) 
+			{ parEff = GameObject.Find("Effects").transform; }
+		if (!aud || aud == null) 
+			{ aud = GameObject.Find("SoundManager").GetComponent<SoundManager>(); }
+	}
+
 	void Start () {
 		Destroy(gameObject, lifetime);
 		Rigidbody shipRb = GameObject.Find("PlayerShip").GetComponent<Rigidbody>();
-		rb = GetComponent<Rigidbody>();
 		shipVel = shipRb.velocity;
-		if (gm == null) 
-			{ gm = GameObject.Find("GameManager").GetComponent<GameManager>(); }
-		if (parEff == null) 
-			{ parEff = GameObject.Find("Effects").transform; }
-		if (!aud) 
-			{ aud = GameObject.Find("SoundManager").GetComponent<SoundManager>(); }
 
 		if (gameObject.name == "Torpedo" || gameObject.name == "Laser" || gameObject.name == "Missile") {   //torpedo1 has rigidbody for movement
 			rb.MoveRotation(shipRb.rotation);

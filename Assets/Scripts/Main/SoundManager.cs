@@ -43,13 +43,16 @@ public class SoundManager : MonoBehaviour {
 	[SerializeField] private AudioClip[] startButtons;
 	[SerializeField] private AudioClip[] fireworks1;
 
-	void Start () {
-		FindAudioParent();
+	void Awake () {
+		//Invoke("FindAudioParent", 0.2f);
+		parAudio = GameObject.Find("Audio").transform;
+		mainVolume = GetComponentInParent<PrefsControl>().GetMainVolume();
 	}
 
 	private void FindAudioParent() {
 		parAudio = GameObject.Find("Audio").transform;
-		mainVolume = GetComponentInParent<PrefsControl>().GetMainVolume();
+		//mainVolume = GetComponentInParent<PrefsControl>().GetMainVolume();
+		mainVolume = transform.parent.GetComponent<PrefsControl>().GetMainVolume();
 	}
 
 	private void PlaySound(AudioClip ac, float volume = 1f, Transform parAttach = null, bool bLoop = false, int num = 1) {

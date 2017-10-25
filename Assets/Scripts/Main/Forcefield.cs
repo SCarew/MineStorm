@@ -19,6 +19,10 @@ public class Forcefield : MonoBehaviour {
 	private SoundManager aud;
 	private int conLayout = 0;
 
+	void Awake() {
+		childRend = GetComponentInChildren<MeshRenderer>().materials;
+	}
+
 	void Start () {
 		pShip = GameObject.Find("PlayerShip").transform;
 		aud = GameObject.Find("SoundManager").GetComponent<SoundManager>();
@@ -26,7 +30,7 @@ public class Forcefield : MonoBehaviour {
 		sh = pShip.gameObject.GetComponent<ShipHealth>();
 		childCol = GetComponentInChildren<MeshCollider>();
 		childCol.enabled = false;
-		childRend = GetComponentInChildren<MeshRenderer>().materials;
+		//childRend = GetComponentInChildren<MeshRenderer>().materials;
 		aud.PlaySoundImmediate("forcefield");
 		conLayout = sc.GetConLayout();
 	}
